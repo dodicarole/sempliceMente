@@ -1,0 +1,22 @@
+{
+  "name": "Zaino Pronto",
+  "short_name": "Zaino",
+  "description": "Aiuta i bambini a preparare lo zaino in autonomia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EDF0FB",
+  "theme_color": "#6B7FE3",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

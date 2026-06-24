@@ -1,0 +1,30 @@
+:root {
+  --ground:    #EDF0FB;
+  --card:      #FFFFFF;
+  --text:      #1F2147;
+  --text-soft: #6870A0;
+  --done:      #48B97A;
+  --done-bg:   #E6F6EE;
+  --blue:      #6B7FE3;
+  --radius:    22px;
+  --radius-sm: 14px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}

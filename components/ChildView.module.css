@@ -1,0 +1,140 @@
+.banner {
+  border-radius: var(--radius);
+  padding: 28px 28px 26px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.35s;
+}
+
+.banner::after {
+  content: '';
+  position: absolute;
+  right: -28px; top: -28px;
+  width: 180px; height: 180px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.dayName {
+  font-size: clamp(46px, 13vw, 68px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2.5px;
+  position: relative;
+  text-decoration: underline rgba(255, 255, 255, 0.28);
+  text-decoration-style: wavy;
+  text-underline-offset: 7px;
+}
+
+.dayDate {
+  font-size: 15px;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-top: 8px;
+  position: relative;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 2px;
+}
+
+.dots { display: flex; gap: 7px; }
+
+.dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: rgba(31, 33, 71, 0.14);
+  transition: background 0.25s, transform 0.25s;
+}
+
+.dot.on { background: var(--done); transform: scale(1.15); }
+
+.progLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+  margin-left: auto;
+}
+
+.instruction {
+  font-size: 19px;
+  font-weight: 800;
+  padding: 0 2px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Weekend */
+.weekend {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 14px rgba(31, 33, 71, 0.07);
+}
+
+.weekendEmoji { font-size: 64px; }
+.weekendTitle { font-size: 22px; font-weight: 900; }
+.weekendSub   { font-size: 15px; color: var(--text-soft); }
+
+/* Celebration overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 33, 71, 0.55);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.celebCard {
+  background: var(--card);
+  border-radius: 28px;
+  padding: 40px 30px 32px;
+  text-align: center;
+  max-width: 300px;
+  width: 88%;
+  animation: pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pop {
+  from { transform: scale(0.75); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.celebEmoji { font-size: 68px; margin-bottom: 14px; }
+.celebTitle { font-size: 30px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px; }
+.celebSub   { font-size: 15px; color: var(--text-soft); margin-bottom: 24px; line-height: 1.5; }
+
+.celebBtn {
+  background: var(--done);
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  padding: 15px 0;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebCard { animation: none; }
+  .dot       { transition: none; }
+}
