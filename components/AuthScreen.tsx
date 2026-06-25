@@ -4,11 +4,12 @@ import s from './AuthScreen.module.css'
 
 interface Props {
   onAuth: () => void
+  onBack?: () => void
 }
 
 type Mode = 'login' | 'register'
 
-export default function AuthScreen({ onAuth }: Props) {
+export default function AuthScreen({ onAuth, onBack }: Props) {
   const [mode,     setMode]     = useState<Mode>('login')
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -45,6 +46,9 @@ export default function AuthScreen({ onAuth }: Props) {
 
   return (
     <div className={s.container}>
+      {onBack && (
+        <button className={s.backBtn} onClick={onBack}>← Torna alla demo</button>
+      )}
       <div className={s.logo}>🌟</div>
       <h1 className={s.appName}>SempliceMente Bimbi</h1>
       <p className={s.tagline}>Ogni giorno, un passo alla volta</p>

@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from 'next'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Zaino Pronto',
-  description: 'Aiuta i bambini a preparare lo zaino in autonomia',
+  title: 'SempliceMente Bimbi',
+  description: 'Aiuta i bambini a essere più autonomi ogni giorno',
   manifest: '/manifest.json',
-  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Zaino Pronto' },
+  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'SempliceMente Bimbi' },
 }
 
 export const viewport: Viewport = {
@@ -17,7 +18,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }

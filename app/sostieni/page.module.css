@@ -1,0 +1,307 @@
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+/* ── Hero ── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 56px 0 16px;
+  gap: 10px;
+}
+
+.heroEmoji { font-size: 72px; line-height: 1; }
+
+.heroTitle {
+  font-size: clamp(32px, 9vw, 44px);
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: var(--text);
+  line-height: 1;
+  margin-top: 8px;
+}
+
+.heroSub {
+  font-size: 16px;
+  color: var(--text-soft);
+  font-weight: 500;
+  line-height: 1.5;
+  max-width: 340px;
+}
+
+.heroBtn {
+  margin-top: 8px;
+  background: var(--text);
+  color: #fff;
+  border-radius: 14px;
+  padding: 13px 28px;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  font-family: inherit;
+}
+
+.heroBtn:hover { opacity: 0.82; }
+
+/* ── Sections ── */
+.section { display: flex; flex-direction: column; gap: 18px; }
+
+.sectionEye {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--blue);
+}
+
+.sectionTitle {
+  font-size: clamp(24px, 6vw, 30px);
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  color: var(--text);
+  line-height: 1.1;
+  margin-top: -10px;
+}
+
+/* ── Storia ── */
+.storyCard {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 16px rgba(31, 33, 71, 0.08);
+}
+
+.storyCard p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-soft);
+}
+
+.storyCard p strong { color: var(--text); }
+
+/* ── Features ── */
+.featureGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featureCard {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 22px 22px 22px 20px;
+  border-left: 5px solid var(--accent, var(--blue));
+  box-shadow: 0 2px 12px rgba(31, 33, 71, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.featureEmoji { font-size: 32px; line-height: 1; }
+
+.featureName {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.featureDesc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+/* ── Future ── */
+.futureGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.futureCard {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 1px 8px rgba(31, 33, 71, 0.06);
+  border: 2px dashed rgba(31, 33, 71, 0.1);
+}
+
+.futureEmoji { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+
+.futureName {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.futureDesc {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin-top: 3px;
+}
+
+/* ── Install ── */
+.installGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.installCard {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 12px rgba(31, 33, 71, 0.07);
+}
+
+.installIcon { font-size: 32px; line-height: 1; }
+
+.installName {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.installSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 20px;
+}
+
+.installSteps li {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.installSteps li strong { color: var(--text); }
+
+/* ── Support ── */
+.supportIntro {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-soft);
+}
+
+.supportIntro strong { color: var(--text); }
+
+.supportCards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.supportCard {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 14px rgba(31, 33, 71, 0.08);
+}
+
+.donateCard {
+  opacity: 0.6;
+  border: 2px dashed rgba(31, 33, 71, 0.15);
+  box-shadow: none;
+}
+
+.supportIcon { font-size: 32px; line-height: 1; }
+
+.supportName {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.supportDesc {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.supportBtns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.supportBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+  transition: opacity 0.15s;
+  margin-top: 4px;
+}
+
+.supportBtn:hover { opacity: 0.82; }
+
+.whatsappBtn { background: #25D366; }
+
+.comingSoon {
+  display: inline-flex;
+  align-self: flex-start;
+  background: rgba(31, 33, 71, 0.08);
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+/* ── Footer ── */
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 2px solid rgba(31, 33, 71, 0.07);
+}
+
+.footerLink {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.footerLink:hover { color: var(--text); }
+
+.footerText {
+  font-size: 13px;
+  color: var(--text-soft);
+}

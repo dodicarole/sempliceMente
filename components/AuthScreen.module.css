@@ -6,6 +6,20 @@
   gap: 6px;
 }
 
+.backBtn {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: inherit;
+  margin-bottom: 8px;
+}
+.backBtn:hover { color: var(--text); }
+
 .logo { font-size: 56px; }
 
 .appName {

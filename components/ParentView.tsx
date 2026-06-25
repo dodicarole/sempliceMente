@@ -64,6 +64,28 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
   const handleDeleteRoutine = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/routine/${id}`,   { method: 'DELETE' }); onRoutineRefresh() }
   const handleDeleteAgenda  = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/agenda/${id}`,    { method: 'DELETE' }); onAgendaRefresh() }
 
+  const handleMoveRoutine = async (index: number, dir: -1 | 1) => {
+    const a = routineItems[index]
+    const b = routineItems[index + dir]
+    if (!a || !b) return
+    await Promise.all([
+      fetch(`/api/routine/${a.id}`,    { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sort_order: b.sort_order }) }),
+      fetch(`/api/routine/${b.id}`,    { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sort_order: a.sort_order }) }),
+    ])
+    onRoutineRefresh()
+  }
+
+  const handleMoveZaino = async (index: number, dir: -1 | 1) => {
+    const a = zainoItems[index]
+    const b = zainoItems[index + dir]
+    if (!a || !b) return
+    await Promise.all([
+      fetch(`/api/materials/${a.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sort_order: b.sort_order }) }),
+      fetch(`/api/materials/${b.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sort_order: a.sort_order }) }),
+    ])
+    onRefresh()
+  }
+
   const handleNewPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -167,13 +189,17 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
             ))}
           </div>
           <div className={s.list}>
-            {zainoItems.map(item => (
+            {zainoItems.map((item, index) => (
               <div key={item.id} className={s.item}>
                 <button className={s.thumb} onClick={() => handleThumbClick(item.id, 'schedule_items')}>
                   {item.photo_url ? <Image src={item.photo_url} alt={item.name} width={52} height={52} style={{ objectFit: 'cover' }} /> : item.icon}
                   <span className={s.thumbCam}>📷</span>
                 </button>
                 <span className={s.name}>{item.name}</span>
+                <div className={s.reorderBtns}>
+                  <button className={s.reorderBtn} onClick={() => handleMoveZaino(index, -1)} disabled={index === 0} aria-label="Sposta su">▲</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveZaino(index, 1)} disabled={index === zainoItems.length - 1} aria-label="Sposta giù">▼</button>
+                </div>
                 <button className={s.delBtn} onClick={() => handleDeleteZaino(item.id)}>×</button>
               </div>
             ))}
@@ -210,6 +236,10 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
                   <span className={s.thumbCam}>📷</span>
                 </button>
                 <span className={s.name}>{item.name}</span>
+                <div className={s.reorderBtns}>
+                  <button className={s.reorderBtn} onClick={() => handleMoveRoutine(index, -1)} disabled={index === 0} aria-label="Sposta su">▲</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveRoutine(index, 1)} disabled={index === routineItems.length - 1} aria-label="Sposta giù">▼</button>
+                </div>
                 <button className={s.delBtn} onClick={() => handleDeleteRoutine(item.id)}>×</button>
               </div>
             ))}
