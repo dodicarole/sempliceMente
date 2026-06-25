@@ -1,0 +1,163 @@
+.back {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: inherit;
+  align-self: flex-start;
+}
+.back:hover { color: var(--text); }
+
+.banner {
+  border-radius: var(--radius);
+  padding: 28px 28px 26px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.35s;
+}
+.banner::after {
+  content: '';
+  position: absolute;
+  right: -28px; top: -28px;
+  width: 180px; height: 180px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.dayName {
+  font-size: clamp(46px,13vw,68px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2.5px;
+  position: relative;
+}
+.dayDate {
+  font-size: 15px;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-top: 8px;
+  position: relative;
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.timeCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  padding-top: 14px;
+}
+
+.time {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-soft);
+  line-height: 1;
+}
+
+.line {
+  width: 2px;
+  flex: 1;
+  min-height: 16px;
+  background: rgba(31,33,71,0.1);
+  margin-top: 6px;
+}
+
+.card {
+  flex: 1;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 6px rgba(31,33,71,0.07);
+  border: 2.5px solid transparent;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+
+.row.current .card {
+  border-color: var(--done);
+  box-shadow: 0 2px 16px rgba(31,33,71,0.13);
+}
+
+.row.current .time {
+  color: var(--done);
+}
+
+.row.past .card  { opacity: 0.4; }
+.row.past .time  { opacity: 0.4; }
+.row.past .line  { background: rgba(31,33,71,0.06); }
+
+.cardMedia {
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  background: var(--ground);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.cardEmoji { font-size: 28px; }
+
+.cardName {
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+  color: var(--text);
+}
+
+.badgeNow {
+  background: var(--done);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.badgeNext {
+  background: rgba(31,33,71,0.08);
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* Empty / weekend */
+.empty, .weekend {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 14px rgba(31,33,71,0.07);
+}
+
+.weekendEmoji, .emptyEmoji { font-size: 64px; }
+.weekendTitle, .emptyText  { font-size: 22px; font-weight: 900; }
+.weekendSub                { font-size: 15px; color: var(--text-soft); }

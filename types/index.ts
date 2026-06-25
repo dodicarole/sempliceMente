@@ -15,5 +15,11 @@ export interface RoutineItem extends BaseItem {}
 export const DAY_NAMES  = ['LUNEDÌ', 'MARTEDÌ', 'MERCOLEDÌ', 'GIOVEDÌ', 'VENERDÌ']
 export const DAY_SHORTS = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven']
 export const DAY_COLORS = ['#6B7FE3', '#E07090', '#3EAB7A', '#D4902A', '#9167D8']
+export interface AgendaItem extends BaseItem {
+  day_of_week: number
+  time_start: string   // "HH:MM"
+}
+
 export const FALLBACK_ICONS  = ['📚','📓','📏','🎨','🔬','📝','🥪','💧','✂️','🖍️']
 export const ROUTINE_ICONS   = ['⏰','🚿','👕','🥣','🦷','👟','🎒','🧴','💊','🌟']
+export const AGENDA_ICONS    = ['🏫','📚','🎨','⚽','🎵','🍽️','😴','🛁','📺','🎮']

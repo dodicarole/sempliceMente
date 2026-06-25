@@ -3,14 +3,15 @@ import { useState, useEffect, useCallback } from 'react'
 import AuthScreen from '@/components/AuthScreen'
 import ChildView from '@/components/ChildView'
 import RoutineView from '@/components/RoutineView'
+import AgendaView from '@/components/AgendaView'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
-import { type ScheduleItem, type RoutineItem } from '@/types'
+import { type ScheduleItem, type RoutineItem, type AgendaItem } from '@/types'
 import s from './page.module.css'
 
 type AuthState  = 'loading' | 'unauthenticated' | 'authenticated'
 type View       = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 function getDayInfo(): { dayIndex: number; dateLabel: string } {
@@ -28,6 +29,7 @@ export default function Home() {
   const [parentState,  setParentState]  = useState<ParentState>('locked')
   const [schedule,     setSchedule]     = useState<ScheduleItem[][]>(Array(5).fill([]))
   const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
+  const [agendaItems,  setAgendaItems]  = useState<AgendaItem[]>([])
   const [dataLoading,  setDataLoading]  = useState(true)
   const [newPinTemp,   setNewPinTemp]   = useState('')
 
@@ -56,11 +58,18 @@ export default function Home() {
     setRoutineItems(items)
   }, [])
 
+  const fetchAgenda = useCallback(async () => {
+    const res = await fetch('/api/agenda')
+    if (!res.ok) return
+    const { items }: { items: AgendaItem[] } = await res.json()
+    setAgendaItems(items)
+  }, [])
+
   useEffect(() => {
     if (authState === 'authenticated') {
-      Promise.all([fetchSchedule(), fetchRoutine()]).then(() => setDataLoading(false))
+      Promise.all([fetchSchedule(), fetchRoutine(), fetchAgenda()]).then(() => setDataLoading(false))
     }
-  }, [authState, fetchSchedule, fetchRoutine])
+  }, [authState, fetchSchedule, fetchRoutine, fetchAgenda])
 
   const handleAuth = () => setAuthState('authenticated')
 
@@ -160,11 +169,18 @@ export default function Home() {
                   <span className={s.featureTitle}>Routine Mattutina</span>
                   <span className={s.featureSub}>Sei pronto per la giornata?</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#3EAB7A' } as React.CSSProperties} onClick={() => setChildSection('agenda')}>
+                  <span className={s.featureEmoji}>📅</span>
+                  <span className={s.featureTitle}>Agenda di Oggi</span>
+                  <span className={s.featureSub}>Cosa succede oggi?</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
-            ) : (
+            ) : childSection === 'routine' ? (
               <RoutineView items={routineItems} onBack={() => setChildSection('home')} />
+            ) : (
+              <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
           </div>
         )}
@@ -178,10 +194,12 @@ export default function Home() {
               <ParentView
                 schedule={schedule}
                 routineItems={routineItems}
+                agendaItems={agendaItems}
                 onLock={() => setParentState('locked')}
                 onChangePinRequest={() => setParentState('changing-pin-1')}
                 onRefresh={fetchSchedule}
                 onRoutineRefresh={fetchRoutine}
+                onAgendaRefresh={fetchAgenda}
               />
             )}
             {parentState === 'changing-pin-1' && (

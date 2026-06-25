@@ -248,3 +248,35 @@
 }
 
 .changePinBtn:hover { color: var(--text); }
+
+/* Agenda */
+.agendaTime {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-soft);
+  min-width: 38px;
+  flex-shrink: 0;
+}
+
+.agendaInputs {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.timeInput {
+  width: 100px;
+  flex-shrink: 0;
+  border: 2px solid rgba(31, 33, 71, 0.12);
+  border-radius: 10px;
+  padding: 10px 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--ground);
+  outline: none;
+  font-family: inherit;
+}
+
+.timeInput:focus { border-color: var(--blue); background: white; }
