@@ -12,6 +12,8 @@ CREATE TABLE public.routine_items (
 
 ALTER TABLE public.routine_items DISABLE ROW LEVEL SECURITY;
 
+
+
 -- Passi di esempio
 INSERT INTO public.routine_items (name, icon, sort_order) VALUES
   ('Sveglia',          '⏰', 0),
