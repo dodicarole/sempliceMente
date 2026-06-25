@@ -43,10 +43,57 @@ const ROUTINE_KEYWORDS: [string[], string][] = [
   [['musica','cuffie'],                                     '🎵'],
 ]
 
-export function pickRoutineIcon(name: string, fallbackIndex: number): string {
+export function pickRoutineIcon(name: string): string {
   const lower = name.toLowerCase()
   for (const [keywords, icon] of ROUTINE_KEYWORDS) {
     if (keywords.some(k => lower.includes(k))) return icon
   }
-  return ROUTINE_ICONS[fallbackIndex % ROUTINE_ICONS.length]
+  return ''
+}
+
+const ZAINO_KEYWORDS: [string[], string][] = [
+  [['quaderno','diario','blocco'],          '📓'],
+  [['libro','testo','lettura'],             '📚'],
+  [['astuccio','matita','penna','biro'],    '🖊️'],
+  [['righello','riga'],                     '📏'],
+  [['forbici','forbice'],                   '✂️'],
+  [['colla'],                               '🖍️'],
+  [['colori','pennarelli','pastelli'],       '🎨'],
+  [['compasso','goniometro'],               '📐'],
+  [['merenda','panino','frutto','snack'],   '🥪'],
+  [['acqua','borraccia'],                   '💧'],
+  [['zaino','borsa','cartella'],            '🎒'],
+  [['calcolatrice'],                        '🧮'],
+  [['agenda','diario'],                     '📆'],
+]
+
+export function pickZainoIcon(name: string): string {
+  const lower = name.toLowerCase()
+  for (const [keywords, icon] of ZAINO_KEYWORDS) {
+    if (keywords.some(k => lower.includes(k))) return icon
+  }
+  return ''
+}
+
+const AGENDA_KEYWORDS: [string[], string][] = [
+  [['italiano','scrittura','lettura'],         '📝'],
+  [['matematica','matematiche','calcolo'],      '🔢'],
+  [['scienze','laboratorio','esperimento'],     '🔬'],
+  [['storia','geografia'],                      '🌍'],
+  [['arte','disegno'],                          '🎨'],
+  [['musica','canto','strumento'],              '🎵'],
+  [['ginnastica','sport','palestra','motoria'], '⚽'],
+  [['inglese','francese','tedesco','lingua'],   '🌐'],
+  [['informatica','computer'],                  '💻'],
+  [['ricreazione','pausa','intervallo'],        '😊'],
+  [['mensa','pranzo','mangiare'],               '🍽️'],
+  [['casa','scuola','uscita','rientro'],        '🏠'],
+]
+
+export function pickAgendaIcon(name: string): string {
+  const lower = name.toLowerCase()
+  for (const [keywords, icon] of AGENDA_KEYWORDS) {
+    if (keywords.some(k => lower.includes(k))) return icon
+  }
+  return ''
 }

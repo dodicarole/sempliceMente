@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
-import { DAY_SHORTS, DAY_COLORS, FALLBACK_ICONS, ROUTINE_ICONS, AGENDA_ICONS, pickRoutineIcon, type ScheduleItem, type RoutineItem, type AgendaItem } from '@/types'
+import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, type ScheduleItem, type RoutineItem, type AgendaItem } from '@/types'
 import s from './ParentView.module.css'
 
 type Section = 'zaino' | 'routine' | 'agenda'
@@ -99,7 +99,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
   const handleSaveZaino = async () => {
     if (!newName.trim()) return
     setSaving(true)
-    const icon = FALLBACK_ICONS[zainoItems.length % FALLBACK_ICONS.length]
+    const icon = pickZainoIcon(newName.trim())
     const res = await fetch('/api/materials', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -118,7 +118,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
   const handleSaveRoutine = async () => {
     if (!newName.trim()) return
     setSaving(true)
-    const icon = pickRoutineIcon(newName.trim(), routineItems.length)
+    const icon = pickRoutineIcon(newName.trim())
     const res = await fetch('/api/routine', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -138,7 +138,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
   const handleSaveAgenda = async () => {
     if (!newName.trim() || !newTime) return
     setSaving(true)
-    const icon = AGENDA_ICONS[agendaDay.length % AGENDA_ICONS.length]
+    const icon = pickAgendaIcon(newName.trim())
     const res = await fetch('/api/agenda', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
