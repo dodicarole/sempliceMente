@@ -77,12 +77,14 @@
 .keyBlank { visibility: hidden; pointer-events: none; }
 
 .hint {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-soft);
-  background: rgba(31, 33, 71, 0.05);
-  padding: 6px 12px;
-  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #92610a;
+  background: #fff3cd;
+  border: 1.5px solid #f0c040;
+  padding: 9px 16px;
+  border-radius: 12px;
+  text-align: center;
 }
 
 @media (prefers-reduced-motion: reduce) {

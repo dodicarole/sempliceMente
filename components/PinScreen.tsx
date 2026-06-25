@@ -50,6 +50,8 @@ export default function PinScreen({ title = 'Area Genitore', subtitle, showHint 
 
   return (
     <div className={s.screen}>
+      {showHint && <div className={s.hint}>💡 Prima volta? Il PIN è <strong>1234</strong></div>}
+
       <div className={s.lockIcon}>🔐</div>
       <div className={s.title}>{title}</div>
       <div className={s.subtitle}>{subtitle}</div>
@@ -72,7 +74,6 @@ export default function PinScreen({ title = 'Area Genitore', subtitle, showHint 
         <button className={`${s.key} ${s.keyDel}`} onClick={handleDelete} disabled={loading} aria-label="Cancella">⌫</button>
       </div>
 
-      {showHint && <div className={s.hint}>PIN di default: 1234</div>}
     </div>
   )
 }
