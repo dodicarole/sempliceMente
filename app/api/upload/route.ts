@@ -9,13 +9,15 @@ export async function POST(req: NextRequest) {
   const form = await req.formData()
   const file   = form.get('file')   as File | null
   const itemId = form.get('itemId') as string | null
+  const table  = (form.get('table') as string | null) ?? 'schedule_items'
 
   if (!file || !itemId) {
     return NextResponse.json({ error: 'Dati mancanti' }, { status: 400 })
   }
 
   const ext      = file.name.split('.').pop() ?? 'jpg'
-  const filename = `${itemId}.${ext}`
+  const folder   = table === 'routine_items' ? 'routine/' : ''
+  const filename = `${folder}${itemId}.${ext}`
   const bucket   = process.env.SUPABASE_STORAGE_BUCKET!
 
   const { error: uploadError } = await getSupabase().storage
@@ -30,7 +32,7 @@ export async function POST(req: NextRequest) {
 
   const supabase = getSupabase()
   const { error: updateError } = await supabase
-    .from('schedule_items')
+    .from(table)
     .update({ photo_url: publicUrl })
     .eq('id', itemId)
 

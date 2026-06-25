@@ -1,28 +1,32 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import ChildView from '@/components/ChildView'
+import RoutineView from '@/components/RoutineView'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
-import { type ScheduleItem } from '@/types'
+import { type ScheduleItem, type RoutineItem } from '@/types'
 import s from './page.module.css'
 
 type View = 'child' | 'parent'
+type ChildSection = 'home' | 'zaino' | 'routine'
 type ParentState = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 function getDayInfo(): { dayIndex: number; dateLabel: string } {
   const d = new Date()
-  const dow = d.getDay()                     // 0=dom … 6=sab
+  const dow = d.getDay()
   const dayIndex = dow === 0 || dow === 6 ? -1 : dow - 1
   const dateLabel = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
   return { dayIndex, dateLabel }
 }
 
 export default function Home() {
-  const [view,        setView]        = useState<View>('child')
-  const [parentState, setParentState] = useState<ParentState>('locked')
-  const [schedule,    setSchedule]    = useState<ScheduleItem[][]>(Array(5).fill([]))
-  const [loading,     setLoading]     = useState(true)
-  const [newPinTemp,  setNewPinTemp]  = useState('')
+  const [view,         setView]         = useState<View>('child')
+  const [childSection, setChildSection] = useState<ChildSection>('home')
+  const [parentState,  setParentState]  = useState<ParentState>('locked')
+  const [schedule,     setSchedule]     = useState<ScheduleItem[][]>(Array(5).fill([]))
+  const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
+  const [loading,      setLoading]      = useState(true)
+  const [newPinTemp,   setNewPinTemp]   = useState('')
 
   const { dayIndex, dateLabel } = getDayInfo()
 
@@ -33,14 +37,22 @@ export default function Home() {
     const byDay: ScheduleItem[][] = Array(5).fill(null).map(() => [])
     items.forEach(item => { byDay[item.day_of_week].push(item) })
     setSchedule(byDay)
-    setLoading(false)
   }, [])
 
-  useEffect(() => { fetchSchedule() }, [fetchSchedule])
+  const fetchRoutine = useCallback(async () => {
+    const res = await fetch('/api/routine')
+    if (!res.ok) return
+    const { items }: { items: RoutineItem[] } = await res.json()
+    setRoutineItems(items)
+  }, [])
 
-  // ── Switch to parent (always locks first) ──
+  useEffect(() => {
+    Promise.all([fetchSchedule(), fetchRoutine()]).then(() => setLoading(false))
+  }, [fetchSchedule, fetchRoutine])
+
   const handleViewChange = (v: View) => {
     if (v === 'parent') setParentState('locked')
+    if (v === 'child') setChildSection('home')
     setView(v)
   }
 
@@ -72,13 +84,13 @@ export default function Home() {
     return false
   }, [newPinTemp])
 
-  const items = dayIndex >= 0 ? (schedule[dayIndex] ?? []) : []
+  const zainoItems = dayIndex >= 0 ? (schedule[dayIndex] ?? []) : []
 
   return (
     <div className={s.page}>
       <div className={s.app}>
 
-        {/* ── Toggle ── */}
+        {/* ── Toggle Bambino / Genitore ── */}
         <div className={s.toggle} role="tablist">
           {(['child', 'parent'] as View[]).map((v, i) => (
             <button
@@ -88,7 +100,7 @@ export default function Home() {
               className={`${s.toggleBtn}${view === v ? ` ${s.active}` : ''}`}
               onClick={() => handleViewChange(v)}
             >
-              {i === 0 ? '🎒 Bambino' : '⚙️ Genitore'}
+              {i === 0 ? '👶 Bambino' : '⚙️ Genitore'}
             </button>
           ))}
         </div>
@@ -98,8 +110,23 @@ export default function Home() {
           <div className={s.view}>
             {loading ? (
               <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-soft)' }}>Caricamento…</div>
+            ) : childSection === 'home' ? (
+              <div className={s.homeGrid}>
+                <button className={s.featureCard} style={{ '--accent': '#6B7FE3' } as React.CSSProperties} onClick={() => setChildSection('zaino')}>
+                  <span className={s.featureEmoji}>🎒</span>
+                  <span className={s.featureTitle}>Zaino Pronto</span>
+                  <span className={s.featureSub}>Cosa metti oggi?</span>
+                </button>
+                <button className={s.featureCard} style={{ '--accent': '#FF8C42' } as React.CSSProperties} onClick={() => setChildSection('routine')}>
+                  <span className={s.featureEmoji}>🌅</span>
+                  <span className={s.featureTitle}>Routine Mattutina</span>
+                  <span className={s.featureSub}>Sei pronto per la giornata?</span>
+                </button>
+              </div>
+            ) : childSection === 'zaino' ? (
+              <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             ) : (
-              <ChildView items={items} dayIndex={dayIndex} dateLabel={dateLabel} />
+              <RoutineView items={routineItems} onBack={() => setChildSection('home')} />
             )}
           </div>
         )}
@@ -117,9 +144,11 @@ export default function Home() {
             {parentState === 'unlocked' && (
               <ParentView
                 schedule={schedule}
+                routineItems={routineItems}
                 onLock={() => setParentState('locked')}
                 onChangePinRequest={() => setParentState('changing-pin-1')}
                 onRefresh={fetchSchedule}
+                onRoutineRefresh={fetchRoutine}
               />
             )}
             {parentState === 'changing-pin-1' && (

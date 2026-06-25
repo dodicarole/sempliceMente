@@ -1,15 +1,16 @@
 'use client'
 import Image from 'next/image'
-import type { ScheduleItem } from '@/types'
+import type { BaseItem } from '@/types'
 import s from './ItemCard.module.css'
 
 interface Props {
-  item: ScheduleItem
+  item: BaseItem
   checked: boolean
   onToggle: () => void
+  doneLabel?: string
 }
 
-export default function ItemCard({ item, checked, onToggle }: Props) {
+export default function ItemCard({ item, checked, onToggle, doneLabel = 'Dentro!' }: Props) {
   return (
     <div
       className={`${s.wrap} ${checked ? s.done : ''}`}
@@ -39,7 +40,7 @@ export default function ItemCard({ item, checked, onToggle }: Props) {
         </div>
         <div className={`${s.face} ${s.back}`}>
           <div className={s.doneIcon}>✅</div>
-          <div className={s.doneLabel}>Dentro!</div>
+          <div className={s.doneLabel}>{doneLabel}</div>
         </div>
       </div>
     </div>

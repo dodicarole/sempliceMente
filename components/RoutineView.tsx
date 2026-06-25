@@ -2,26 +2,23 @@
 import { useState, useEffect, useCallback } from 'react'
 import ItemCard from './ItemCard'
 import { useAudio } from '@/hooks/useAudio'
-import { DAY_NAMES, DAY_COLORS, type ScheduleItem } from '@/types'
-import s from './ChildView.module.css'
+import type { RoutineItem } from '@/types'
+import s from './RoutineView.module.css'
 
 interface Props {
-  items: ScheduleItem[]
-  dayIndex: number
-  dateLabel: string
+  items: RoutineItem[]
   onBack: () => void
 }
 
 function todayKey() {
-  return `zaino_${new Date().toISOString().split('T')[0]}`
+  return `routine_${new Date().toISOString().split('T')[0]}`
 }
 
-export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props) {
+export default function RoutineView({ items, onBack }: Props) {
   const [checked, setChecked]       = useState<Set<string>>(new Set())
   const [showCelebr, setShowCelebr] = useState(false)
   const { check, uncheck, celebration } = useAudio()
 
-  // Carica dallo storage al mount
   useEffect(() => {
     try {
       const raw = localStorage.getItem(todayKey())
@@ -50,27 +47,13 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
     })
   }, [items.length, check, uncheck, celebration])
 
-  if (dayIndex === -1) {
-    return (
-      <>
-        <button className={s.back} onClick={onBack}>← Indietro</button>
-        <div className={s.weekend}>
-          <div className={s.weekendEmoji}>🏠</div>
-          <div className={s.weekendTitle}>Oggi niente scuola!</div>
-          <div className={s.weekendSub}>Buon riposo 😊</div>
-        </div>
-      </>
-    )
-  }
-
-  const color = DAY_COLORS[dayIndex]
-
   return (
     <>
       <button className={s.back} onClick={onBack}>← Indietro</button>
-      <div className={s.banner} style={{ background: color }}>
-        <div className={s.dayName}>{DAY_NAMES[dayIndex]}</div>
-        <div className={s.dayDate}>{dateLabel}</div>
+
+      <div className={s.banner}>
+        <div className={s.sunEmoji}>🌅</div>
+        <div className={s.title}>Routine Mattutina</div>
       </div>
 
       <div className={s.progressRow}>
@@ -82,25 +65,30 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
         <span className={s.progLabel}>{checked.size} di {items.length}</span>
       </div>
 
-      <div className={s.instruction}>Metti nello zaino!</div>
+      <div className={s.instruction}>Fai una cosa alla volta!</div>
 
       <div className={s.grid}>
-        {items.map(item => (
-          <ItemCard
-            key={item.id}
-            item={item}
-            checked={checked.has(item.id)}
-            onToggle={() => toggle(item.id)}
-          />
+        {items.map((item, index) => (
+          <div key={item.id} className={s.itemWrap}>
+            <span className={`${s.stepNum} ${checked.has(item.id) ? s.stepDone : ''}`}>
+              {index + 1}
+            </span>
+            <ItemCard
+              item={item}
+              checked={checked.has(item.id)}
+              onToggle={() => toggle(item.id)}
+              doneLabel="Fatto!"
+            />
+          </div>
         ))}
       </div>
 
       {showCelebr && (
         <div className={s.overlay} onClick={() => setShowCelebr(false)}>
           <div className={s.celebCard} onClick={e => e.stopPropagation()}>
-            <div className={s.celebEmoji}>🎉</div>
-            <div className={s.celebTitle}>Bravo!</div>
-            <div className={s.celebSub}>Lo zaino è pronto.<br />Buona giornata!</div>
+            <div className={s.celebEmoji}>🌟</div>
+            <div className={s.celebTitle}>Bravissimo!</div>
+            <div className={s.celebSub}>Routine completata.<br />Buona giornata!</div>
             <button className={s.celebBtn} onClick={() => setShowCelebr(false)}>Ottimo!</button>
           </div>
         </div>

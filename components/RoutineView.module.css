@@ -13,12 +13,15 @@
 .back:hover { color: var(--text); }
 
 .banner {
+  background: linear-gradient(135deg, #FF8C42 0%, #FFB347 100%);
   border-radius: var(--radius);
   padding: 28px 28px 26px;
   color: #fff;
   position: relative;
   overflow: hidden;
-  transition: background 0.35s;
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
 .banner::after {
@@ -31,22 +34,13 @@
   pointer-events: none;
 }
 
-.dayName {
-  font-size: clamp(46px, 13vw, 68px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -2.5px;
-  position: relative;
-  text-decoration: underline rgba(255, 255, 255, 0.28);
-  text-decoration-style: wavy;
-  text-underline-offset: 7px;
-}
+.sunEmoji { font-size: 52px; position: relative; }
 
-.dayDate {
-  font-size: 15px;
-  font-weight: 500;
-  opacity: 0.75;
-  margin-top: 8px;
+.title {
+  font-size: clamp(24px, 7vw, 34px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -1px;
   position: relative;
 }
 
@@ -57,7 +51,7 @@
   padding: 0 2px;
 }
 
-.dots { display: flex; gap: 7px; }
+.dots { display: flex; gap: 7px; flex-wrap: wrap; }
 
 .dot {
   width: 11px; height: 11px;
@@ -66,7 +60,7 @@
   transition: background 0.25s, transform 0.25s;
 }
 
-.dot.on { background: var(--done); transform: scale(1.15); }
+.dot.on { background: #FF8C42; transform: scale(1.15); }
 
 .progLabel {
   font-size: 14px;
@@ -87,22 +81,26 @@
   gap: 12px;
 }
 
-/* Weekend */
-.weekend {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 48px 24px;
-  text-align: center;
+.itemWrap { position: relative; }
+
+.stepNum {
+  position: absolute;
+  top: 8px; left: 8px;
+  z-index: 10;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 2px 14px rgba(31, 33, 71, 0.07);
+  justify-content: center;
+  pointer-events: none;
+  transition: background 0.25s;
 }
 
-.weekendEmoji { font-size: 64px; }
-.weekendTitle { font-size: 22px; font-weight: 900; }
-.weekendSub   { font-size: 15px; color: var(--text-soft); }
+.stepNum.stepDone { background: #FF8C42; }
 
 /* Celebration overlay */
 .overlay {
@@ -136,7 +134,7 @@
 .celebSub   { font-size: 15px; color: var(--text-soft); margin-bottom: 24px; line-height: 1.5; }
 
 .celebBtn {
-  background: var(--done);
+  background: #FF8C42;
   color: #fff;
   border: none;
   border-radius: 15px;
