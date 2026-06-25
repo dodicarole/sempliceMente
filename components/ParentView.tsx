@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
-import { DAY_SHORTS, DAY_COLORS, FALLBACK_ICONS, ROUTINE_ICONS, AGENDA_ICONS, type ScheduleItem, type RoutineItem, type AgendaItem } from '@/types'
+import { DAY_SHORTS, DAY_COLORS, FALLBACK_ICONS, ROUTINE_ICONS, AGENDA_ICONS, pickRoutineIcon, type ScheduleItem, type RoutineItem, type AgendaItem } from '@/types'
 import s from './ParentView.module.css'
 
 type Section = 'zaino' | 'routine' | 'agenda'
@@ -118,7 +118,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
   const handleSaveRoutine = async () => {
     if (!newName.trim()) return
     setSaving(true)
-    const icon = ROUTINE_ICONS[routineItems.length % ROUTINE_ICONS.length]
+    const icon = pickRoutineIcon(newName.trim(), routineItems.length)
     const res = await fetch('/api/routine', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -23,3 +23,30 @@ export interface AgendaItem extends BaseItem {
 export const FALLBACK_ICONS  = ['📚','📓','📏','🎨','🔬','📝','🥪','💧','✂️','🖍️']
 export const ROUTINE_ICONS   = ['⏰','🚿','👕','🥣','🦷','👟','🎒','🧴','💊','🌟']
 export const AGENDA_ICONS    = ['🏫','📚','🎨','⚽','🎵','🍽️','😴','🛁','📺','🎮']
+
+const ROUTINE_KEYWORDS: [string[], string][] = [
+  [['sveglia','svegliati','alzati','aufwachen'],            '⏰'],
+  [['doccia','bagno','lavarsi','lava'],                     '🚿'],
+  [['vestiti','vestirsi','abiti','abbigliamento','camicia','maglietta','pantaloni'], '👕'],
+  [['colazione','mangiare','cibo','latte','cereali','pane','pranzo'], '🥣'],
+  [['denti','dentista','spazzolino','bocca'],               '🦷'],
+  [['scarpe','calze','calzini','stivali'],                  '👟'],
+  [['zaino','borsa','cartella'],                            '🎒'],
+  [['crema','lozione','deodorante','profumo','sole'],       '🧴'],
+  [['medicina','pillola','farmaco','sciroppo'],             '💊'],
+  [['capelli','pettinarsi','pettine','spazzola'],           '💇'],
+  [['mani','igiene'],                                       '🙌'],
+  [['toilette','bagno','pipi','bisogno'],                   '🚽'],
+  [['occhiali'],                                            '👓'],
+  [['gioco','giocare','tablet','computer'],                 '🎮'],
+  [['libro','leggere','lettura'],                           '📖'],
+  [['musica','cuffie'],                                     '🎵'],
+]
+
+export function pickRoutineIcon(name: string, fallbackIndex: number): string {
+  const lower = name.toLowerCase()
+  for (const [keywords, icon] of ROUTINE_KEYWORDS) {
+    if (keywords.some(k => lower.includes(k))) return icon
+  }
+  return ROUTINE_ICONS[fallbackIndex % ROUTINE_ICONS.length]
+}
