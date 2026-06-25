@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { requireParent } from '@/lib/session'
+import { getFamilyId, getParentFamilyId } from '@/lib/session'
 
 export async function GET() {
+  const familyId = await getFamilyId()
+  if (familyId instanceof Response) return familyId
+
   const supabase = getSupabase()
   const { data, error } = await supabase
     .from('routine_items')
     .select('*')
+    .eq('family_id', familyId)
     .order('sort_order')
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -14,8 +18,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const denied = await requireParent()
-  if (denied) return denied
+  const familyId = await getParentFamilyId()
+  if (familyId instanceof Response) return familyId
 
   const supabase = getSupabase()
   const { name, icon, sort_order } = await req.json()
@@ -23,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('routine_items')
-    .insert({ name, icon: icon ?? '✅', sort_order: sort_order ?? 0 })
+    .insert({ name, icon: icon ?? '✅', sort_order: sort_order ?? 0, family_id: familyId })
     .select()
     .single()
 

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { requireParent } from '@/lib/session'
+import { getParentFamilyId } from '@/lib/session'
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const denied = await requireParent()
-  if (denied) return denied
+  const familyId = await getParentFamilyId()
+  if (familyId instanceof Response) return familyId
 
   const { id } = await params
   const supabase = getSupabase()
@@ -13,6 +13,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     .from('routine_items')
     .select('photo_url')
     .eq('id', id)
+    .eq('family_id', familyId)
     .single()
 
   if (item?.photo_url) {
@@ -23,14 +24,14 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     }
   }
 
-  const { error } = await supabase.from('routine_items').delete().eq('id', id)
+  const { error } = await supabase.from('routine_items').delete().eq('id', id).eq('family_id', familyId)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const denied = await requireParent()
-  if (denied) return denied
+  const familyId = await getParentFamilyId()
+  if (familyId instanceof Response) return familyId
 
   const { id } = await params
   const body = await req.json()
@@ -40,6 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .from('routine_items')
     .update(body)
     .eq('id', id)
+    .eq('family_id', familyId)
     .select()
     .single()
 

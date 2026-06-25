@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
+import AuthScreen from '@/components/AuthScreen'
 import ChildView from '@/components/ChildView'
 import RoutineView from '@/components/RoutineView'
 import ParentView from '@/components/ParentView'
@@ -7,9 +8,10 @@ import PinScreen from '@/components/PinScreen'
 import { type ScheduleItem, type RoutineItem } from '@/types'
 import s from './page.module.css'
 
-type View = 'child' | 'parent'
+type AuthState  = 'loading' | 'unauthenticated' | 'authenticated'
+type View       = 'child' | 'parent'
 type ChildSection = 'home' | 'zaino' | 'routine'
-type ParentState = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
+type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 function getDayInfo(): { dayIndex: number; dateLabel: string } {
   const d = new Date()
@@ -20,15 +22,23 @@ function getDayInfo(): { dayIndex: number; dateLabel: string } {
 }
 
 export default function Home() {
+  const [authState,    setAuthState]    = useState<AuthState>('loading')
   const [view,         setView]         = useState<View>('child')
   const [childSection, setChildSection] = useState<ChildSection>('home')
   const [parentState,  setParentState]  = useState<ParentState>('locked')
   const [schedule,     setSchedule]     = useState<ScheduleItem[][]>(Array(5).fill([]))
   const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
-  const [loading,      setLoading]      = useState(true)
+  const [dataLoading,  setDataLoading]  = useState(true)
   const [newPinTemp,   setNewPinTemp]   = useState('')
 
   const { dayIndex, dateLabel } = getDayInfo()
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => setAuthState(d?.authenticated ? 'authenticated' : 'unauthenticated'))
+      .catch(() => setAuthState('unauthenticated'))
+  }, [])
 
   const fetchSchedule = useCallback(async () => {
     const res = await fetch('/api/materials')
@@ -47,8 +57,20 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    Promise.all([fetchSchedule(), fetchRoutine()]).then(() => setLoading(false))
-  }, [fetchSchedule, fetchRoutine])
+    if (authState === 'authenticated') {
+      Promise.all([fetchSchedule(), fetchRoutine()]).then(() => setDataLoading(false))
+    }
+  }, [authState, fetchSchedule, fetchRoutine])
+
+  const handleAuth = () => setAuthState('authenticated')
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    setAuthState('unauthenticated')
+    setView('child')
+    setChildSection('home')
+    setParentState('locked')
+  }
 
   const handleViewChange = (v: View) => {
     if (v === 'parent') setParentState('locked')
@@ -56,7 +78,6 @@ export default function Home() {
     setView(v)
   }
 
-  // ── PIN handlers ──
   const handleUnlockSubmit = useCallback(async (pin: string): Promise<boolean> => {
     const res = await fetch('/api/pin/verify', {
       method: 'POST',
@@ -84,13 +105,30 @@ export default function Home() {
     return false
   }, [newPinTemp])
 
+  if (authState === 'loading') {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-soft)' }}>
+        Caricamento…
+      </div>
+    )
+  }
+
+  if (authState === 'unauthenticated') {
+    return (
+      <div className={s.page}>
+        <div className={s.app}>
+          <AuthScreen onAuth={handleAuth} />
+        </div>
+      </div>
+    )
+  }
+
   const zainoItems = dayIndex >= 0 ? (schedule[dayIndex] ?? []) : []
 
   return (
     <div className={s.page}>
       <div className={s.app}>
 
-        {/* ── Toggle Bambino / Genitore ── */}
         <div className={s.toggle} role="tablist">
           {(['child', 'parent'] as View[]).map((v, i) => (
             <button
@@ -103,12 +141,12 @@ export default function Home() {
               {i === 0 ? '👶 Bambino' : '⚙️ Genitore'}
             </button>
           ))}
+          <button className={s.logoutBtn} onClick={handleLogout} title="Esci dall'account">🚪</button>
         </div>
 
-        {/* ── Child view ── */}
         {view === 'child' && (
           <div className={s.view}>
-            {loading ? (
+            {dataLoading ? (
               <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-soft)' }}>Caricamento…</div>
             ) : childSection === 'home' ? (
               <div className={s.homeGrid}>
@@ -131,15 +169,10 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── Parent view ── */}
         {view === 'parent' && (
           <div className={s.view}>
             {parentState === 'locked' && (
-              <PinScreen
-                subtitle="Inserisci il PIN"
-                showHint
-                onSubmit={handleUnlockSubmit}
-              />
+              <PinScreen subtitle="Inserisci il PIN" showHint onSubmit={handleUnlockSubmit} />
             )}
             {parentState === 'unlocked' && (
               <ParentView
@@ -152,16 +185,10 @@ export default function Home() {
               />
             )}
             {parentState === 'changing-pin-1' && (
-              <PinScreen
-                subtitle="Inserisci il nuovo PIN"
-                onSubmit={handleChange1Submit}
-              />
+              <PinScreen subtitle="Inserisci il nuovo PIN" onSubmit={handleChange1Submit} />
             )}
             {parentState === 'changing-pin-2' && (
-              <PinScreen
-                subtitle="Ripeti il nuovo PIN"
-                onSubmit={handleChange2Submit}
-              />
+              <PinScreen subtitle="Ripeti il nuovo PIN" onSubmit={handleChange2Submit} />
             )}
           </div>
         )}

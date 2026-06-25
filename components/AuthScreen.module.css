@@ -1,0 +1,111 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0 24px;
+  gap: 6px;
+}
+
+.logo { font-size: 56px; }
+
+.appName {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  margin: 0;
+}
+
+.tagline {
+  font-size: 14px;
+  color: var(--text-soft);
+  margin: 0 0 20px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  box-shadow: 0 2px 14px rgba(31, 33, 71, 0.09);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tabs {
+  display: flex;
+  background: rgba(31, 33, 71, 0.08);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  font-family: inherit;
+}
+
+.tab.active {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 1px 6px rgba(31, 33, 71, 0.12);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input {
+  width: 100%;
+  border: 2px solid rgba(31, 33, 71, 0.12);
+  border-radius: 12px;
+  padding: 13px 15px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--ground);
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.input:focus { border-color: var(--blue); background: white; }
+.input::placeholder { color: var(--text-soft); }
+
+.error {
+  font-size: 13px;
+  font-weight: 600;
+  color: #d03535;
+  background: rgba(208, 53, 53, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.submitBtn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 13px;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.submitBtn:hover    { opacity: 0.9; }
+.submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }

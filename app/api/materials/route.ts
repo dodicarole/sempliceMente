@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { requireParent } from '@/lib/session'
+import { getFamilyId, getParentFamilyId } from '@/lib/session'
 
-// GET /api/materials — pubblica, usata dalla child view
 export async function GET() {
+  const familyId = await getFamilyId()
+  if (familyId instanceof Response) return familyId
+
   const supabase = getSupabase()
   const { data, error } = await supabase
     .from('schedule_items')
     .select('*')
+    .eq('family_id', familyId)
     .order('day_of_week')
     .order('sort_order')
 
@@ -15,18 +18,16 @@ export async function GET() {
   return NextResponse.json({ items: data })
 }
 
-// POST /api/materials — solo genitore autenticato
 export async function POST(req: NextRequest) {
-  const denied = await requireParent()
-  if (denied) return denied
+  const familyId = await getParentFamilyId()
+  if (familyId instanceof Response) return familyId
 
   const supabase = getSupabase()
-  const body = await req.json()
-  const { day_of_week, name, icon, sort_order } = body
+  const { day_of_week, name, icon, sort_order } = await req.json()
 
   const { data, error } = await supabase
     .from('schedule_items')
-    .insert({ day_of_week, name, icon, sort_order })
+    .insert({ day_of_week, name, icon, sort_order, family_id: familyId })
     .select()
     .single()
 
