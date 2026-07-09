@@ -80,6 +80,13 @@
 
 .tab.active { color: #fff; }
 
+.emotionsHint {
+  font-size: 13px;
+  color: var(--text-soft);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
 /* Items list */
 .list { display: flex; flex-direction: column; gap: 9px; }
 

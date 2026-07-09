@@ -6,14 +6,15 @@ import ChildView from '@/components/ChildView'
 import RoutineView from '@/components/RoutineView'
 import AgendaView from '@/components/AgendaView'
 import TimerView from '@/components/TimerView'
+import EmotionsView from '@/components/EmotionsView'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
-import { type ScheduleItem, type RoutineItem, type AgendaItem } from '@/types'
+import { type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, DEFAULT_EMOTIONS } from '@/types'
 import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data ────────────────────────────────────────────────────────────────
@@ -72,6 +73,8 @@ const DEMO_AGENDA: AgendaItem[] = [
   { id: 'ak', name: 'Pranzo',             icon: '🍽️', photo_url: null, sort_order: 2, day_of_week: 4, time_start: '12:30:00' },
 ]
 
+const DEMO_EMOTIONS: EmotionItem[] = DEFAULT_EMOTIONS.map((e, i) => ({ id: `e${i}`, ...e, photo_url: null, sort_order: i }))
+
 function buildDemoSchedule(): ScheduleItem[][] {
   const byDay: ScheduleItem[][] = Array(5).fill(null).map(() => [])
   DEMO_SCHEDULE.forEach(item => { byDay[item.day_of_week].push(item) })
@@ -96,6 +99,7 @@ export default function Home() {
   const [schedule,     setSchedule]     = useState<ScheduleItem[][]>(Array(5).fill([]))
   const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
   const [agendaItems,  setAgendaItems]  = useState<AgendaItem[]>([])
+  const [emotionItems, setEmotionItems] = useState<EmotionItem[]>([])
   const [dataLoading,  setDataLoading]  = useState(true)
   const [newPinTemp,   setNewPinTemp]   = useState('')
 
@@ -134,11 +138,18 @@ export default function Home() {
     setAgendaItems(items)
   }, [])
 
+  const fetchEmotions = useCallback(async () => {
+    const res = await fetch('/api/emotions')
+    if (!res.ok) return
+    const { items }: { items: EmotionItem[] } = await res.json()
+    setEmotionItems(items)
+  }, [])
+
   useEffect(() => {
     if (authState === 'authenticated') {
-      Promise.all([fetchSchedule(), fetchRoutine(), fetchAgenda()]).then(() => setDataLoading(false))
+      Promise.all([fetchSchedule(), fetchRoutine(), fetchAgenda(), fetchEmotions()]).then(() => setDataLoading(false))
     }
-  }, [authState, fetchSchedule, fetchRoutine, fetchAgenda])
+  }, [authState, fetchSchedule, fetchRoutine, fetchAgenda, fetchEmotions])
 
   const handleAuth = () => {
     setAuthState('authenticated')
@@ -239,6 +250,11 @@ export default function Home() {
                   <span className={s.featureTitle}>Timer</span>
                   <span className={s.featureSub}>Quanto tempo hai?</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#E0559E' } as React.CSSProperties} onClick={() => setChildSection('emotions')}>
+                  <span className={s.featureEmoji}>💗</span>
+                  <span className={s.featureTitle}>Come ti senti?</span>
+                  <span className={s.featureSub}>Le tue emozioni</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={demoZaino} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -246,6 +262,8 @@ export default function Home() {
               <RoutineView items={DEMO_ROUTINE} onBack={() => setChildSection('home')} />
             ) : childSection === 'timer' ? (
               <TimerView onBack={() => setChildSection('home')} />
+            ) : childSection === 'emotions' ? (
+              <EmotionsView items={DEMO_EMOTIONS} onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -316,6 +334,11 @@ export default function Home() {
                   <span className={s.featureTitle}>Timer</span>
                   <span className={s.featureSub}>Quanto tempo hai?</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#E0559E' } as React.CSSProperties} onClick={() => setChildSection('emotions')}>
+                  <span className={s.featureEmoji}>💗</span>
+                  <span className={s.featureTitle}>Come ti senti?</span>
+                  <span className={s.featureSub}>Le tue emozioni</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -323,6 +346,8 @@ export default function Home() {
               <RoutineView items={routineItems} onBack={() => setChildSection('home')} />
             ) : childSection === 'timer' ? (
               <TimerView onBack={() => setChildSection('home')} />
+            ) : childSection === 'emotions' ? (
+              <EmotionsView items={emotionItems} onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -343,11 +368,13 @@ export default function Home() {
                 schedule={schedule}
                 routineItems={routineItems}
                 agendaItems={agendaItems}
+                emotionItems={emotionItems}
                 onLock={() => setParentState('locked')}
                 onChangePinRequest={() => setParentState('changing-pin-1')}
                 onRefresh={fetchSchedule}
                 onRoutineRefresh={fetchRoutine}
                 onAgendaRefresh={fetchAgenda}
+                onEmotionsRefresh={fetchEmotions}
               />
             )}
             {parentState === 'changing-pin-1' && (

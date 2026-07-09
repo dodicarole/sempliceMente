@@ -1,23 +1,25 @@
 'use client'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
-import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, type ScheduleItem, type RoutineItem, type AgendaItem } from '@/types'
+import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem } from '@/types'
 import s from './ParentView.module.css'
 
-type Section = 'zaino' | 'routine' | 'agenda'
+type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni'
 
 interface Props {
   schedule: ScheduleItem[][]
   routineItems: RoutineItem[]
   agendaItems: AgendaItem[]
+  emotionItems: EmotionItem[]
   onLock: () => void
   onChangePinRequest: () => void
   onRefresh: () => void
   onRoutineRefresh: () => void
   onAgendaRefresh: () => void
+  onEmotionsRefresh: () => void
 }
 
-export default function ParentView({ schedule, routineItems, agendaItems, onLock, onChangePinRequest, onRefresh, onRoutineRefresh, onAgendaRefresh }: Props) {
+export default function ParentView({ schedule, routineItems, agendaItems, emotionItems, onLock, onChangePinRequest, onRefresh, onRoutineRefresh, onAgendaRefresh, onEmotionsRefresh }: Props) {
   const [section, setSection]           = useState<Section>('zaino')
   const [day, setDay]                   = useState(0)
   const [showForm, setShowForm]         = useState(false)
@@ -39,7 +41,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
     setNewPhotoFile(null)
   }
 
-  const handleThumbClick = (itemId: string, table: 'schedule_items' | 'routine_items' | 'agenda_items') => {
+  const handleThumbClick = (itemId: string, table: 'schedule_items' | 'routine_items' | 'agenda_items' | 'emotion_items') => {
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'image/*'
@@ -54,6 +56,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
       if (res.ok) {
         if (table === 'routine_items') onRoutineRefresh()
         else if (table === 'agenda_items') onAgendaRefresh()
+        else if (table === 'emotion_items') onEmotionsRefresh()
         else onRefresh()
       }
     }
@@ -165,13 +168,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
       </div>
 
       <div className={s.sectionToggle}>
-        {(['zaino', 'routine', 'agenda'] as Section[]).map(sec => (
+        {(['zaino', 'routine', 'agenda', 'emozioni'] as Section[]).map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : '📅'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : '💗'}
           </button>
         ))}
       </div>
@@ -309,6 +312,24 @@ export default function ParentView({ schedule, routineItems, agendaItems, onLock
             </div>
           )}
           {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Aggiungi attività</button>}
+        </>
+      )}
+
+      {/* ── EMOZIONI ── */}
+      {section === 'emozioni' && (
+        <>
+          <div className={s.emotionsHint}>Le emozioni sono fisse: puoi solo aggiungere una foto per ognuna.</div>
+          <div className={s.list}>
+            {emotionItems.map(item => (
+              <div key={item.id} className={s.item}>
+                <button className={s.thumb} onClick={() => handleThumbClick(item.id, 'emotion_items')}>
+                  {item.photo_url ? <Image src={item.photo_url} alt={item.name} width={52} height={52} style={{ objectFit: 'cover' }} /> : item.icon}
+                  <span className={s.thumbCam}>📷</span>
+                </button>
+                <span className={s.name}>{item.name}</span>
+              </div>
+            ))}
+          </div>
         </>
       )}
 

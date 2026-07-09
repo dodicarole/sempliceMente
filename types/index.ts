@@ -20,6 +20,33 @@ export interface AgendaItem extends BaseItem {
   time_start: string   // "HH:MM"
 }
 
+export interface EmotionItem {
+  id: string
+  key: string
+  name: string
+  icon: string
+  photo_url: string | null
+  sort_order: number
+}
+
+export const DEFAULT_EMOTIONS: { key: string; name: string; icon: string }[] = [
+  { key: 'felice',     name: 'Felice',     icon: '😄' },
+  { key: 'triste',     name: 'Triste',     icon: '😢' },
+  { key: 'arrabbiato', name: 'Arrabbiato', icon: '😠' },
+  { key: 'spaventato', name: 'Spaventato', icon: '😨' },
+  { key: 'stanco',     name: 'Stanco',     icon: '😴' },
+  { key: 'annoiato',   name: 'Annoiato',   icon: '😐' },
+]
+
+export const EMOTION_MESSAGES: Record<string, string> = {
+  felice:     'Che bello essere felici! 🌟',
+  triste:     'Va bene sentirsi tristi. Un abbraccio aiuta 🤗',
+  arrabbiato: 'Respira piano piano. Passerà 🌬️',
+  spaventato: 'Sei al sicuro. Sono qui con te 💙',
+  stanco:     'Un po\' di riposo ti farà bene 😴',
+  annoiato:   'Possiamo trovare qualcosa da fare insieme 🎨',
+}
+
 export const FALLBACK_ICONS  = ['📚','📓','📏','🎨','🔬','📝','🥪','💧','✂️','🖍️']
 export const ROUTINE_ICONS   = ['⏰','🚿','👕','🥣','🦷','👟','🎒','🧴','💊','🌟']
 export const AGENDA_ICONS    = ['🏫','📚','🎨','⚽','🎵','🍽️','😴','🛁','📺','🎮']
