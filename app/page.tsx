@@ -7,14 +7,15 @@ import RoutineView from '@/components/RoutineView'
 import AgendaView from '@/components/AgendaView'
 import TimerView from '@/components/TimerView'
 import EmotionsView from '@/components/EmotionsView'
+import StoriesView from '@/components/StoriesView'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
-import { type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, DEFAULT_EMOTIONS } from '@/types'
+import { type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story, DEFAULT_EMOTIONS } from '@/types'
 import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data ────────────────────────────────────────────────────────────────
@@ -75,6 +76,27 @@ const DEMO_AGENDA: AgendaItem[] = [
 
 const DEMO_EMOTIONS: EmotionItem[] = DEFAULT_EMOTIONS.map((e, i) => ({ id: `e${i}`, ...e, photo_url: null, sort_order: i }))
 
+const DEMO_STORIES: Story[] = [
+  {
+    id: 's1', title: 'Andiamo dal dentista', icon: '🦷', sort_order: 0,
+    pages: [
+      { id: 'sp1', story_id: 's1', text: 'Oggi vado dal dentista con la mamma.',                          icon: '🚗', photo_url: null, sort_order: 0 },
+      { id: 'sp2', story_id: 's1', text: 'In sala d\'attesa aspetto il mio turno. Posso guardare un libro.', icon: '⏳', photo_url: null, sort_order: 1 },
+      { id: 'sp3', story_id: 's1', text: 'Il dentista è gentile. Mi siedo sulla poltrona grande.',          icon: '🪑', photo_url: null, sort_order: 2 },
+      { id: 'sp4', story_id: 's1', text: 'Apro la bocca e il dentista guarda i miei denti. Non fa male.',   icon: '🦷', photo_url: null, sort_order: 3 },
+      { id: 'sp5', story_id: 's1', text: 'Ho finito! Sono stato bravissimo. Torniamo a casa.',              icon: '🌟', photo_url: null, sort_order: 4 },
+    ],
+  },
+  {
+    id: 's2', title: 'Un giorno di pioggia', icon: '🌧️', sort_order: 1,
+    pages: [
+      { id: 'sp6', story_id: 's2', text: 'Oggi piove. Non posso andare al parco.',                          icon: '🌧️', photo_url: null, sort_order: 0 },
+      { id: 'sp7', story_id: 's2', text: 'Va bene: posso giocare in casa. I programmi a volte cambiano.',   icon: '🏠', photo_url: null, sort_order: 1 },
+      { id: 'sp8', story_id: 's2', text: 'Quando torna il sole, andrò di nuovo al parco.',                  icon: '🌈', photo_url: null, sort_order: 2 },
+    ],
+  },
+]
+
 function buildDemoSchedule(): ScheduleItem[][] {
   const byDay: ScheduleItem[][] = Array(5).fill(null).map(() => [])
   DEMO_SCHEDULE.forEach(item => { byDay[item.day_of_week].push(item) })
@@ -100,6 +122,7 @@ export default function Home() {
   const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
   const [agendaItems,  setAgendaItems]  = useState<AgendaItem[]>([])
   const [emotionItems, setEmotionItems] = useState<EmotionItem[]>([])
+  const [stories,      setStories]      = useState<Story[]>([])
   const [dataLoading,  setDataLoading]  = useState(true)
   const [newPinTemp,   setNewPinTemp]   = useState('')
 
@@ -145,11 +168,18 @@ export default function Home() {
     setEmotionItems(items)
   }, [])
 
+  const fetchStories = useCallback(async () => {
+    const res = await fetch('/api/stories')
+    if (!res.ok) return
+    const { stories }: { stories: Story[] } = await res.json()
+    setStories(stories)
+  }, [])
+
   useEffect(() => {
     if (authState === 'authenticated') {
-      Promise.all([fetchSchedule(), fetchRoutine(), fetchAgenda(), fetchEmotions()]).then(() => setDataLoading(false))
+      Promise.all([fetchSchedule(), fetchRoutine(), fetchAgenda(), fetchEmotions(), fetchStories()]).then(() => setDataLoading(false))
     }
-  }, [authState, fetchSchedule, fetchRoutine, fetchAgenda, fetchEmotions])
+  }, [authState, fetchSchedule, fetchRoutine, fetchAgenda, fetchEmotions, fetchStories])
 
   const handleAuth = () => {
     setAuthState('authenticated')
@@ -255,6 +285,11 @@ export default function Home() {
                   <span className={s.featureTitle}>Come ti senti?</span>
                   <span className={s.featureSub}>Le tue emozioni</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#9167D8' } as React.CSSProperties} onClick={() => setChildSection('storie')}>
+                  <span className={s.featureEmoji}>📖</span>
+                  <span className={s.featureTitle}>Storie Sociali</span>
+                  <span className={s.featureSub}>Leggiamo insieme</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={demoZaino} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -264,6 +299,8 @@ export default function Home() {
               <TimerView onBack={() => setChildSection('home')} />
             ) : childSection === 'emotions' ? (
               <EmotionsView items={DEMO_EMOTIONS} onBack={() => setChildSection('home')} />
+            ) : childSection === 'storie' ? (
+              <StoriesView stories={DEMO_STORIES} onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -339,6 +376,11 @@ export default function Home() {
                   <span className={s.featureTitle}>Come ti senti?</span>
                   <span className={s.featureSub}>Le tue emozioni</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#9167D8' } as React.CSSProperties} onClick={() => setChildSection('storie')}>
+                  <span className={s.featureEmoji}>📖</span>
+                  <span className={s.featureTitle}>Storie Sociali</span>
+                  <span className={s.featureSub}>Leggiamo insieme</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -348,6 +390,8 @@ export default function Home() {
               <TimerView onBack={() => setChildSection('home')} />
             ) : childSection === 'emotions' ? (
               <EmotionsView items={emotionItems} onBack={() => setChildSection('home')} />
+            ) : childSection === 'storie' ? (
+              <StoriesView stories={stories} onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -369,12 +413,14 @@ export default function Home() {
                 routineItems={routineItems}
                 agendaItems={agendaItems}
                 emotionItems={emotionItems}
+                stories={stories}
                 onLock={() => setParentState('locked')}
                 onChangePinRequest={() => setParentState('changing-pin-1')}
                 onRefresh={fetchSchedule}
                 onRoutineRefresh={fetchRoutine}
                 onAgendaRefresh={fetchAgenda}
                 onEmotionsRefresh={fetchEmotions}
+                onStoriesRefresh={fetchStories}
               />
             )}
             {parentState === 'changing-pin-1' && (

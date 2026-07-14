@@ -1,25 +1,27 @@
 'use client'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
-import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem } from '@/types'
+import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story } from '@/types'
 import s from './ParentView.module.css'
 
-type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni'
+type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie'
 
 interface Props {
   schedule: ScheduleItem[][]
   routineItems: RoutineItem[]
   agendaItems: AgendaItem[]
   emotionItems: EmotionItem[]
+  stories: Story[]
   onLock: () => void
   onChangePinRequest: () => void
   onRefresh: () => void
   onRoutineRefresh: () => void
   onAgendaRefresh: () => void
   onEmotionsRefresh: () => void
+  onStoriesRefresh: () => void
 }
 
-export default function ParentView({ schedule, routineItems, agendaItems, emotionItems, onLock, onChangePinRequest, onRefresh, onRoutineRefresh, onAgendaRefresh, onEmotionsRefresh }: Props) {
+export default function ParentView({ schedule, routineItems, agendaItems, emotionItems, stories, onLock, onChangePinRequest, onRefresh, onRoutineRefresh, onAgendaRefresh, onEmotionsRefresh, onStoriesRefresh }: Props) {
   const [section, setSection]           = useState<Section>('zaino')
   const [day, setDay]                   = useState(0)
   const [showForm, setShowForm]         = useState(false)
@@ -28,10 +30,12 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
   const [newPhoto, setNewPhoto]         = useState<string | null>(null)
   const [newPhotoFile, setNewPhotoFile] = useState<File | null>(null)
   const [saving, setSaving]             = useState(false)
+  const [editingStoryId, setEditingStoryId] = useState<string | null>(null)
   const newPhotoInputRef = useRef<HTMLInputElement>(null)
 
-  const zainoItems  = schedule[day] ?? []
-  const agendaDay   = agendaItems.filter(i => i.day_of_week === day).sort((a, b) => a.time_start.localeCompare(b.time_start))
+  const zainoItems   = schedule[day] ?? []
+  const agendaDay    = agendaItems.filter(i => i.day_of_week === day).sort((a, b) => a.time_start.localeCompare(b.time_start))
+  const editingStory = stories.find(st => st.id === editingStoryId) ?? null
 
   const handleSectionChange = (sec: Section) => {
     setSection(sec)
@@ -39,9 +43,10 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
     setNewName('')
     setNewPhoto(null)
     setNewPhotoFile(null)
+    setEditingStoryId(null)
   }
 
-  const handleThumbClick = (itemId: string, table: 'schedule_items' | 'routine_items' | 'agenda_items' | 'emotion_items') => {
+  const handleThumbClick = (itemId: string, table: 'schedule_items' | 'routine_items' | 'agenda_items' | 'emotion_items' | 'story_pages') => {
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'image/*'
@@ -57,6 +62,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         if (table === 'routine_items') onRoutineRefresh()
         else if (table === 'agenda_items') onAgendaRefresh()
         else if (table === 'emotion_items') onEmotionsRefresh()
+        else if (table === 'story_pages') onStoriesRefresh()
         else onRefresh()
       }
     }
@@ -66,6 +72,25 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
   const handleDeleteZaino   = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/materials/${id}`, { method: 'DELETE' }); onRefresh() }
   const handleDeleteRoutine = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/routine/${id}`,   { method: 'DELETE' }); onRoutineRefresh() }
   const handleDeleteAgenda  = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/agenda/${id}`,    { method: 'DELETE' }); onAgendaRefresh() }
+  const handleDeleteStory   = async (id: string) => { if (!confirm('Rimuovere la storia e tutte le sue pagine?')) return; await fetch(`/api/stories/${id}`, { method: 'DELETE' }); onStoriesRefresh() }
+
+  const handleDeleteStoryPage = async (pageId: string) => {
+    if (!editingStory || !confirm('Rimuovere questa pagina?')) return
+    await fetch(`/api/stories/${editingStory.id}/pages/${pageId}`, { method: 'DELETE' })
+    onStoriesRefresh()
+  }
+
+  const handleMoveStoryPage = async (index: number, dir: -1 | 1) => {
+    if (!editingStory) return
+    const a = editingStory.pages[index]
+    const b = editingStory.pages[index + dir]
+    if (!a || !b) return
+    await Promise.all([
+      fetch(`/api/stories/${editingStory.id}/pages/${a.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sort_order: b.sort_order }) }),
+      fetch(`/api/stories/${editingStory.id}/pages/${b.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sort_order: a.sort_order }) }),
+    ])
+    onStoriesRefresh()
+  }
 
   const handleMoveRoutine = async (index: number, dir: -1 | 1) => {
     const a = routineItems[index]
@@ -158,6 +183,41 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
     resetForm(); onAgendaRefresh()
   }
 
+  const handleSaveStory = async () => {
+    if (!newName.trim()) return
+    setSaving(true)
+    const icon = pickStoryIcon(newName.trim())
+    const res = await fetch('/api/stories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newName.trim(), icon, sort_order: stories.length }),
+    })
+    if (res.ok) {
+      const { story } = await res.json()
+      setEditingStoryId(story.id)
+    }
+    resetForm(); onStoriesRefresh()
+  }
+
+  const handleSaveStoryPage = async () => {
+    if (!editingStory || !newName.trim()) return
+    setSaving(true)
+    const res = await fetch(`/api/stories/${editingStory.id}/pages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: newName.trim(), sort_order: editingStory.pages.length }),
+    })
+    if (res.ok && newPhotoFile) {
+      const { item } = await res.json()
+      const form = new FormData()
+      form.append('file', newPhotoFile)
+      form.append('itemId', item.id)
+      form.append('table', 'story_pages')
+      await fetch('/api/upload', { method: 'POST', body: form })
+    }
+    resetForm(); onStoriesRefresh()
+  }
+
   const resetForm = () => { setNewName(''); setNewTime('08:00'); setNewPhoto(null); setNewPhotoFile(null); setShowForm(false); setSaving(false) }
 
   return (
@@ -168,13 +228,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       </div>
 
       <div className={s.sectionToggle}>
-        {(['zaino', 'routine', 'agenda', 'emozioni'] as Section[]).map(sec => (
+        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie'] as Section[]).map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : '💗'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : '📖'}
           </button>
         ))}
       </div>
@@ -330,6 +390,80 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
               </div>
             ))}
           </div>
+        </>
+      )}
+
+      {/* ── STORIE ── */}
+      {section === 'storie' && !editingStory && (
+        <>
+          <div className={s.emotionsHint}>Crea piccole storie illustrate per preparare il bambino a situazioni nuove. Tocca una storia per aggiungere le pagine.</div>
+          <div className={s.list}>
+            {stories.map(story => (
+              <div key={story.id} className={s.item}>
+                <span className={s.storyIcon}>{story.icon}</span>
+                <button className={s.storyOpenBtn} onClick={() => { setEditingStoryId(story.id); setShowForm(false); setNewName('') }}>
+                  <span className={s.name}>{story.title}</span>
+                  <span className={s.storyCount}>{story.pages.length} {story.pages.length === 1 ? 'pagina' : 'pagine'} ›</span>
+                </button>
+                <button className={s.delBtn} onClick={() => handleDeleteStory(story.id)}>×</button>
+              </div>
+            ))}
+          </div>
+          {showForm && (
+            <div className={s.addFormCard}>
+              <input className={s.nameInput} type="text" placeholder="Es. Andiamo dal dentista" value={newName}
+                onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSaveStory()} autoFocus />
+              <div className={s.formActions}>
+                <button className={s.cancelBtn} onClick={resetForm}>Annulla</button>
+                <button className={s.saveBtn} onClick={handleSaveStory} disabled={saving}>{saving ? '...' : 'Salva'}</button>
+              </div>
+            </div>
+          )}
+          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Nuova storia</button>}
+        </>
+      )}
+
+      {section === 'storie' && editingStory && (
+        <>
+          <button className={s.storyBackBtn} onClick={() => { setEditingStoryId(null); setShowForm(false); setNewName('') }}>← Tutte le storie</button>
+          <div className={s.storyEditHeader}>
+            <span className={s.storyIcon}>{editingStory.icon}</span>
+            <span className={s.name}>{editingStory.title}</span>
+          </div>
+          <div className={s.list}>
+            {editingStory.pages.map((page, index) => (
+              <div key={page.id} className={s.item}>
+                <span className={s.routineStep}>{index + 1}</span>
+                <button className={s.thumb} onClick={() => handleThumbClick(page.id, 'story_pages')}>
+                  {page.photo_url ? <Image src={page.photo_url} alt="" width={52} height={52} style={{ objectFit: 'cover' }} /> : (page.icon || editingStory.icon)}
+                  <span className={s.thumbCam}>📷</span>
+                </button>
+                <span className={s.pageText}>{page.text}</span>
+                <div className={s.reorderBtns}>
+                  <button className={s.reorderBtn} onClick={() => handleMoveStoryPage(index, -1)} disabled={index === 0} aria-label="Sposta su">▲</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveStoryPage(index, 1)} disabled={index === editingStory.pages.length - 1} aria-label="Sposta giù">▼</button>
+                </div>
+                <button className={s.delBtn} onClick={() => handleDeleteStoryPage(page.id)}>×</button>
+              </div>
+            ))}
+          </div>
+          {showForm && (
+            <div className={s.addFormCard}>
+              <div className={s.addFormRow}>
+                <label className={s.photoLabel} htmlFor="new-photo-story">
+                  {newPhoto ? <Image src={newPhoto} alt="anteprima" width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>Foto</span></>}
+                </label>
+                <input id="new-photo-story" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                <textarea className={s.textArea} placeholder="Es. Prima saliamo in macchina con la mamma" value={newName}
+                  onChange={e => setNewName(e.target.value)} rows={3} autoFocus />
+              </div>
+              <div className={s.formActions}>
+                <button className={s.cancelBtn} onClick={resetForm}>Annulla</button>
+                <button className={s.saveBtn} onClick={handleSaveStoryPage} disabled={saving}>{saving ? '...' : 'Salva'}</button>
+              </div>
+            </div>
+          )}
+          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Aggiungi pagina</button>}
         </>
       )}
 

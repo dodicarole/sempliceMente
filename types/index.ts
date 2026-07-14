@@ -47,6 +47,23 @@ export const EMOTION_MESSAGES: Record<string, string> = {
   annoiato:   'Possiamo trovare qualcosa da fare insieme 🎨',
 }
 
+export interface Story {
+  id: string
+  title: string
+  icon: string
+  sort_order: number
+  pages: StoryPage[]
+}
+
+export interface StoryPage {
+  id: string
+  story_id: string
+  text: string
+  icon: string
+  photo_url: string | null
+  sort_order: number
+}
+
 export const FALLBACK_ICONS  = ['📚','📓','📏','🎨','🔬','📝','🥪','💧','✂️','🖍️']
 export const ROUTINE_ICONS   = ['⏰','🚿','👕','🥣','🦷','👟','🎒','🧴','💊','🌟']
 export const AGENDA_ICONS    = ['🏫','📚','🎨','⚽','🎵','🍽️','😴','🛁','📺','🎮']
@@ -123,4 +140,31 @@ export function pickAgendaIcon(name: string): string {
     if (keywords.some(k => lower.includes(k))) return icon
   }
   return ''
+}
+
+const STORY_KEYWORDS: [string[], string][] = [
+  [['dentista','denti'],                                  '🦷'],
+  [['dottore','medico','visita','ospedale','vaccino'],    '🩺'],
+  [['scuola','maestra','classe','compagni'],              '🏫'],
+  [['autobus','pullman','treno','viaggio','macchina'],    '🚌'],
+  [['aereo','volare','aeroporto'],                        '✈️'],
+  [['barbiere','parrucchiere','capelli','taglio'],        '💇'],
+  [['piscina','nuotare','mare','spiaggia'],               '🏊'],
+  [['festa','compleanno','regalo'],                       '🎉'],
+  [['amico','amici','giocare','parco'],                   '🤝'],
+  [['dormire','notte','letto','nanna'],                   '🌙'],
+  [['supermercato','spesa','negozio'],                    '🛒'],
+  [['ristorante','pizzeria','mangiare fuori'],            '🍕'],
+  [['nonni','nonna','nonno','famiglia'],                  '👵'],
+  [['rumore','rumori','forte','confusione'],              '🎧'],
+  [['aspettare','attesa','fila','pazienza'],              '⏳'],
+  [['arrabbiat','calma','respir'],                        '🌬️'],
+]
+
+export function pickStoryIcon(title: string): string {
+  const lower = title.toLowerCase()
+  for (const [keywords, icon] of STORY_KEYWORDS) {
+    if (keywords.some(k => lower.includes(k))) return icon
+  }
+  return '📖'
 }

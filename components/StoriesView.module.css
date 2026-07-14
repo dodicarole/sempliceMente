@@ -1,0 +1,286 @@
+.back {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: inherit;
+  align-self: flex-start;
+}
+
+.back:hover { color: var(--text); }
+
+.banner {
+  background: linear-gradient(135deg, #9167D8 0%, #B492E8 100%);
+  border-radius: var(--radius);
+  padding: 28px 28px 26px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.banner::after {
+  content: '';
+  position: absolute;
+  right: -28px; top: -28px;
+  width: 180px; height: 180px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.bannerEmoji { font-size: 44px; position: relative; }
+
+.bannerTitle {
+  font-size: clamp(22px, 6.5vw, 30px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+
+.bannerSub {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+  position: relative;
+}
+
+/* Lista storie */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.storyCard {
+  background: var(--card);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(31, 33, 71, 0.08);
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+  text-align: left;
+}
+
+.storyCard:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(31, 33, 71, 0.12); }
+.storyCard:active { transform: translateY(0); }
+
+.storyIcon { font-size: 38px; }
+
+.storyInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.storyTitle {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.storyPages {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.storyArrow {
+  font-size: 28px;
+  font-weight: 700;
+  color: #9167D8;
+}
+
+/* Stato vuoto */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.emptyEmoji { font-size: 56px; }
+
+.emptyText {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+/* Lettura */
+.readerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.readerIcon { font-size: 26px; }
+
+.readerTitle {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+}
+
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(145, 103, 216, 0.22);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dotOn   { background: #9167D8; transform: scale(1.3); }
+.dotDone { background: #B492E8; }
+
+.pageCard {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 2px 12px rgba(31, 33, 71, 0.08);
+  animation: pageIn 0.3s ease;
+  min-height: 300px;
+  justify-content: center;
+}
+
+@keyframes pageIn {
+  from { transform: translateX(16px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.pageMedia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagePhoto {
+  object-fit: cover;
+  border-radius: 18px;
+  max-width: 100%;
+  height: auto;
+}
+
+.pageEmoji { font-size: 88px; }
+
+.pageText {
+  font-size: clamp(18px, 5.5vw, 24px);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+}
+
+.navRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.navBtn {
+  width: 64px; height: 64px;
+  border: none;
+  border-radius: 20px;
+  background: var(--card);
+  color: #9167D8;
+  font-size: 28px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(31, 33, 71, 0.08);
+  font-family: inherit;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.navBtn:active:not(:disabled) { transform: scale(0.94); }
+.navBtn:disabled { opacity: 0.35; cursor: default; }
+
+.navNext {
+  background: #9167D8;
+  color: #fff;
+}
+
+.navLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+/* Celebrazione */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 33, 71, 0.55);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.celebCard {
+  background: var(--card);
+  border-radius: 28px;
+  padding: 36px 30px 30px;
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pop {
+  from { transform: scale(0.75); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.celebEmoji { font-size: 72px; margin-bottom: 12px; }
+.celebTitle { font-size: 24px; font-weight: 900; letter-spacing: -0.4px; margin-bottom: 8px; }
+.celebSub   { font-size: 15px; color: var(--text-soft); line-height: 1.5; margin-bottom: 24px; }
+
+.celebBtn {
+  background: #9167D8;
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  padding: 15px 0;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pageCard, .celebCard { animation: none; }
+}

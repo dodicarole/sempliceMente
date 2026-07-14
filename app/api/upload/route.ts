@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ext      = file.name.split('.').pop() ?? 'jpg'
-  const folder   = table === 'routine_items' ? 'routine/' : table === 'agenda_items' ? 'agenda/' : table === 'emotion_items' ? 'emotions/' : ''
+  const folder   = table === 'routine_items' ? 'routine/' : table === 'agenda_items' ? 'agenda/' : table === 'emotion_items' ? 'emotions/' : table === 'story_pages' ? 'stories/' : ''
   const filename = `${folder}${itemId}.${ext}`
   const bucket   = process.env.SUPABASE_STORAGE_BUCKET!
 

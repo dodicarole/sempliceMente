@@ -28,12 +28,27 @@ const FEATURES = [
     title: 'Agenda di Oggi',
     desc: 'Una timeline visiva delle attività della giornata. Il bambino vede cosa c\'è adesso, cosa viene dopo e cosa è già passato.',
   },
+  {
+    emoji: '⏱️',
+    color: '#00ACC1',
+    title: 'Timer Visivo',
+    desc: 'Un conto alla rovescia animato per sapere quanto tempo rimane ad ogni attività.',
+  },
+  {
+    emoji: '😊',
+    color: '#E0559E',
+    title: 'Tabella delle Emozioni',
+    desc: 'Schede visive per aiutare il bambino a riconoscere e comunicare come si sente.',
+  },
+  {
+    emoji: '📖',
+    color: '#9167D8',
+    title: 'Storie Sociali',
+    desc: 'Piccole storie illustrate, pagina per pagina, per preparare il bambino a situazioni nuove o difficili — dal dentista al primo giorno di scuola.',
+  },
 ]
 
 const FUTURE = [
-  { emoji: '⏱️', title: 'Timer Visivo', desc: 'Un conto alla rovescia animato per sapere quanto tempo rimane ad ogni attività.' },
-  { emoji: '😊', title: 'Tabella delle Emozioni', desc: 'Schede visive per aiutare il bambino a riconoscere e comunicare come si sente.' },
-  { emoji: '📖', title: 'Storie Sociali', desc: 'Piccole storie illustrate per preparare il bambino a situazioni nuove o difficili.' },
   { emoji: '🏆', title: 'Sistema di Premi', desc: 'Stelle e badge per celebrare i progressi e motivare ogni piccola conquista.' },
 ]
 
