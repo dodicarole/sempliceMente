@@ -11,6 +11,7 @@ import StoriesView from '@/components/StoriesView'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
 import { type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story, DEFAULT_EMOTIONS } from '@/types'
+import { DEFAULT_SCHEDULE, DEFAULT_ROUTINE, DEFAULT_AGENDA, DEFAULT_STORIES } from '@/lib/defaults'
 import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
@@ -18,84 +19,22 @@ type View         = 'child' | 'parent'
 type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
-// ── Demo data ────────────────────────────────────────────────────────────────
-const DEMO_SCHEDULE: ScheduleItem[] = [
-  { id: 'd1', name: 'Italiano',    icon: '📚', photo_url: null, sort_order: 0, day_of_week: 0 },
-  { id: 'd2', name: 'Matematica',  icon: '📓', photo_url: null, sort_order: 1, day_of_week: 0 },
-  { id: 'd3', name: 'Arte',        icon: '🎨', photo_url: null, sort_order: 2, day_of_week: 0 },
-  { id: 'd4', name: 'Borraccia',   icon: '💧', photo_url: null, sort_order: 3, day_of_week: 0 },
-  { id: 'd5', name: 'Merenda',     icon: '🥪', photo_url: null, sort_order: 4, day_of_week: 0 },
-  { id: 'd6', name: 'Scienze',     icon: '🔬', photo_url: null, sort_order: 0, day_of_week: 1 },
-  { id: 'd7', name: 'Geometria',   icon: '📏', photo_url: null, sort_order: 1, day_of_week: 1 },
-  { id: 'd8', name: 'Musica',      icon: '🎵', photo_url: null, sort_order: 2, day_of_week: 1 },
-  { id: 'd9', name: 'Borraccia',   icon: '💧', photo_url: null, sort_order: 3, day_of_week: 1 },
-  { id: 'da', name: 'Italiano',    icon: '📚', photo_url: null, sort_order: 0, day_of_week: 2 },
-  { id: 'db', name: 'Storia',      icon: '📝', photo_url: null, sort_order: 1, day_of_week: 2 },
-  { id: 'dc', name: 'Ginnastica',  icon: '⚽', photo_url: null, sort_order: 2, day_of_week: 2 },
-  { id: 'dd', name: 'Borraccia',   icon: '💧', photo_url: null, sort_order: 3, day_of_week: 2 },
-  { id: 'de', name: 'Matematica',  icon: '📓', photo_url: null, sort_order: 0, day_of_week: 3 },
-  { id: 'df', name: 'Inglese',     icon: '🌍', photo_url: null, sort_order: 1, day_of_week: 3 },
-  { id: 'dg', name: 'Pennelli',    icon: '🖍️', photo_url: null, sort_order: 2, day_of_week: 3 },
-  { id: 'dh', name: 'Italiano',    icon: '📚', photo_url: null, sort_order: 0, day_of_week: 4 },
-  { id: 'di', name: 'Scienze',     icon: '🔬', photo_url: null, sort_order: 1, day_of_week: 4 },
-  { id: 'dj', name: 'Borraccia',   icon: '💧', photo_url: null, sort_order: 2, day_of_week: 4 },
-]
+// ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
+const DEMO_SCHEDULE: ScheduleItem[] = DEFAULT_SCHEDULE.map((item, i) => ({ id: `d${i}`, photo_url: null, ...item }))
 
-const DEMO_ROUTINE: RoutineItem[] = [
-  { id: 'r1', name: 'Svegliati',          icon: '⏰', photo_url: null, sort_order: 0 },
-  { id: 'r2', name: 'Fai la doccia',      icon: '🚿', photo_url: null, sort_order: 1 },
-  { id: 'r3', name: 'Vestiti',            icon: '👕', photo_url: null, sort_order: 2 },
-  { id: 'r4', name: 'Fai colazione',      icon: '🥣', photo_url: null, sort_order: 3 },
-  { id: 'r5', name: 'Lavati i denti',     icon: '🦷', photo_url: null, sort_order: 4 },
-  { id: 'r6', name: 'Prendi lo zaino',    icon: '🎒', photo_url: null, sort_order: 5 },
-]
+const DEMO_ROUTINE: RoutineItem[] = DEFAULT_ROUTINE.map((item, i) => ({ id: `r${i}`, photo_url: null, ...item }))
 
-const DEMO_AGENDA: AgendaItem[] = [
-  { id: 'a1', name: 'Italiano',           icon: '🏫', photo_url: null, sort_order: 0, day_of_week: 0, time_start: '08:00:00' },
-  { id: 'a2', name: 'Matematica',         icon: '📚', photo_url: null, sort_order: 1, day_of_week: 0, time_start: '09:00:00' },
-  { id: 'a3', name: 'Intervallo',         icon: '⚽', photo_url: null, sort_order: 2, day_of_week: 0, time_start: '10:30:00' },
-  { id: 'a4', name: 'Arte',               icon: '🎨', photo_url: null, sort_order: 3, day_of_week: 0, time_start: '11:00:00' },
-  { id: 'a5', name: 'Pranzo',             icon: '🍽️', photo_url: null, sort_order: 4, day_of_week: 0, time_start: '12:30:00' },
-  { id: 'a6', name: 'Musica',             icon: '🎵', photo_url: null, sort_order: 5, day_of_week: 0, time_start: '14:00:00' },
-  { id: 'a7', name: 'Torna a casa',       icon: '🏠', photo_url: null, sort_order: 6, day_of_week: 0, time_start: '16:00:00' },
-  // altri giorni
-  { id: 'a8', name: 'Scienze',            icon: '🔬', photo_url: null, sort_order: 0, day_of_week: 1, time_start: '08:00:00' },
-  { id: 'a9', name: 'Inglese',            icon: '🌍', photo_url: null, sort_order: 1, day_of_week: 1, time_start: '09:00:00' },
-  { id: 'aa', name: 'Ginnastica',         icon: '⚽', photo_url: null, sort_order: 2, day_of_week: 1, time_start: '11:00:00' },
-  { id: 'ab', name: 'Pranzo',             icon: '🍽️', photo_url: null, sort_order: 3, day_of_week: 1, time_start: '12:30:00' },
-  { id: 'ac', name: 'Italiano',           icon: '🏫', photo_url: null, sort_order: 0, day_of_week: 2, time_start: '08:00:00' },
-  { id: 'ad', name: 'Storia',             icon: '📝', photo_url: null, sort_order: 1, day_of_week: 2, time_start: '10:00:00' },
-  { id: 'ae', name: 'Pranzo',             icon: '🍽️', photo_url: null, sort_order: 2, day_of_week: 2, time_start: '12:30:00' },
-  { id: 'af', name: 'Matematica',         icon: '📓', photo_url: null, sort_order: 0, day_of_week: 3, time_start: '08:00:00' },
-  { id: 'ag', name: 'Arte',               icon: '🎨', photo_url: null, sort_order: 1, day_of_week: 3, time_start: '10:00:00' },
-  { id: 'ah', name: 'Pranzo',             icon: '🍽️', photo_url: null, sort_order: 2, day_of_week: 3, time_start: '12:30:00' },
-  { id: 'ai', name: 'Italiano',           icon: '🏫', photo_url: null, sort_order: 0, day_of_week: 4, time_start: '08:00:00' },
-  { id: 'aj', name: 'Scienze',            icon: '🔬', photo_url: null, sort_order: 1, day_of_week: 4, time_start: '10:00:00' },
-  { id: 'ak', name: 'Pranzo',             icon: '🍽️', photo_url: null, sort_order: 2, day_of_week: 4, time_start: '12:30:00' },
-]
+const DEMO_AGENDA: AgendaItem[] = DEFAULT_AGENDA.map((item, i) => ({ id: `a${i}`, photo_url: null, ...item }))
+
+const DEMO_STORIES: Story[] = DEFAULT_STORIES.map((story, i) => ({
+  id: `s${i}`,
+  title: story.title,
+  icon: story.icon,
+  sort_order: story.sort_order,
+  pages: story.pages.map((page, j) => ({ id: `sp${i}-${j}`, story_id: `s${i}`, photo_url: null, ...page })),
+}))
 
 const DEMO_EMOTIONS: EmotionItem[] = DEFAULT_EMOTIONS.map((e, i) => ({ id: `e${i}`, ...e, photo_url: null, sort_order: i }))
-
-const DEMO_STORIES: Story[] = [
-  {
-    id: 's1', title: 'Andiamo dal dentista', icon: '🦷', sort_order: 0,
-    pages: [
-      { id: 'sp1', story_id: 's1', text: 'Oggi vado dal dentista con la mamma.',                          icon: '🚗', photo_url: null, sort_order: 0 },
-      { id: 'sp2', story_id: 's1', text: 'In sala d\'attesa aspetto il mio turno. Posso guardare un libro.', icon: '⏳', photo_url: null, sort_order: 1 },
-      { id: 'sp3', story_id: 's1', text: 'Il dentista è gentile. Mi siedo sulla poltrona grande.',          icon: '🪑', photo_url: null, sort_order: 2 },
-      { id: 'sp4', story_id: 's1', text: 'Apro la bocca e il dentista guarda i miei denti. Non fa male.',   icon: '🦷', photo_url: null, sort_order: 3 },
-      { id: 'sp5', story_id: 's1', text: 'Ho finito! Sono stato bravissimo. Torniamo a casa.',              icon: '🌟', photo_url: null, sort_order: 4 },
-    ],
-  },
-  {
-    id: 's2', title: 'Un giorno di pioggia', icon: '🌧️', sort_order: 1,
-    pages: [
-      { id: 'sp6', story_id: 's2', text: 'Oggi piove. Non posso andare al parco.',                          icon: '🌧️', photo_url: null, sort_order: 0 },
-      { id: 'sp7', story_id: 's2', text: 'Va bene: posso giocare in casa. I programmi a volte cambiano.',   icon: '🏠', photo_url: null, sort_order: 1 },
-      { id: 'sp8', story_id: 's2', text: 'Quando torna il sole, andrò di nuovo al parco.',                  icon: '🌈', photo_url: null, sort_order: 2 },
-    ],
-  },
-]
 
 function buildDemoSchedule(): ScheduleItem[][] {
   const byDay: ScheduleItem[][] = Array(5).fill(null).map(() => [])

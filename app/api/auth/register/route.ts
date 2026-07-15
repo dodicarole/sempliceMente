@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { getSupabase } from '@/lib/supabase'
 import { getSession } from '@/lib/session'
 import { rateLimit, getIp } from '@/lib/rateLimit'
+import { seedDefaultsIfNeeded } from '@/lib/seedDefaults'
 
 export async function POST(req: NextRequest) {
   const ip = getIp(req)
@@ -41,6 +42,12 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  try {
+    await seedDefaultsIfNeeded(family.id)
+  } catch (e) {
+    console.error('Seed dei contenuti di default fallito:', e)
+  }
 
   const session = await getSession()
   session.familyId = family.id

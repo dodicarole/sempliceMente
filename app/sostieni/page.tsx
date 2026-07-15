@@ -46,10 +46,17 @@ const FEATURES = [
     title: 'Storie Sociali',
     desc: 'Piccole storie illustrate, pagina per pagina, per preparare il bambino a situazioni nuove o difficili — dal dentista al primo giorno di scuola.',
   },
+  {
+    emoji: '🎁',
+    color: '#D4902A',
+    title: 'Pronta da subito',
+    desc: 'Appena crei l\'account, ogni sezione è già piena di contenuti di esempio: zaino, routine, agenda e storie. Poi li modifichi o li cancelli come preferisci.',
+  },
 ]
 
 const FUTURE = [
   { emoji: '🏆', title: 'Sistema di Premi', desc: 'Stelle e badge per celebrare i progressi e motivare ogni piccola conquista.' },
+  { emoji: '🖨️', title: 'Stampa della Routine', desc: 'Stampa la routine del tuo bambino per appenderla in cameretta o portarla sempre con te.' },
 ]
 
 export default function SosteniPage() {
