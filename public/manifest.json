@@ -1,7 +1,7 @@
 {
-  "name": "Zaino Pronto",
-  "short_name": "Zaino",
-  "description": "Aiuta i bambini a preparare lo zaino in autonomia",
+  "name": "SempliceMente Bimbi",
+  "short_name": "SempliceMente",
+  "description": "Aiuta i bambini a essere più autonomi ogni giorno",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#EDF0FB",
@@ -17,6 +17,12 @@
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
