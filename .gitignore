@@ -6,5 +6,6 @@ public/workbox-*.js
 public/worker-*.js
 .vercel
 .env*
+!.env.example
 .idea/
 tsconfig.tsbuildinfo

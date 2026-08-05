@@ -1,5 +1,8 @@
 # Setup Supabase + Vercel
 
+> Questa guida descrive il setup iniziale della **produzione**.
+> Per lavorare in locale e usare l'ambiente di test, vedi [DEVELOPMENT.md](DEVELOPMENT.md).
+
 ## 1. Crea account Supabase
 - Vai su https://supabase.com → "Start your project"
 - Registrati (puoi usare GitHub)
@@ -9,8 +12,12 @@
 
 ## 2. Crea le tabelle
 - Menu sinistro → SQL Editor → New query
-- Copia il contenuto di supabase/schema.sql (è nella tua cartella)
+- Copia il contenuto di supabase/bootstrap.sql (crea l'intero schema in un colpo solo)
 - Clicca Run ▶
+
+  I singoli file supabase/*_schema.sql sono la storia delle modifiche già
+  applicate alla produzione e vanno eseguiti in un ordine preciso: per un
+  ambiente nuovo usa sempre bootstrap.sql.
 
 ## 3. Crea il bucket per le foto
 - Menu sinistro → Storage → New bucket
