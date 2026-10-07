@@ -1,5 +1,5 @@
 'use client'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { useAudio } from '@/hooks/useAudio'
 import { type Story } from '@/types'
@@ -15,6 +15,43 @@ export default function StoriesView({ stories, onBack }: Props) {
   const [pageIndex, setPageIndex]   = useState(0)
   const [showCelebr, setShowCelebr] = useState(false)
   const { check, celebration } = useAudio()
+
+  // ── Lettura ad alta voce (sintesi vocale del browser) ─────────────────────
+  const [canSpeak, setCanSpeak] = useState(false)
+  const [speaking, setSpeaking] = useState(false)
+
+  useEffect(() => {
+    setCanSpeak(typeof window !== 'undefined' && 'speechSynthesis' in window)
+  }, [])
+
+  const stopSpeaking = useCallback(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+    }
+    setSpeaking(false)
+  }, [])
+
+  const speak = useCallback((text: string) => {
+    if (!canSpeak || !text.trim()) return
+    const synth = window.speechSynthesis
+    if (speaking) { stopSpeaking(); return }
+    synth.cancel()
+    const utt = new SpeechSynthesisUtterance(text)
+    utt.lang = 'it-IT'
+    utt.rate = 0.9
+    const voice = synth.getVoices().find(v => v.lang.toLowerCase().startsWith('it'))
+    if (voice) utt.voice = voice
+    utt.onend   = () => setSpeaking(false)
+    utt.onerror = () => setSpeaking(false)
+    setSpeaking(true)
+    synth.speak(utt)
+  }, [canSpeak, speaking, stopSpeaking])
+
+  // Interrompe la voce quando si cambia pagina, si chiude la storia o si esce
+  useEffect(() => { stopSpeaking() }, [story, pageIndex, stopSpeaking])
+  useEffect(() => () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
+  }, [])
 
   const openStory = useCallback((st: Story) => {
     check()
@@ -111,6 +148,15 @@ export default function StoriesView({ stories, onBack }: Props) {
           )}
         </div>
         <p className={s.pageText}>{page.text}</p>
+        {canSpeak && page.text.trim() && (
+          <button
+            className={`${s.speakBtn}${speaking ? ` ${s.speakOn}` : ''}`}
+            onClick={() => speak(page.text)}
+            aria-label={speaking ? 'Ferma la lettura' : 'Leggi ad alta voce'}
+          >
+            {speaking ? '⏹ Ferma' : '🔊 Ascolta'}
+          </button>
+        )}
       </div>
 
       <div className={s.navRow}>
