@@ -55,8 +55,17 @@ const FEATURES = [
 ]
 
 const FUTURE = [
-  { emoji: '🏆', title: 'Sistema di Premi', desc: 'Stelle e badge per celebrare i progressi e motivare ogni piccola conquista.' },
+  { emoji: '🏆', title: 'Sistema di Premi', desc: 'Stelle, gettoni e badge collegati alla routine: ogni attività completata avvicina il bambino a un obiettivo scelto insieme.' },
   { emoji: '🖨️', title: 'Stampa della Routine', desc: 'Stampa la routine del tuo bambino per appenderla in cameretta o portarla sempre con te.' },
+  { emoji: '👉', title: 'Prima / Poi', desc: 'Due sole caselle, chiare e immediate: "prima i compiti, poi il gioco". Per i momenti in cui l\'agenda completa è troppo.' },
+  { emoji: '🙋', title: 'Cosa voglio?', desc: 'Una griglia di immagini per comunicare bisogni e desideri: mangiare, bere, giocare, una pausa.' },
+  { emoji: '🔊', title: 'Lettura ad Alta Voce', desc: 'Storie e attività lette ad alta voce, anche con la voce registrata di mamma o papà.' },
+  { emoji: '🔔', title: 'Promemoria', desc: 'Un avviso sul telefono quando sta per iniziare un\'attività dell\'agenda o della routine.' },
+  { emoji: '📔', title: 'Diario delle Emozioni', desc: 'Le emozioni scelte dal bambino salvate giorno per giorno, per capire meglio i suoi momenti nel tempo.' },
+  { emoji: '👧', title: 'Più Bambini', desc: 'Un profilo per ogni figlio, ciascuno con la sua agenda, la sua routine e le sue foto.' },
+  { emoji: '🤝', title: 'Condivisione con chi lo segue', desc: 'Nonni, educatori e insegnanti possono vedere la stessa routine e le stesse immagini, così tutti parlano la stessa lingua.' },
+  { emoji: '📶', title: 'Sempre Disponibile, anche Offline', desc: 'Agenda, routine e foto consultabili anche senza connessione: in auto, dal medico, ovunque servano.' },
+  { emoji: '🖼️', title: 'Libreria di Immagini', desc: 'Una raccolta di immagini pronte da usare, per chi non ha tempo di fotografare tutto.' },
 ]
 
 export default function SosteniPage() {
