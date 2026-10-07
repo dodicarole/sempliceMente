@@ -281,6 +281,23 @@
   font-family: inherit;
 }
 
+/* Lettura ad alta voce */
+.speakBtn {
+  background: rgba(145, 103, 216, 0.12);
+  color: #9167D8;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.speakBtn:active { transform: scale(0.95); }
+.speakOn { background: #9167D8; color: #fff; }
+
 @media (prefers-reduced-motion: reduce) {
   .pageCard, .celebCard { animation: none; }
 }
