@@ -66,6 +66,7 @@ const FUTURE = [
   { emoji: '🤝', title: 'Condivisione con chi lo segue', desc: 'Nonni, educatori e insegnanti possono vedere la stessa routine e le stesse immagini, così tutti parlano la stessa lingua.' },
   { emoji: '📶', title: 'Sempre Disponibile, anche Offline', desc: 'Agenda, routine e foto consultabili anche senza connessione: in auto, dal medico, ovunque servano.' },
   { emoji: '🖼️', title: 'Libreria di Immagini', desc: 'Una raccolta di immagini pronte da usare, per chi non ha tempo di fotografare tutto.' },
+  { emoji: '🪄', title: 'Storie Sociali con l\'IA', desc: 'Descrivi una situazione, come "domani si va dal dentista", e l\'app ti propone una storia già pronta. Tu la rileggi, la modifichi e decidi se usarla.' },
 ]
 
 export default function SosteniPage() {
