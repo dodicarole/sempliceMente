@@ -2,9 +2,10 @@
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story } from '@/types'
+import NumbersSettingsPanel from './NumbersSettingsPanel'
 import s from './ParentView.module.css'
 
-type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie'
+type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -228,13 +229,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       </div>
 
       <div className={s.sectionToggle}>
-        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie'] as Section[]).map(sec => (
+        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'numeri'] as Section[]).map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : '📖'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : '🔢'}
           </button>
         ))}
       </div>
@@ -390,6 +391,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
               </div>
             ))}
           </div>
+        </>
+      )}
+
+      {/* ── NUMERI IN FILA ── */}
+      {section === 'numeri' && (
+        <>
+          <div className={s.emotionsHint}>Scegli come funziona il gioco &quot;Numeri in fila&quot; per il tuo bambino. Le modifiche si salvano subito.</div>
+          <NumbersSettingsPanel />
         </>
       )}
 
