@@ -1,0 +1,27 @@
+.panel {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.group { display: flex; flex-direction: column; gap: 8px; }
+.label { font-size: 15px; font-weight: 700; color: var(--text-soft); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  min-width: 58px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 2px solid #D6DBF2;
+  background: var(--ground);
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.chip[aria-pressed="true"] { background: var(--done); border-color: var(--done); color: #fff; }
+.saved { font-size: 14px; font-weight: 700; color: var(--done); }

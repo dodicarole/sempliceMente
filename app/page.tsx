@@ -8,6 +8,7 @@ import AgendaView from '@/components/AgendaView'
 import TimerView from '@/components/TimerView'
 import EmotionsView from '@/components/EmotionsView'
 import StoriesView from '@/components/StoriesView'
+import NumbersView from '@/components/NumbersView'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
 import { type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story, DEFAULT_EMOTIONS } from '@/types'
@@ -16,7 +17,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -229,6 +230,11 @@ export default function Home() {
                   <span className={s.featureTitle}>Storie Sociali</span>
                   <span className={s.featureSub}>Leggiamo insieme</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#F59F00' } as React.CSSProperties} onClick={() => setChildSection('numeri')}>
+                  <span className={s.featureEmoji}>🔢</span>
+                  <span className={s.featureTitle}>Numeri in fila</span>
+                  <span className={s.featureSub}>Metti in ordine crescente</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={demoZaino} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -240,6 +246,8 @@ export default function Home() {
               <EmotionsView items={DEMO_EMOTIONS} onBack={() => setChildSection('home')} />
             ) : childSection === 'storie' ? (
               <StoriesView stories={DEMO_STORIES} onBack={() => setChildSection('home')} />
+            ) : childSection === 'numeri' ? (
+              <NumbersView allowSettings onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -320,6 +328,11 @@ export default function Home() {
                   <span className={s.featureTitle}>Storie Sociali</span>
                   <span className={s.featureSub}>Leggiamo insieme</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#F59F00' } as React.CSSProperties} onClick={() => setChildSection('numeri')}>
+                  <span className={s.featureEmoji}>🔢</span>
+                  <span className={s.featureTitle}>Numeri in fila</span>
+                  <span className={s.featureSub}>Metti in ordine crescente</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -331,6 +344,8 @@ export default function Home() {
               <EmotionsView items={emotionItems} onBack={() => setChildSection('home')} />
             ) : childSection === 'storie' ? (
               <StoriesView stories={stories} onBack={() => setChildSection('home')} />
+            ) : childSection === 'numeri' ? (
+              <NumbersView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
