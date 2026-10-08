@@ -158,8 +158,13 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
       <div className={s.header}>
         <h2 className={s.title}>
           Metti in ordine{' '}
-          <span className={s.cresc} aria-label={WORD}>
-            {WORD.split('').map((ch, i) => <span key={i} aria-hidden="true">{ch}</span>)}
+          <span className={s.keep}>
+            <span className={s.cresc} aria-label={WORD}>
+              {WORD.split('').map((ch, i) => <span key={i} aria-hidden="true">{ch}</span>)}
+            </span>
+            <svg className={s.arrow} viewBox="0 0 48 24" aria-label="da sinistra a destra" role="img">
+              <path d="M4 12 H40 M30 3 L42 12 L30 21" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </span>
         </h2>
         {allowSettings && (
