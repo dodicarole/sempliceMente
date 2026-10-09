@@ -1,6 +1,8 @@
 export type NumbersMode = 'tap' | 'drag'
+export type NumbersOrder = 'asc' | 'desc'
 
 export interface NumbersSettings {
+  order: NumbersOrder
   mode: NumbersMode
   max: number
   count: number
@@ -10,10 +12,11 @@ export interface NumbersSettings {
 }
 
 export const NUMBERS_DEFAULTS: NumbersSettings = {
-  mode: 'tap', max: 30, count: 5, showLine: true, voice: true, autoHelp: true,
+  order: 'asc', mode: 'tap', max: 30, count: 5, showLine: true, voice: true, autoHelp: true,
 }
 
 export const NUMBERS_OPTIONS: { key: keyof NumbersSettings; label: string; values: [NumbersSettings[keyof NumbersSettings], string][] }[] = [
+  { key: 'order',    label: 'Ordine',                    values: [['asc', 'Crescente'], ['desc', 'Decrescente']] },
   { key: 'mode',     label: 'Come si sposta il numero',  values: [['tap', 'Tocca'], ['drag', 'Trascina']] },
   { key: 'max',      label: 'Numeri fino a',             values: [[10, '10'], [20, '20'], [30, '30'], [50, '50'], [100, '100']] },
   { key: 'count',    label: 'Quanti numeri da ordinare', values: [[3, '3'], [5, '5'], [7, '7'], [10, '10']] },
