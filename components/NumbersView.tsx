@@ -11,7 +11,6 @@ interface Props {
   allowSettings?: boolean
 }
 
-const WORD = 'crescente'
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr]
@@ -22,10 +21,10 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-function makeGame(max: number, count: number) {
+function makeGame(max: number, count: number, order: 'asc' | 'desc') {
   const n = Math.min(count, max)
   const all = shuffle(Array.from({ length: max }, (_, i) => i + 1))
-  const target = all.slice(0, n).sort((a, b) => a - b)
+  const target = all.slice(0, n).sort((a, b) => (order === 'desc' ? b - a : a - b))
   let pool = shuffle(target)
   while (pool.length > 1 && pool.every((v, i) => v === target[i])) pool = shuffle(target)
   return { target, pool }
@@ -56,7 +55,7 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
   }, [])
 
   const newGame = useCallback((st: Settings) => {
-    const g = makeGame(st.max, st.count)
+    const g = makeGame(st.max, st.count, st.order)
     setTarget(g.target)
     setPool(g.pool)
     setPlaced(0)
@@ -144,9 +143,12 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
     newGame(next)
   }
 
+  const desc = settings.order === 'desc'
+  const word = desc ? 'decrescente' : 'crescente'
+  const which = desc ? 'grande' : 'piccolo'
   const askText = settings.mode === 'drag'
-    ? (placed === 0 ? 'Trascina il numero più piccolo nel posto giallo' : 'Trascina il più piccolo che resta')
-    : (placed === 0 ? 'Tocca il numero più piccolo' : 'Tocca il più piccolo che resta')
+    ? (placed === 0 ? `Trascina il numero più ${which} nel posto giallo` : `Trascina il più ${which} che resta`)
+    : (placed === 0 ? `Tocca il numero più ${which}` : `Tocca il più ${which} che resta`)
 
   const done = new Set(target.slice(0, placed))
   const inPlay = new Set(target)
@@ -159,12 +161,18 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
         <h2 className={s.title}>
           Metti in ordine{' '}
           <span className={s.keep}>
-            <span className={s.cresc} aria-label={WORD}>
-              {WORD.split('').map((ch, i) => <span key={i} aria-hidden="true">{ch}</span>)}
+            <span className={s.cresc} aria-label={word}>
+              {word.split('').map((ch, i) => <span key={i} aria-hidden="true">{ch}</span>)}
             </span>
-            <svg className={s.arrow} viewBox="0 0 48 24" aria-label="da sinistra a destra" role="img">
-              <path d="M4 12 H40 M30 3 L42 12 L30 21" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            {desc ? (
+              <svg className={`${s.arrow} ${s.arrowDesc}`} viewBox="0 0 48 24" aria-label="da destra a sinistra" role="img">
+                <path d="M44 12 H8 M18 3 L6 12 L18 21" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg className={s.arrow} viewBox="0 0 48 24" aria-label="da sinistra a destra" role="img">
+                <path d="M4 12 H40 M30 3 L42 12 L30 21" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
           </span>
         </h2>
         {allowSettings && (

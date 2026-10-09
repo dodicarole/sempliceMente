@@ -35,6 +35,10 @@
   flex: none;
   animation: nudge 1.6s ease-in-out infinite;
 }
+.arrowDesc {
+  color: #E03131;
+  animation-name: nudgeLeft;
+}
 .cresc span:nth-child(5n+1) { color: #E5484D; }
 .cresc span:nth-child(5n+2) { color: #F08C00; }
 .cresc span:nth-child(5n+3) { color: #2F9E62; }
@@ -159,8 +163,9 @@
 .star { font-size: 72px; line-height: 1; animation: pop .5s ease-out; }
 .winTitle { font-size: 32px; font-weight: 900; }
 
+@keyframes nudgeLeft { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
 @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
 @keyframes pop { 0% { transform: scale(.6); } 70% { transform: scale(1.12); } 100% { transform: scale(1); } }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
 @keyframes wiggle { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-@media (prefers-reduced-motion: reduce) { .pop, .numHint, .wrong, .star, .arrow { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .pop, .numHint, .wrong, .star, .arrow, .arrowDesc { animation: none; } }
