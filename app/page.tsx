@@ -57,6 +57,7 @@ export default function Home() {
   const [showAuth,     setShowAuth]     = useState(false)
   const [view,         setView]         = useState<View>('child')
   const [childSection, setChildSection] = useState<ChildSection>('home')
+  const [confirmLogout, setConfirmLogout] = useState(false)
   const [parentState,  setParentState]  = useState<ParentState>('locked')
   const [schedule,     setSchedule]     = useState<ScheduleItem[][]>(Array(5).fill([]))
   const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
@@ -128,6 +129,7 @@ export default function Home() {
   }
 
   const handleLogout = async () => {
+    setConfirmLogout(false)
     await fetch('/api/auth/logout', { method: 'POST' })
     setAuthState('unauthenticated')
     setShowAuth(false)
@@ -289,8 +291,28 @@ export default function Home() {
               {i === 0 ? '👶 Bambino' : '⚙️ Genitore'}
             </button>
           ))}
-          <button className={s.logoutBtn} onClick={handleLogout} title="Esci dall'account">🚪</button>
+          <button className={s.logoutBtn} onClick={() => setConfirmLogout(true)} title="Esci dall'account" aria-label="Esci dall'account">🚪</button>
         </div>
+
+        {confirmLogout && (
+          <div className={s.confirmOverlay} onClick={() => setConfirmLogout(false)}>
+            <div
+              className={s.confirmCard}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="logout-title"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className={s.confirmIcon} aria-hidden="true">🚪</div>
+              <div id="logout-title" className={s.confirmTitle}>Vuoi uscire dall&apos;account?</div>
+              <div className={s.confirmText}>Per rientrare dovrai fare di nuovo l&apos;accesso.</div>
+              <div className={s.confirmActions}>
+                <button className={s.confirmStay} onClick={() => setConfirmLogout(false)} autoFocus>Resta</button>
+                <button className={s.confirmLeave} onClick={handleLogout}>Esci</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {view === 'child' && (
           <div className={s.view}>

@@ -180,3 +180,42 @@
   padding: 4px 0;
 }
 .aboutLink:hover { color: var(--text); }
+/* ── Conferma uscita ── */
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 33, 71, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+}
+.confirmCard {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px 22px;
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 20px 40px rgba(31, 33, 71, 0.2);
+}
+.confirmIcon { font-size: 44px; line-height: 1; }
+.confirmTitle { font-size: 20px; font-weight: 900; color: var(--text); }
+.confirmText { font-size: 15px; font-weight: 600; color: var(--text-soft); }
+.confirmActions { display: flex; gap: 10px; margin-top: 8px; }
+.confirmStay,
+.confirmLeave {
+  flex: 1;
+  min-height: 52px;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+}
+.confirmStay { background: var(--done); border: 2px solid var(--done); color: #fff; }
+.confirmLeave { background: var(--card); border: 2px solid #D6DBF2; color: var(--text); }
