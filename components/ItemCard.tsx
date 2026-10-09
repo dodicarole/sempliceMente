@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
 import type { BaseItem } from '@/types'
+import ZainoPicture from './ZainoPicture'
 import s from './ItemCard.module.css'
 
 interface Props {
@@ -8,9 +9,11 @@ interface Props {
   checked: boolean
   onToggle: () => void
   doneLabel?: string
+  /** Se non c'è la foto, mostra un'immagine proposta in base al nome (zaino) */
+  illustrate?: boolean
 }
 
-export default function ItemCard({ item, checked, onToggle, doneLabel = 'Dentro!' }: Props) {
+export default function ItemCard({ item, checked, onToggle, doneLabel = 'Dentro!', illustrate = false }: Props) {
   return (
     <div
       className={`${s.wrap} ${checked ? s.done : ''}`}
@@ -32,6 +35,8 @@ export default function ItemCard({ item, checked, onToggle, doneLabel = 'Dentro!
                 height={80}
                 style={{ objectFit: 'cover', borderRadius: 12 }}
               />
+            ) : illustrate ? (
+              <ZainoPicture name={item.name} icon={item.icon} size={80} />
             ) : (
               item.icon
             )}

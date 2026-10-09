@@ -3,6 +3,7 @@ import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story } from '@/types'
 import NumbersSettingsPanel from './NumbersSettingsPanel'
+import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
 
 type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri'
@@ -256,7 +257,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             {zainoItems.map((item, index) => (
               <div key={item.id} className={s.item}>
                 <button className={s.thumb} onClick={() => handleThumbClick(item.id, 'schedule_items')}>
-                  {item.photo_url ? <Image src={item.photo_url} alt={item.name} width={52} height={52} style={{ objectFit: 'cover' }} /> : item.icon}
+                  {item.photo_url ? <Image src={item.photo_url} alt={item.name} width={52} height={52} style={{ objectFit: 'cover' }} /> : <ZainoPicture name={item.name} icon={item.icon} size={42} />}
                   <span className={s.thumbCam}>📷</span>
                 </button>
                 <span className={s.name}>{item.name}</span>
@@ -272,7 +273,11 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             <div className={s.addFormCard}>
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-zaino">
-                  {newPhoto ? <Image src={newPhoto} alt="anteprima" width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>Foto</span></>}
+                  {newPhoto
+                    ? <Image src={newPhoto} alt="anteprima" width={52} height={52} style={{ objectFit: 'cover' }} />
+                    : newName.trim()
+                      ? <><ZainoPicture name={newName} icon={pickZainoIcon(newName.trim())} size={30} /><span className={s.photoHint}>Proposta</span></>
+                      : <>📷<span className={s.photoHint}>Foto</span></>}
                 </label>
                 <input id="new-photo-zaino" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
                 <input className={s.nameInput} type="text" placeholder="Es. Quaderno di Scienze" value={newName}

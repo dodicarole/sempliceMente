@@ -91,6 +91,7 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
             item={item}
             checked={checked.has(item.id)}
             onToggle={() => toggle(item.id)}
+            illustrate
           />
         ))}
       </div>
