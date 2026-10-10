@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import UpdateBanner from '@/components/UpdateBanner'
+import ReadingPrefs from '@/components/ReadingPrefs'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="it">
       <body>
+        <ReadingPrefs />
         {children}
         <UpdateBanner />
         <Analytics />

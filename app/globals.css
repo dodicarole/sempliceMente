@@ -28,3 +28,37 @@ html, body {
   outline: 2px solid var(--text);
   outline-offset: 3px;
 }
+/* ── Impostazioni di lettura (area bambino) ─────────────────────────────── */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('/fonts/AtkinsonHyperlegible-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('/fonts/AtkinsonHyperlegible-Bold.ttf') format('truetype');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+html[data-lettura-font='leggibile'] .reading-area,
+html[data-lettura-font='leggibile'] .reading-area button,
+html[data-lettura-font='leggibile'] .reading-area input {
+  font-family: 'Atkinson Hyperlegible', Verdana, system-ui, sans-serif;
+}
+/* i pulsanti non ereditano queste proprietà dal browser, quindi vanno indicati anche loro */
+html[data-lettura-maiuscolo='true'] .reading-area,
+html[data-lettura-maiuscolo='true'] .reading-area button { text-transform: uppercase; }
+html[data-lettura-spazi='wide'] .reading-area button {
+  letter-spacing: 0.06em;
+  word-spacing: 0.14em;
+}
+html[data-lettura-spazi='wide'] .reading-area {
+  letter-spacing: 0.06em;
+  word-spacing: 0.14em;
+  line-height: 1.6;
+}
+html[data-lettura-dimensione='large'] .reading-area  { zoom: 1.12; }
+html[data-lettura-dimensione='xlarge'] .reading-area { zoom: 1.25; }

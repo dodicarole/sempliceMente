@@ -201,7 +201,7 @@ export default function Home() {
 
           <div className={s.demoBadge}>Modalità demo</div>
 
-          <div className={s.view}>
+          <div className={`${s.view} reading-area`}>
             {childSection === 'home' ? (
               <div className={s.homeGrid}>
                 <button className={s.featureCard} style={{ '--accent': '#6B7FE3' } as React.CSSProperties} onClick={() => setChildSection('zaino')}>
@@ -324,7 +324,7 @@ export default function Home() {
         )}
 
         {view === 'child' && (
-          <div className={s.view}>
+          <div className={`${s.view} reading-area`}>
             {dataLoading ? (
               <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-soft)' }}>Caricamento…</div>
             ) : childSection === 'home' ? (
