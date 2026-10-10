@@ -10,6 +10,7 @@ import EmotionsView from '@/components/EmotionsView'
 import StoriesView from '@/components/StoriesView'
 import NumbersView from '@/components/NumbersView'
 import TablesView from '@/components/TablesView'
+import { BUILTIN_STORIES } from '@/lib/builtinStories'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
 import { type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story, DEFAULT_EMOTIONS } from '@/types'
@@ -253,7 +254,7 @@ export default function Home() {
             ) : childSection === 'emotions' ? (
               <EmotionsView items={DEMO_EMOTIONS} onBack={() => setChildSection('home')} />
             ) : childSection === 'storie' ? (
-              <StoriesView stories={DEMO_STORIES} onBack={() => setChildSection('home')} />
+              <StoriesView stories={[...DEMO_STORIES, ...BUILTIN_STORIES]} onBack={() => setChildSection('home')} />
             ) : childSection === 'numeri' ? (
               <NumbersView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'tabelline' ? (
@@ -378,7 +379,7 @@ export default function Home() {
             ) : childSection === 'emotions' ? (
               <EmotionsView items={emotionItems} onBack={() => setChildSection('home')} />
             ) : childSection === 'storie' ? (
-              <StoriesView stories={stories} onBack={() => setChildSection('home')} />
+              <StoriesView stories={[...stories, ...BUILTIN_STORIES]} onBack={() => setChildSection('home')} />
             ) : childSection === 'numeri' ? (
               <NumbersView onBack={() => setChildSection('home')} />
             ) : childSection === 'tabelline' ? (
