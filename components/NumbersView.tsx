@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAudio } from '@/hooks/useAudio'
 import NumbersSettingsPanel from './NumbersSettingsPanel'
 import { NUMBERS_DEFAULTS, loadNumbersSettings, type NumbersSettings as Settings } from '@/lib/numbersSettings'
+import { randomPraise } from '@/lib/praise'
 import s from './NumbersView.module.css'
 
 interface Props {
@@ -39,6 +40,7 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
   const [hint,      setHint]      = useState<number | null>(null)
   const [popIndex,  setPopIndex]  = useState<number | null>(null)
   const [won,       setWon]       = useState(false)
+  const [praise,    setPraise]    = useState('')
   const missesRef = useRef(0)
   const trainRef  = useRef<HTMLDivElement>(null)
   const { check, celebration } = useAudio()
@@ -89,9 +91,11 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
       speak(String(v), settings.voice)
       if (newPlaced === target.length) {
         setTimeout(() => {
+          const p = randomPraise()
+          setPraise(p)
           setWon(true)
           celebration()
-          speak('Bravo!', settings.voice)
+          speak(p, settings.voice)
         }, 500)
       }
     } else {
@@ -199,7 +203,7 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
       {won ? (
         <div className={s.win}>
           <div className={s.star} aria-hidden="true">⭐</div>
-          <div className={s.winTitle}>Bravo!</div>
+          <div className={s.winTitle}>{praise}</div>
           <button className={`${s.btn} ${s.main}`} onClick={() => newGame(settings)}>Gioca ancora</button>
         </div>
       ) : (

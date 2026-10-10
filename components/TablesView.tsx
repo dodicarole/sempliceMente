@@ -5,6 +5,7 @@ import {
   TABLES_DEFAULTS, loadTablesSettings, loadTablesProgress, saveTablesProgress, phasesFor,
   type TablesSettings, type TablesProgress, type TablesPhase,
 } from '@/lib/tablesSettings'
+import { randomPraise } from '@/lib/praise'
 import s from './TablesView.module.css'
 
 interface Props {
@@ -347,11 +348,12 @@ function TablePlay({ t, settings, progress, say, onPhaseDone, onHome }: {
   const [found, setFound] = useState<Set<number>>(new Set())
   const [won, setWon]     = useState(false)
   const [run, setRun]     = useState(0)
+  const [praise, setPraise] = useState('')
   const done = (progress[t] as TablesPhase[] | undefined) ?? []
 
   const light = useCallback((k: number) => setFound(prev => new Set(prev).add(k)), [])
   const goTo  = (p: TablesPhase) => { setPhase(p); setWon(false); setRun(r => r + 1) }
-  const finish = () => { onPhaseDone(t, phase); setWon(true); say('Bravo!') }
+  const finish = () => { const p = randomPraise(); setPraise(p); onPhaseDone(t, phase); setWon(true); say(p) }
   const next = list[list.indexOf(phase) + 1]
   const nextInfo = PHASES.find(p => p.id === next)
 
@@ -383,7 +385,7 @@ function TablePlay({ t, settings, progress, say, onPhaseDone, onHome }: {
           {won ? (
             <>
               <div className={s.star} aria-hidden="true">⭐</div>
-              <p className={s.winTitle}>Bravo!</p>
+              <p className={s.winTitle}>{praise}</p>
               <div className={s.row}>
                 {nextInfo
                   ? <button className={`${s.btn} ${s.main}`} onClick={() => goTo(nextInfo.id)}>{nextInfo.em} Ora: {nextInfo.label}</button>
@@ -423,6 +425,7 @@ function Mixed({ settings, say, onDone, onHome }: {
 }) {
   const [run, setRun] = useState(0)
   const [won, setWon] = useState(false)
+  const [praise, setPraise] = useState('')
 
   const questions = useMemo<[number, number][]>(() => {
     const pairs: [number, number][] = []
@@ -432,7 +435,7 @@ function Mixed({ settings, say, onDone, onHome }: {
     return list.slice(0, settings.mixCount)
   }, [settings.visible, settings.upTo, settings.mixCount, run])
 
-  const finish = () => { onDone(); setWon(true); say('Bravissimo!') }
+  const finish = () => { const p = randomPraise(); setPraise(p); onDone(); setWon(true); say(p) }
 
   return (
     <section className={s.stagecard}>
@@ -440,7 +443,7 @@ function Mixed({ settings, say, onDone, onHome }: {
         {won ? (
           <>
             <div className={s.star} aria-hidden="true">🏆</div>
-            <p className={s.winTitle}>Bravissimo!</p>
+            <p className={s.winTitle}>{praise}</p>
             <div className={s.row}>
               <button className={`${s.btn} ${s.main}`} onClick={() => { setWon(false); setRun(r => r + 1) }}>🎲 Ancora</button>
               <button className={s.btn} onClick={onHome}>🏠 Tabelline</button>

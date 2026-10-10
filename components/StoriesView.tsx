@@ -1,5 +1,6 @@
 'use client'
 import { useState, useCallback, useEffect } from 'react'
+import { usePraise } from '@/hooks/usePraise'
 import Image from 'next/image'
 import { useAudio } from '@/hooks/useAudio'
 import { type Story } from '@/types'
@@ -14,6 +15,7 @@ export default function StoriesView({ stories, onBack }: Props) {
   const [story, setStory]           = useState<Story | null>(null)
   const [pageIndex, setPageIndex]   = useState(0)
   const [showCelebr, setShowCelebr] = useState(false)
+  const praise = usePraise(showCelebr)
   const { check, celebration } = useAudio()
 
   // ── Lettura ad alta voce (sintesi vocale del browser) ─────────────────────
@@ -171,7 +173,7 @@ export default function StoriesView({ stories, onBack }: Props) {
         <div className={s.overlay} onClick={closeStory}>
           <div className={s.celebCard} onClick={e => e.stopPropagation()}>
             <div className={s.celebEmoji}>🌟</div>
-            <div className={s.celebTitle}>Bravo!</div>
+            <div className={s.celebTitle}>{praise}</div>
             <div className={s.celebSub}>Hai letto tutta la storia.</div>
             <button className={s.celebBtn} onClick={closeStory}>Fine!</button>
           </div>

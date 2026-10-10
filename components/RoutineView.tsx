@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
+import { usePraise } from '@/hooks/usePraise'
 import ItemCard from './ItemCard'
 import { useAudio } from '@/hooks/useAudio'
 import type { RoutineItem } from '@/types'
@@ -17,6 +18,7 @@ function todayKey() {
 export default function RoutineView({ items, onBack }: Props) {
   const [checked, setChecked]       = useState<Set<string>>(new Set())
   const [showCelebr, setShowCelebr] = useState(false)
+  const praise = usePraise(showCelebr)
   const { check, uncheck, celebration } = useAudio()
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export default function RoutineView({ items, onBack }: Props) {
         <div className={s.overlay} onClick={() => setShowCelebr(false)}>
           <div className={s.celebCard} onClick={e => e.stopPropagation()}>
             <div className={s.celebEmoji}>🌟</div>
-            <div className={s.celebTitle}>Bravissimo!</div>
+            <div className={s.celebTitle}>{praise}</div>
             <div className={s.celebSub}>Routine completata.<br />Buona giornata!</div>
             <button className={s.celebBtn} onClick={() => setShowCelebr(false)}>Ottimo!</button>
           </div>
