@@ -1,5 +1,5 @@
 'use client'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { usePraise } from '@/hooks/usePraise'
 import Image from 'next/image'
 import { useAudio } from '@/hooks/useAudio'
@@ -30,7 +30,14 @@ export default function StoriesView({ stories, onBack }: Props) {
     setAutoRead(loadReadingSettings().autoRead)
   }, [])
 
+  // Riferimento alla frase in lettura: alcuni browser smettono di mandare gli eventi
+  // se l'oggetto viene eliminato dalla memoria, quindi lo teniamo da parte
+  const uttRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const timers = useRef<number[]>([])
+  const clearTimers = () => { timers.current.forEach(t => window.clearTimeout(t)); timers.current = [] }
+
   const stopSpeaking = useCallback(() => {
+    if (typeof window !== 'undefined') clearTimers()
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel()
     }
@@ -47,10 +54,42 @@ export default function StoriesView({ stories, onBack }: Props) {
     utt.rate = 0.9
     const voice = synth.getVoices().find(v => v.lang.toLowerCase().startsWith('it'))
     if (voice) utt.voice = voice
-    // Illumina la parola che la voce sta leggendo (se il browser lo supporta)
-    utt.onboundary = e => { if (e.name === 'word') setWordAt(e.charIndex) }
-    utt.onend   = () => { setSpeaking(false); setWordAt(-1) }
-    utt.onerror = () => { setSpeaking(false); setWordAt(-1) }
+    clearTimers()
+    let gotWord = false   // il browser ci dice da solo quale parola sta leggendo?
+    let started = false
+
+    // 1) Se il browser lo supporta, illumina la parola esatta che la voce sta leggendo
+    utt.onboundary = e => {
+      if (e.name !== 'word') return
+      if (!gotWord) { gotWord = true; clearTimers() }
+      setWordAt(e.charIndex)
+    }
+
+    // 2) Altrimenti (succede con molte voci di Android) stima il tempo di ogni parola
+    const startEstimate = () => {
+      if (started) return
+      started = true
+      const rate = utt.rate || 1
+      const re = /\S+/g
+      let m: RegExpExecArray | null
+      let t = 0
+      while ((m = re.exec(text))) {
+        const start = m.index
+        const word  = m[0]
+        timers.current.push(window.setTimeout(() => { if (!gotWord) setWordAt(start) }, t))
+        const letters = word.replace(/[^\p{L}\p{N}]/gu, '').length
+        t += (120 + letters * 60) / rate
+        if (/[.!?]$/.test(word)) t += 380
+        else if (/[,;:]$/.test(word)) t += 220
+      }
+    }
+    utt.onstart = startEstimate
+    timers.current.push(window.setTimeout(startEstimate, 700)) // se "onstart" non arriva
+
+    const finish = () => { clearTimers(); setSpeaking(false); setWordAt(-1) }
+    utt.onend   = finish
+    utt.onerror = finish
+    uttRef.current = utt
     setSpeaking(true)
     synth.speak(utt)
   }, [canSpeak])
