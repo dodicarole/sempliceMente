@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story } from '@/types'
 import NumbersSettingsPanel from './NumbersSettingsPanel'
 import TablesSettingsPanel from './TablesSettingsPanel'
+import ChildGenderPicker from './ChildGenderPicker'
 import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
 
@@ -489,6 +490,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
           {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Aggiungi pagina</button>}
         </>
       )}
+
+      <ChildGenderPicker />
 
       <button className={s.changePinBtn} onClick={onChangePinRequest}>🔑 Cambia PIN</button>
     </>
