@@ -35,8 +35,18 @@ export default function StoriesView({ stories, onBack }: Props) {
   const uttRef = useRef<SpeechSynthesisUtterance | null>(null)
   const timers = useRef<number[]>([])
   const clearTimers = () => { timers.current.forEach(t => window.clearTimeout(t)); timers.current = [] }
+  const stopped = useRef(false)   // true se la lettura è stata interrotta (non va usata per regolare la velocità)
+
+  // Velocità della voce di questo dispositivo, imparata misurando le letture precedenti
+  const SPEED_KEY = 'voce_velocita'
+  const loadSpeed = () => {
+    try { const v = parseFloat(localStorage.getItem(SPEED_KEY) || ''); if (v > 0.3 && v < 2.5) return v } catch (_) {}
+    return 0.7
+  }
+  const saveSpeed = (v: number) => { try { localStorage.setItem(SPEED_KEY, String(v)) } catch (_) {} }
 
   const stopSpeaking = useCallback(() => {
+    stopped.current = true
     if (typeof window !== 'undefined') clearTimers()
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel()
@@ -55,8 +65,11 @@ export default function StoriesView({ stories, onBack }: Props) {
     const voice = synth.getVoices().find(v => v.lang.toLowerCase().startsWith('it'))
     if (voice) utt.voice = voice
     clearTimers()
+    stopped.current = false
     let gotWord = false   // il browser ci dice da solo quale parola sta leggendo?
     let started = false
+    let startedAt = 0
+    let estimated = 0     // durata stimata (prima della regolazione)
 
     // 1) Se il browser lo supporta, illumina la parola esatta che la voce sta leggendo
     utt.onboundary = e => {
@@ -69,25 +82,37 @@ export default function StoriesView({ stories, onBack }: Props) {
     const startEstimate = () => {
       if (started) return
       started = true
-      const rate = utt.rate || 1
+      startedAt = Date.now()
+      const rate  = utt.rate || 1
+      const speed = loadSpeed()   // < 1 = voce più veloce della stima di base
       const re = /\S+/g
       let m: RegExpExecArray | null
       let t = 0
       while ((m = re.exec(text))) {
         const start = m.index
         const word  = m[0]
-        timers.current.push(window.setTimeout(() => { if (!gotWord) setWordAt(start) }, t))
+        timers.current.push(window.setTimeout(() => { if (!gotWord) setWordAt(start) }, t * speed))
         const letters = word.replace(/[^\p{L}\p{N}]/gu, '').length
         t += (120 + letters * 60) / rate
         if (/[.!?]$/.test(word)) t += 380
         else if (/[,;:]$/.test(word)) t += 220
       }
+      estimated = t
     }
     utt.onstart = startEstimate
     timers.current.push(window.setTimeout(startEstimate, 700)) // se "onstart" non arriva
 
     const finish = () => { clearTimers(); setSpeaking(false); setWordAt(-1) }
-    utt.onend   = finish
+    utt.onend = () => {
+      // Lettura arrivata in fondo senza aiuto dal browser: confrontiamo la durata vera
+      // con la stima e regoliamo la velocità per le prossime volte
+      if (!gotWord && started && !stopped.current && estimated > 0) {
+        const real = Date.now() - startedAt
+        const ratio = real / estimated
+        if (ratio > 0.3 && ratio < 2.5) saveSpeed(loadSpeed() * 0.2 + ratio * 0.95 * 0.8) // un filo in anticipo sulla voce
+      }
+      finish()
+    }
     utt.onerror = finish
     uttRef.current = utt
     setSpeaking(true)
