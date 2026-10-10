@@ -4,6 +4,7 @@ import { usePraise } from '@/hooks/usePraise'
 import Image from 'next/image'
 import { useAudio } from '@/hooks/useAudio'
 import { type Story } from '@/types'
+import { loadReadingSettings } from '@/lib/readingSettings'
 import s from './StoriesView.module.css'
 
 interface Props {
@@ -21,9 +22,12 @@ export default function StoriesView({ stories, onBack }: Props) {
   // ── Lettura ad alta voce (sintesi vocale del browser) ─────────────────────
   const [canSpeak, setCanSpeak] = useState(false)
   const [speaking, setSpeaking] = useState(false)
+  const [wordAt,   setWordAt]   = useState(-1)     // posizione (carattere) della parola letta in questo momento
+  const [autoRead, setAutoRead] = useState(false)
 
   useEffect(() => {
     setCanSpeak(typeof window !== 'undefined' && 'speechSynthesis' in window)
+    setAutoRead(loadReadingSettings().autoRead)
   }, [])
 
   const stopSpeaking = useCallback(() => {
@@ -31,26 +35,41 @@ export default function StoriesView({ stories, onBack }: Props) {
       window.speechSynthesis.cancel()
     }
     setSpeaking(false)
+    setWordAt(-1)
   }, [])
 
-  const speak = useCallback((text: string) => {
+  const startSpeaking = useCallback((text: string) => {
     if (!canSpeak || !text.trim()) return
     const synth = window.speechSynthesis
-    if (speaking) { stopSpeaking(); return }
     synth.cancel()
     const utt = new SpeechSynthesisUtterance(text)
     utt.lang = 'it-IT'
     utt.rate = 0.9
     const voice = synth.getVoices().find(v => v.lang.toLowerCase().startsWith('it'))
     if (voice) utt.voice = voice
-    utt.onend   = () => setSpeaking(false)
-    utt.onerror = () => setSpeaking(false)
+    // Illumina la parola che la voce sta leggendo (se il browser lo supporta)
+    utt.onboundary = e => { if (e.name === 'word') setWordAt(e.charIndex) }
+    utt.onend   = () => { setSpeaking(false); setWordAt(-1) }
+    utt.onerror = () => { setSpeaking(false); setWordAt(-1) }
     setSpeaking(true)
     synth.speak(utt)
-  }, [canSpeak, speaking, stopSpeaking])
+  }, [canSpeak])
+
+  const speak = useCallback((text: string) => {
+    if (speaking) { stopSpeaking(); return }
+    startSpeaking(text)
+  }, [speaking, stopSpeaking, startSpeaking])
 
   // Interrompe la voce quando si cambia pagina, si chiude la storia o si esce
   useEffect(() => { stopSpeaking() }, [story, pageIndex, stopSpeaking])
+
+  // Lettura automatica di ogni pagina, se attivata nell'area Genitore
+  useEffect(() => {
+    if (!autoRead || !story || showCelebr) return
+    const text = story.pages[pageIndex]?.text ?? ''
+    const t = setTimeout(() => startSpeaking(text), 500)
+    return () => clearTimeout(t)
+  }, [autoRead, story, pageIndex, showCelebr, startSpeaking])
   useEffect(() => () => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
   }, [])
@@ -149,7 +168,19 @@ export default function StoriesView({ stories, onBack }: Props) {
             <span className={s.pageEmoji}>{page.icon || story.icon}</span>
           )}
         </div>
-        <p className={s.pageText}>{page.text}</p>
+        <p className={s.pageText}>
+          {(() => {
+            // Divide il testo in parole, ricordando dove inizia ognuna
+            let pos = 0
+            return page.text.split(/(\s+)/).map((part, i) => {
+              const start = pos
+              pos += part.length
+              if (!part.trim()) return part
+              const on = speaking && wordAt >= start && wordAt < start + part.length
+              return <span key={i} className={on ? s.wordOn : undefined}>{part}</span>
+            })
+          })()}
+        </p>
         {canSpeak && page.text.trim() && (
           <button
             className={`${s.speakBtn}${speaking ? ` ${s.speakOn}` : ''}`}

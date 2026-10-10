@@ -189,6 +189,12 @@
 
 .pageEmoji { font-size: 88px; }
 
+.wordOn {
+  background: #FFE58A;
+  border-radius: 6px;
+  box-shadow: 0 0 0 3px #FFE58A;
+}
+
 .pageText {
   font-size: clamp(18px, 5.5vw, 24px);
   font-weight: 700;

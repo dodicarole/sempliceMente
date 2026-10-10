@@ -5,10 +5,11 @@ import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon,
 import NumbersSettingsPanel from './NumbersSettingsPanel'
 import TablesSettingsPanel from './TablesSettingsPanel'
 import ChildGenderPicker from './ChildGenderPicker'
+import ReadingSettingsPanel from './ReadingSettingsPanel'
 import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
 
-type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline'
+type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -232,13 +233,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       </div>
 
       <div className={s.sectionToggle}>
-        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'numeri', 'tabelline'] as Section[]).map(sec => (
+        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'numeri', 'tabelline', 'lettura'] as Section[]).map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : '✖️'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : '🔤'}
           </button>
         ))}
       </div>
@@ -414,6 +415,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <>
           <div className={s.emotionsHint}>Scegli come funzionano le &quot;Tabelline&quot; per il tuo bambino. Le modifiche si salvano subito.</div>
           <TablesSettingsPanel />
+        </>
+      )}
+
+      {/* ── LETTURA ── */}
+      {section === 'lettura' && (
+        <>
+          <div className={s.emotionsHint}>Adatta il testo dell&apos;area bambino: dimensione, carattere e modo di scrivere. Le modifiche si salvano subito.</div>
+          <ReadingSettingsPanel />
         </>
       )}
 
