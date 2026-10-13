@@ -1,0 +1,215 @@
+/**
+ * Testi dell'app in italiano. È il file di riferimento: ogni testo aggiunto qui
+ * deve esistere anche in fr.ts, altrimenti la compilazione si ferma.
+ */
+import type { ChildGender } from '@/lib/praise'
+
+export const it = {
+  locale: 'it-IT',
+  speechLang: 'it',
+
+  common: {
+    back: '← Indietro',
+    cancel: 'Annulla',
+    save: 'Salva',
+    loading: 'Caricamento…',
+    of: (a: number, b: number) => `${a} di ${b}`,
+    great: 'Ottimo!',
+    goodDay: 'Buona giornata!',
+    moveUp: 'Sposta su',
+    moveDown: 'Sposta giù',
+    photo: 'Foto',
+    proposed: 'Proposta',
+    preview: 'anteprima',
+    saved: '✓ Salvato. Vale per questo dispositivo.',
+    noSchool: 'Oggi niente scuola!',
+    rest: 'Buon riposo 😊',
+  },
+
+  days: {
+    names: ['LUNEDÌ', 'MARTEDÌ', 'MERCOLEDÌ', 'GIOVEDÌ', 'VENERDÌ'],
+    shorts: ['Lun', 'Mar', 'Mer', 'Gio', 'Ven'],
+  },
+
+  home: {
+    zainoTitle: 'Zaino Pronto',
+    zainoSub: 'Cosa metti oggi?',
+    routineTitle: 'Routine Mattutina',
+    routineSub: (g: ChildGender): string => (g === 'm' ? 'Sei pronto per la giornata?' : g === 'f' ? 'Sei pronta per la giornata?' : 'Tutto pronto per la giornata?'),
+    agendaTitle: 'Agenda di Oggi',
+    agendaSub: 'Cosa succede oggi?',
+    timerTitle: 'Timer',
+    timerSub: 'Quanto tempo hai?',
+    emotionsTitle: 'Come ti senti?',
+    emotionsSub: 'Le tue emozioni',
+    storiesTitle: 'Storie Sociali',
+    storiesSub: 'Leggiamo insieme',
+    numbersTitle: 'Numeri in fila',
+    numbersSub: 'Metti in ordine crescente',
+    tablesTitle: 'Tabelline',
+    tablesSub: 'Dallo 0 al 12',
+  },
+
+  demo: {
+    badge: 'Modalità demo',
+    bannerTitle: 'Crea la tua agenda',
+    bannerSub: 'Personalizza ogni sezione per il tuo bambino',
+    login: 'Accedi',
+    about: 'Scopri il progetto →',
+  },
+
+  app: {
+    child: '👶 Bambino',
+    parent: '⚙️ Genitore',
+    logout: "Esci dall'account",
+    logoutTitle: "Vuoi uscire dall'account?",
+    logoutText: "Per rientrare dovrai fare di nuovo l'accesso.",
+    stay: 'Resta',
+    leave: 'Esci',
+  },
+
+  pin: {
+    title: 'Area Genitore',
+    enter: 'Inserisci il PIN',
+    enterNew: 'Inserisci il nuovo PIN',
+    repeatNew: 'Ripeti il nuovo PIN',
+    hint: '💡 Prima volta? Il PIN è',
+    delete: 'Cancella',
+  },
+
+  auth: {
+    backToDemo: '← Torna alla demo',
+    tagline: 'Ogni giorno, un passo alla volta',
+    loginTab: 'Accedi',
+    registerTab: 'Registrati',
+    email: 'Email',
+    password: 'Password',
+    repeatPassword: 'Ripeti password',
+    login: 'Accedi',
+    register: 'Crea account',
+    missing: 'Inserisci email e password',
+    mismatch: 'Le password non coincidono',
+    tooShort: 'Password di almeno 6 caratteri',
+    error: 'Errore',
+  },
+
+  zaino: {
+    instruction: 'Metti nello zaino!',
+    inside: 'Dentro!',
+    ready: 'Lo zaino è pronto.',
+  },
+
+  routine: {
+    title: 'Routine Mattutina',
+    instruction: 'Fai una cosa alla volta!',
+    done: 'Fatto!',
+    completed: 'Routine completata.',
+  },
+
+  agenda: {
+    empty: 'Nessuna attività per oggi',
+    now: 'Adesso!',
+    next: 'Dopo',
+  },
+
+  timer: {
+    title: 'Timer',
+    sub: 'Quanto tempo hai?',
+    timeUp: 'Tempo scaduto!',
+    pause: '⏸ Pausa',
+    resume: '▶ Riprendi',
+    start: '▶ Inizia',
+    reset: '↺ Ricomincia',
+  },
+
+  emotions: {
+    title: 'Come ti senti?',
+    sub: "Tocca l'emozione che senti ora",
+    thanks: 'Grazie per avermelo detto 💗',
+    ok: 'Va bene!',
+    names: {
+      felice: 'Felice', triste: 'Triste', arrabbiato: 'Arrabbiato',
+      spaventato: 'Spaventato', stanco: 'Stanco', annoiato: 'Annoiato',
+    } as Record<string, string>,
+    messages: {
+      felice:     'Che bello essere felici! 🌟',
+      triste:     'Va bene sentirsi tristi. Un abbraccio aiuta 🤗',
+      arrabbiato: 'Respira piano piano. Passerà 🌬️',
+      spaventato: 'Sei al sicuro. Sono qui con te 💙',
+      stanco:     "Un po' di riposo ti farà bene 😴",
+      annoiato:   'Possiamo trovare qualcosa da fare insieme 🎨',
+    } as Record<string, string>,
+  },
+
+  stories: {
+    title: 'Le mie storie',
+    sub: 'Scegli una storia da leggere',
+    empty: 'Non ci sono ancora storie.',
+    emptyAsk: 'Chiedi a mamma o papà di crearne una!',
+    pages: (n: number) => `${n} ${n === 1 ? 'pagina' : 'pagine'}`,
+    backToList: '← Le storie',
+    listen: '🔊 Ascolta',
+    stop: '⏹ Ferma',
+    listenAria: 'Leggi ad alta voce',
+    stopAria: 'Ferma la lettura',
+    readAll: 'Hai letto tutta la storia.',
+    end: 'Fine!',
+  },
+
+  parent: {
+    title: "Configura l'app",
+    lock: 'Blocca area genitore',
+    remove: 'Rimuovere?',
+    removeStory: 'Rimuovere la storia e tutte le sue pagine?',
+    removePage: 'Rimuovere questa pagina?',
+    zainoPlaceholder: 'Es. Quaderno di Scienze',
+    addMaterial: '＋ Aggiungi materiale',
+    routinePlaceholder: 'Es. Lavarsi i denti',
+    addStep: '＋ Aggiungi passo',
+    agendaPlaceholder: 'Es. Italiano',
+    addActivity: '＋ Aggiungi attività',
+    emotionsHint: 'Le emozioni sono fisse: puoi solo aggiungere una foto per ognuna.',
+    numbersHint: 'Scegli come funziona il gioco "Numeri in fila" per il tuo bambino. Le modifiche si salvano subito.',
+    tablesHint: 'Scegli come funzionano le "Tabelline" per il tuo bambino. Le modifiche si salvano subito.',
+    readingHint: "Adatta il testo dell'area bambino: dimensione, carattere e modo di scrivere. Le modifiche si salvano subito.",
+    storiesHint: 'Crea piccole storie illustrate per preparare il bambino a situazioni nuove. Tocca una storia per aggiungere le pagine.',
+    storyPlaceholder: 'Es. Andiamo dal dentista',
+    newStory: '＋ Nuova storia',
+    allStories: '← Tutte le storie',
+    pagePlaceholder: 'Es. Prima saliamo in macchina con la mamma',
+    addPage: '＋ Aggiungi pagina',
+    changePin: '🔑 Cambia PIN',
+    language: "Lingua dell'app",
+  },
+
+  child: {
+    nameLabel: 'Nome del bambino o della bambina',
+    namePlaceholder: 'Per esempio: Christopher',
+    who: "Chi usa l'app?",
+    boy: '👦 Bambino',
+    girl: '👧 Bambina',
+    unspecified: 'Non specificare',
+    note: 'Servono per le frasi di incoraggiamento, come "Bravo, Christopher!" o "Brava!". Con "Non specificare" l\'app usa solo frasi valide per tutti. Il nome resta solo su questo dispositivo.',
+  },
+
+  reading: {
+    size: 'Dimensione del testo',
+    sizeNormal: 'Normale', sizeLarge: 'Grande', sizeXLarge: 'Molto grande',
+    font: 'Carattere',
+    fontStandard: 'Standard', fontReadable: 'Alta leggibilità',
+    writing: 'Scrittura',
+    writingNormal: 'Normale', writingUpper: 'STAMPATO MAIUSCOLO',
+    spacing: 'Spazio tra lettere e righe',
+    spacingNormal: 'Normale', spacingWide: 'Più ampio',
+    autoRead: 'Leggi le storie ad alta voce da sole',
+    no: 'No', yes: 'Sì',
+    preview: 'Anteprima',
+    previewText: "C'era una volta un bambino che amava leggere.",
+    note: "Valgono per tutta l'area del bambino. Nelle storie, il bottone 🔊 Ascolta legge il testo e illumina le parole mentre la voce va avanti.",
+  },
+
+  /** Messaggi d'errore del server: in italiano restano come sono */
+  serverErrors: {} as Record<string, string>,
+}
+
+export type Dict = typeof it

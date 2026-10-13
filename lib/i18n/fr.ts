@@ -1,0 +1,234 @@
+/**
+ * Textes de l'application en français.
+ * Il doit contenir exactement les mêmes clés que it.ts.
+ */
+import type { Dict } from './it'
+
+const nb = '\u00a0' // espace insécable avant ! ? : (typographie française)
+
+export const fr: Dict = {
+  locale: 'fr-FR',
+  speechLang: 'fr',
+
+  common: {
+    back: '← Retour',
+    cancel: 'Annuler',
+    save: 'Enregistrer',
+    loading: 'Chargement…',
+    of: (a, b) => `${a} sur ${b}`,
+    great: `Génial${nb}!`,
+    goodDay: `Bonne journée${nb}!`,
+    moveUp: 'Monter',
+    moveDown: 'Descendre',
+    photo: 'Photo',
+    proposed: 'Suggestion',
+    preview: 'aperçu',
+    saved: '✓ Enregistré. Valable sur cet appareil.',
+    noSchool: `Pas d’école aujourd’hui${nb}!`,
+    rest: 'Bon repos 😊',
+  },
+
+  days: {
+    names: ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI'],
+    shorts: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'],
+  },
+
+  home: {
+    zainoTitle: 'Cartable prêt',
+    zainoSub: `Qu’est-ce que tu prends aujourd’hui${nb}?`,
+    routineTitle: 'Routine du matin',
+    routineSub: g => (g === 'm' ? `Prêt pour la journée${nb}?` : g === 'f' ? `Prête pour la journée${nb}?` : `Tout est prêt pour la journée${nb}?`),
+    agendaTitle: 'Programme du jour',
+    agendaSub: `Qu’est-ce qui se passe aujourd’hui${nb}?`,
+    timerTitle: 'Minuteur',
+    timerSub: `Combien de temps as-tu${nb}?`,
+    emotionsTitle: `Comment tu te sens${nb}?`,
+    emotionsSub: 'Tes émotions',
+    storiesTitle: 'Histoires sociales',
+    storiesSub: 'Lisons ensemble',
+    numbersTitle: 'Range les nombres',
+    numbersSub: 'Dans l’ordre croissant',
+    tablesTitle: 'Tables de multiplication',
+    tablesSub: 'De 0 à 12',
+  },
+
+  demo: {
+    badge: 'Mode démo',
+    bannerTitle: 'Créez votre agenda',
+    bannerSub: 'Personnalisez chaque section pour votre enfant',
+    login: 'Se connecter',
+    about: 'Découvrir le projet →',
+  },
+
+  app: {
+    child: '👶 Enfant',
+    parent: '⚙️ Parent',
+    logout: 'Se déconnecter',
+    logoutTitle: `Voulez-vous vous déconnecter${nb}?`,
+    logoutText: 'Pour revenir, il faudra vous reconnecter.',
+    stay: 'Rester',
+    leave: 'Se déconnecter',
+  },
+
+  pin: {
+    title: 'Espace parent',
+    enter: 'Saisissez le code PIN',
+    enterNew: 'Saisissez le nouveau code PIN',
+    repeatNew: 'Répétez le nouveau code PIN',
+    hint: `💡 Première fois${nb}? Le code PIN est`,
+    delete: 'Effacer',
+  },
+
+  auth: {
+    backToDemo: '← Retour à la démo',
+    tagline: 'Chaque jour, un pas après l’autre',
+    loginTab: 'Connexion',
+    registerTab: 'Inscription',
+    email: 'E-mail',
+    password: 'Mot de passe',
+    repeatPassword: 'Répétez le mot de passe',
+    login: 'Se connecter',
+    register: 'Créer un compte',
+    missing: 'Saisissez votre e-mail et votre mot de passe',
+    mismatch: 'Les mots de passe ne correspondent pas',
+    tooShort: 'Mot de passe d’au moins 6 caractères',
+    error: 'Erreur',
+  },
+
+  zaino: {
+    instruction: `Mets dans ton cartable${nb}!`,
+    inside: `Dedans${nb}!`,
+    ready: 'Ton cartable est prêt.',
+  },
+
+  routine: {
+    title: 'Routine du matin',
+    instruction: `Une chose à la fois${nb}!`,
+    done: `Fait${nb}!`,
+    completed: 'Routine terminée.',
+  },
+
+  agenda: {
+    empty: 'Aucune activité aujourd’hui',
+    now: `Maintenant${nb}!`,
+    next: 'Après',
+  },
+
+  timer: {
+    title: 'Minuteur',
+    sub: `Combien de temps as-tu${nb}?`,
+    timeUp: `Le temps est écoulé${nb}!`,
+    pause: '⏸ Pause',
+    resume: '▶ Reprendre',
+    start: '▶ Commencer',
+    reset: '↺ Recommencer',
+  },
+
+  emotions: {
+    title: `Comment tu te sens${nb}?`,
+    sub: 'Touche l’émotion que tu ressens maintenant',
+    thanks: 'Merci de me l’avoir dit 💗',
+    ok: `D’accord${nb}!`,
+    names: {
+      felice: 'Joie', triste: 'Tristesse', arrabbiato: 'Colère',
+      spaventato: 'Peur', stanco: 'Fatigue', annoiato: 'Ennui',
+    },
+    messages: {
+      felice:     `Quelle belle joie${nb}! 🌟`,
+      triste:     'C’est normal d’être triste parfois. Un câlin, ça aide 🤗',
+      arrabbiato: 'Respire doucement. Ça va passer 🌬️',
+      spaventato: 'Tu es en sécurité. Je suis là avec toi 💙',
+      stanco:     'Un peu de repos va te faire du bien 😴',
+      annoiato:   'On peut trouver quelque chose à faire ensemble 🎨',
+    },
+  },
+
+  stories: {
+    title: 'Mes histoires',
+    sub: 'Choisis une histoire à lire',
+    empty: 'Il n’y a pas encore d’histoires.',
+    emptyAsk: `Demande à papa ou maman d’en créer une${nb}!`,
+    pages: n => `${n} ${n === 1 ? 'page' : 'pages'}`,
+    backToList: '← Les histoires',
+    listen: '🔊 Écouter',
+    stop: '⏹ Arrêter',
+    listenAria: 'Lire à voix haute',
+    stopAria: 'Arrêter la lecture',
+    readAll: 'Tu as lu toute l’histoire.',
+    end: `Fini${nb}!`,
+  },
+
+  parent: {
+    title: 'Configurer l’application',
+    lock: 'Verrouiller l’espace parent',
+    remove: `Supprimer${nb}?`,
+    removeStory: `Supprimer l’histoire et toutes ses pages${nb}?`,
+    removePage: `Supprimer cette page${nb}?`,
+    zainoPlaceholder: 'Ex. Cahier de sciences',
+    addMaterial: '＋ Ajouter une fourniture',
+    routinePlaceholder: 'Ex. Se brosser les dents',
+    addStep: '＋ Ajouter une étape',
+    agendaPlaceholder: 'Ex. Français',
+    addActivity: '＋ Ajouter une activité',
+    emotionsHint: `Les émotions sont fixes${nb}: vous pouvez seulement ajouter une photo pour chacune.`,
+    numbersHint: 'Choisissez comment fonctionne le jeu « Range les nombres » pour votre enfant. Les modifications sont enregistrées tout de suite.',
+    tablesHint: 'Choisissez comment fonctionnent les « Tables de multiplication » pour votre enfant. Les modifications sont enregistrées tout de suite.',
+    readingHint: `Adaptez le texte de l’espace enfant${nb}: taille, police et façon d’écrire. Les modifications sont enregistrées tout de suite.`,
+    storiesHint: 'Créez de petites histoires illustrées pour préparer l’enfant aux situations nouvelles. Touchez une histoire pour ajouter des pages.',
+    storyPlaceholder: 'Ex. On va chez le dentiste',
+    newStory: '＋ Nouvelle histoire',
+    allStories: '← Toutes les histoires',
+    pagePlaceholder: 'Ex. D’abord, on monte en voiture avec maman',
+    addPage: '＋ Ajouter une page',
+    changePin: '🔑 Changer le code PIN',
+    language: 'Langue de l’application',
+  },
+
+  child: {
+    nameLabel: 'Prénom de l’enfant',
+    namePlaceholder: `Par exemple${nb}: Christopher`,
+    who: `Qui utilise l’application${nb}?`,
+    boy: '👦 Garçon',
+    girl: '👧 Fille',
+    unspecified: 'Ne pas préciser',
+    note: `Ils servent aux phrases d’encouragement, comme « Bravo, Christopher${nb}! ». Avec « Ne pas préciser », l’application utilise seulement des phrases valables pour tous. Le prénom reste uniquement sur cet appareil.`,
+  },
+
+  reading: {
+    size: 'Taille du texte',
+    sizeNormal: 'Normale', sizeLarge: 'Grande', sizeXLarge: 'Très grande',
+    font: 'Police',
+    fontStandard: 'Standard', fontReadable: 'Haute lisibilité',
+    writing: 'Écriture',
+    writingNormal: 'Normale', writingUpper: 'MAJUSCULES D’IMPRIMERIE',
+    spacing: 'Espacement des lettres et des lignes',
+    spacingNormal: 'Normal', spacingWide: 'Plus large',
+    autoRead: 'Lire les histoires à voix haute automatiquement',
+    no: 'Non', yes: 'Oui',
+    preview: 'Aperçu',
+    previewText: 'Il était une fois un enfant qui adorait lire.',
+    note: 'Ces réglages s’appliquent à tout l’espace enfant. Dans les histoires, le bouton 🔊 Écouter lit le texte et met en valeur les mots au fur et à mesure.',
+  },
+
+  serverErrors: {
+    'Caricamento non riuscito': 'Le chargement a échoué',
+    'Dati mancanti': 'Données manquantes',
+    'Elemento non trovato': 'Élément introuvable',
+    'Email e password richieste (minimo 6 caratteri)': 'E-mail et mot de passe requis (6 caractères minimum)',
+    'Email e password richieste': 'E-mail et mot de passe requis',
+    'Email già registrata': 'Cet e-mail est déjà inscrit',
+    'Email o password errati': 'E-mail ou mot de passe incorrect',
+    'Formato non supportato: carica una foto': `Format non pris en charge${nb}: ajoutez une photo`,
+    'La foto è troppo grande (massimo 4 MB)': 'La photo est trop lourde (4 Mo maximum)',
+    'Nome e orario richiesti': 'Nom et horaire requis',
+    'Nome richiesto': 'Nom requis',
+    'Non autorizzato': 'Non autorisé',
+    'PIN errato': 'Code PIN incorrect',
+    'PIN non valido': 'Code PIN non valide',
+    'Richiesta non valida': 'Requête non valide',
+    'Salvataggio non riuscito': 'L’enregistrement a échoué',
+    'Storia non trovata': 'Histoire introuvable',
+    'Testo richiesto': 'Texte requis',
+    'Titolo richiesto': 'Titre requis',
+  },
+}
