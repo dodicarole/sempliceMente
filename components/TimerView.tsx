@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useAudio } from '@/hooks/useAudio'
 import s from './TimerView.module.css'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   onBack: () => void
@@ -26,6 +27,7 @@ function formatTime(secs: number): string {
 type Phase = 'idle' | 'running' | 'paused' | 'done'
 
 export default function TimerView({ onBack }: Props) {
+  const { t } = useT()
   const [total, setTotal] = useState(300)
   const [left,  setLeft]  = useState(300)
   const [phase, setPhase] = useState<Phase>('idle')
@@ -77,13 +79,13 @@ export default function TimerView({ onBack }: Props) {
 
   return (
     <>
-      <button className={s.back} onClick={onBack}>← Indietro</button>
+      <button className={s.back} onClick={onBack}>{t.common.back}</button>
 
       <div className={s.banner}>
         <span className={s.bannerEmoji}>⏱️</span>
         <div>
-          <div className={s.bannerTitle}>Timer</div>
-          <div className={s.bannerSub}>Quanto tempo hai?</div>
+          <div className={s.bannerTitle}>{t.timer.title}</div>
+          <div className={s.bannerSub}>{t.timer.sub}</div>
         </div>
       </div>
 
@@ -123,9 +125,9 @@ export default function TimerView({ onBack }: Props) {
 
       <div className={s.controls}>
         {phase === 'done' ? (
-          <div className={s.doneMsg}>Tempo scaduto!</div>
+          <div className={s.doneMsg}>{t.timer.timeUp}</div>
         ) : phase === 'running' ? (
-          <button className={s.btnPause} onClick={pause}>⏸ Pausa</button>
+          <button className={s.btnPause} onClick={pause}>{t.timer.pause}</button>
         ) : (
           <button
             className={s.btnStart}
@@ -133,11 +135,11 @@ export default function TimerView({ onBack }: Props) {
             onClick={start}
             disabled={left === 0}
           >
-            {phase === 'paused' ? '▶ Riprendi' : '▶ Inizia'}
+            {phase === 'paused' ? t.timer.resume : t.timer.start}
           </button>
         )}
         {phase !== 'idle' && (
-          <button className={s.btnReset} onClick={reset}>↺ Ricomincia</button>
+          <button className={s.btnReset} onClick={reset}>{t.timer.reset}</button>
         )}
       </div>
     </>

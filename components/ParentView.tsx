@@ -1,13 +1,15 @@
 'use client'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
-import { DAY_SHORTS, DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story } from '@/types'
+import { DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story } from '@/types'
 import NumbersSettingsPanel from './NumbersSettingsPanel'
 import TablesSettingsPanel from './TablesSettingsPanel'
 import ChildGenderPicker from './ChildGenderPicker'
 import ReadingSettingsPanel from './ReadingSettingsPanel'
 import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
+import { useT } from '@/lib/i18n'
+import LanguagePicker from './LanguagePicker'
 
 type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'lettura'
 
@@ -27,6 +29,7 @@ interface Props {
 }
 
 export default function ParentView({ schedule, routineItems, agendaItems, emotionItems, stories, onLock, onChangePinRequest, onRefresh, onRoutineRefresh, onAgendaRefresh, onEmotionsRefresh, onStoriesRefresh }: Props) {
+  const { t } = useT()
   const [section, setSection]           = useState<Section>('zaino')
   const [day, setDay]                   = useState(0)
   const [showForm, setShowForm]         = useState(false)
@@ -74,13 +77,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
     input.click()
   }
 
-  const handleDeleteZaino   = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/materials/${id}`, { method: 'DELETE' }); onRefresh() }
-  const handleDeleteRoutine = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/routine/${id}`,   { method: 'DELETE' }); onRoutineRefresh() }
-  const handleDeleteAgenda  = async (id: string) => { if (!confirm('Rimuovere?')) return; await fetch(`/api/agenda/${id}`,    { method: 'DELETE' }); onAgendaRefresh() }
-  const handleDeleteStory   = async (id: string) => { if (!confirm('Rimuovere la storia e tutte le sue pagine?')) return; await fetch(`/api/stories/${id}`, { method: 'DELETE' }); onStoriesRefresh() }
+  const handleDeleteZaino   = async (id: string) => { if (!confirm(t.parent.remove)) return; await fetch(`/api/materials/${id}`, { method: 'DELETE' }); onRefresh() }
+  const handleDeleteRoutine = async (id: string) => { if (!confirm(t.parent.remove)) return; await fetch(`/api/routine/${id}`,   { method: 'DELETE' }); onRoutineRefresh() }
+  const handleDeleteAgenda  = async (id: string) => { if (!confirm(t.parent.remove)) return; await fetch(`/api/agenda/${id}`,    { method: 'DELETE' }); onAgendaRefresh() }
+  const handleDeleteStory   = async (id: string) => { if (!confirm(t.parent.removeStory)) return; await fetch(`/api/stories/${id}`, { method: 'DELETE' }); onStoriesRefresh() }
 
   const handleDeleteStoryPage = async (pageId: string) => {
-    if (!editingStory || !confirm('Rimuovere questa pagina?')) return
+    if (!editingStory || !confirm(t.parent.removePage)) return
     await fetch(`/api/stories/${editingStory.id}/pages/${pageId}`, { method: 'DELETE' })
     onStoriesRefresh()
   }
@@ -228,8 +231,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
   return (
     <>
       <div className={s.header}>
-        <div className={s.title}>Configura l&apos;app</div>
-        <button className={s.lockBtn} onClick={onLock} title="Blocca area genitore">🔒</button>
+        <div className={s.title}>{t.parent.title}</div>
+        <button className={s.lockBtn} onClick={onLock} title={t.parent.lock} aria-label={t.parent.lock}>🔒</button>
       </div>
 
       <div className={s.sectionToggle}>
@@ -248,7 +251,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       {section === 'zaino' && (
         <>
           <div className={s.tabs}>
-            {DAY_SHORTS.map((name, i) => (
+            {t.days.shorts.map((name, i) => (
               <button key={i} className={`${s.tab}${i === day ? ` ${s.active}` : ''}`}
                 style={i === day ? { background: DAY_COLORS[i] } : {}}
                 onClick={() => { setDay(i); setShowForm(false) }}>
@@ -265,8 +268,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
                 </button>
                 <span className={s.name}>{item.name}</span>
                 <div className={s.reorderBtns}>
-                  <button className={s.reorderBtn} onClick={() => handleMoveZaino(index, -1)} disabled={index === 0} aria-label="Sposta su">▲</button>
-                  <button className={s.reorderBtn} onClick={() => handleMoveZaino(index, 1)} disabled={index === zainoItems.length - 1} aria-label="Sposta giù">▼</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveZaino(index, -1)} disabled={index === 0} aria-label={t.common.moveUp}>▲</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveZaino(index, 1)} disabled={index === zainoItems.length - 1} aria-label={t.common.moveDown}>▼</button>
                 </div>
                 <button className={s.delBtn} onClick={() => handleDeleteZaino(item.id)}>×</button>
               </div>
@@ -277,22 +280,22 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-zaino">
                   {newPhoto
-                    ? <Image src={newPhoto} alt="anteprima" width={52} height={52} style={{ objectFit: 'cover' }} />
+                    ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} />
                     : newName.trim()
-                      ? <><ZainoPicture name={newName} icon={pickZainoIcon(newName.trim())} size={30} /><span className={s.photoHint}>Proposta</span></>
-                      : <>📷<span className={s.photoHint}>Foto</span></>}
+                      ? <><ZainoPicture name={newName} icon={pickZainoIcon(newName.trim())} size={30} /><span className={s.photoHint}>{t.common.proposed}</span></>
+                      : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
                 </label>
                 <input id="new-photo-zaino" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
-                <input className={s.nameInput} type="text" placeholder="Es. Quaderno di Scienze" value={newName}
+                <input className={s.nameInput} type="text" placeholder={t.parent.zainoPlaceholder} value={newName}
                   onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSaveZaino()} autoFocus />
               </div>
               <div className={s.formActions}>
-                <button className={s.cancelBtn} onClick={resetForm}>Annulla</button>
-                <button className={s.saveBtn} onClick={handleSaveZaino} disabled={saving}>{saving ? '...' : 'Salva'}</button>
+                <button className={s.cancelBtn} onClick={resetForm}>{t.common.cancel}</button>
+                <button className={s.saveBtn} onClick={handleSaveZaino} disabled={saving}>{saving ? '...' : t.common.save}</button>
               </div>
             </div>
           )}
-          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Aggiungi materiale</button>}
+          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>{t.parent.addMaterial}</button>}
         </>
       )}
 
@@ -309,8 +312,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
                 </button>
                 <span className={s.name}>{item.name}</span>
                 <div className={s.reorderBtns}>
-                  <button className={s.reorderBtn} onClick={() => handleMoveRoutine(index, -1)} disabled={index === 0} aria-label="Sposta su">▲</button>
-                  <button className={s.reorderBtn} onClick={() => handleMoveRoutine(index, 1)} disabled={index === routineItems.length - 1} aria-label="Sposta giù">▼</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveRoutine(index, -1)} disabled={index === 0} aria-label={t.common.moveUp}>▲</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveRoutine(index, 1)} disabled={index === routineItems.length - 1} aria-label={t.common.moveDown}>▼</button>
                 </div>
                 <button className={s.delBtn} onClick={() => handleDeleteRoutine(item.id)}>×</button>
               </div>
@@ -320,19 +323,19 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             <div className={s.addFormCard}>
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-routine">
-                  {newPhoto ? <Image src={newPhoto} alt="anteprima" width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>Foto</span></>}
+                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
                 </label>
                 <input id="new-photo-routine" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
-                <input className={s.nameInput} type="text" placeholder="Es. Lavarsi i denti" value={newName}
+                <input className={s.nameInput} type="text" placeholder={t.parent.routinePlaceholder} value={newName}
                   onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSaveRoutine()} autoFocus />
               </div>
               <div className={s.formActions}>
-                <button className={s.cancelBtn} onClick={resetForm}>Annulla</button>
-                <button className={s.saveBtn} onClick={handleSaveRoutine} disabled={saving}>{saving ? '...' : 'Salva'}</button>
+                <button className={s.cancelBtn} onClick={resetForm}>{t.common.cancel}</button>
+                <button className={s.saveBtn} onClick={handleSaveRoutine} disabled={saving}>{saving ? '...' : t.common.save}</button>
               </div>
             </div>
           )}
-          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Aggiungi passo</button>}
+          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>{t.parent.addStep}</button>}
         </>
       )}
 
@@ -340,7 +343,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       {section === 'agenda' && (
         <>
           <div className={s.tabs}>
-            {DAY_SHORTS.map((name, i) => (
+            {t.days.shorts.map((name, i) => (
               <button key={i} className={`${s.tab}${i === day ? ` ${s.active}` : ''}`}
                 style={i === day ? { background: DAY_COLORS[i] } : {}}
                 onClick={() => { setDay(i); setShowForm(false) }}>
@@ -365,29 +368,29 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             <div className={s.addFormCard}>
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-agenda">
-                  {newPhoto ? <Image src={newPhoto} alt="anteprima" width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>Foto</span></>}
+                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
                 </label>
                 <input id="new-photo-agenda" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
                 <div className={s.agendaInputs}>
                   <input className={s.timeInput} type="time" value={newTime} onChange={e => setNewTime(e.target.value)} />
-                  <input className={s.nameInput} type="text" placeholder="Es. Italiano" value={newName}
+                  <input className={s.nameInput} type="text" placeholder={t.parent.agendaPlaceholder} value={newName}
                     onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSaveAgenda()} autoFocus />
                 </div>
               </div>
               <div className={s.formActions}>
-                <button className={s.cancelBtn} onClick={resetForm}>Annulla</button>
-                <button className={s.saveBtn} onClick={handleSaveAgenda} disabled={saving}>{saving ? '...' : 'Salva'}</button>
+                <button className={s.cancelBtn} onClick={resetForm}>{t.common.cancel}</button>
+                <button className={s.saveBtn} onClick={handleSaveAgenda} disabled={saving}>{saving ? '...' : t.common.save}</button>
               </div>
             </div>
           )}
-          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Aggiungi attività</button>}
+          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>{t.parent.addActivity}</button>}
         </>
       )}
 
       {/* ── EMOZIONI ── */}
       {section === 'emozioni' && (
         <>
-          <div className={s.emotionsHint}>Le emozioni sono fisse: puoi solo aggiungere una foto per ognuna.</div>
+          <div className={s.emotionsHint}>{t.parent.emotionsHint}</div>
           <div className={s.list}>
             {emotionItems.map(item => (
               <div key={item.id} className={s.item}>
@@ -395,7 +398,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
                   {item.photo_url ? <Image src={item.photo_url} alt={item.name} width={52} height={52} style={{ objectFit: 'cover' }} /> : item.icon}
                   <span className={s.thumbCam}>📷</span>
                 </button>
-                <span className={s.name}>{item.name}</span>
+                <span className={s.name}>{t.emotions.names[item.key] ?? item.name}</span>
               </div>
             ))}
           </div>
@@ -405,7 +408,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       {/* ── NUMERI IN FILA ── */}
       {section === 'numeri' && (
         <>
-          <div className={s.emotionsHint}>Scegli come funziona il gioco &quot;Numeri in fila&quot; per il tuo bambino. Le modifiche si salvano subito.</div>
+          <div className={s.emotionsHint}>{t.parent.numbersHint}</div>
           <NumbersSettingsPanel />
         </>
       )}
@@ -413,7 +416,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       {/* ── TABELLINE ── */}
       {section === 'tabelline' && (
         <>
-          <div className={s.emotionsHint}>Scegli come funzionano le &quot;Tabelline&quot; per il tuo bambino. Le modifiche si salvano subito.</div>
+          <div className={s.emotionsHint}>{t.parent.tablesHint}</div>
           <TablesSettingsPanel />
         </>
       )}
@@ -421,7 +424,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       {/* ── LETTURA ── */}
       {section === 'lettura' && (
         <>
-          <div className={s.emotionsHint}>Adatta il testo dell&apos;area bambino: dimensione, carattere e modo di scrivere. Le modifiche si salvano subito.</div>
+          <div className={s.emotionsHint}>{t.parent.readingHint}</div>
           <ReadingSettingsPanel />
         </>
       )}
@@ -429,14 +432,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       {/* ── STORIE ── */}
       {section === 'storie' && !editingStory && (
         <>
-          <div className={s.emotionsHint}>Crea piccole storie illustrate per preparare il bambino a situazioni nuove. Tocca una storia per aggiungere le pagine.</div>
+          <div className={s.emotionsHint}>{t.parent.storiesHint}</div>
           <div className={s.list}>
             {stories.map(story => (
               <div key={story.id} className={s.item}>
                 <span className={s.storyIcon}>{story.icon}</span>
                 <button className={s.storyOpenBtn} onClick={() => { setEditingStoryId(story.id); setShowForm(false); setNewName('') }}>
                   <span className={s.name}>{story.title}</span>
-                  <span className={s.storyCount}>{story.pages.length} {story.pages.length === 1 ? 'pagina' : 'pagine'} ›</span>
+                  <span className={s.storyCount}>{t.stories.pages(story.pages.length)} ›</span>
                 </button>
                 <button className={s.delBtn} onClick={() => handleDeleteStory(story.id)}>×</button>
               </div>
@@ -444,21 +447,21 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
           </div>
           {showForm && (
             <div className={s.addFormCard}>
-              <input className={s.nameInput} type="text" placeholder="Es. Andiamo dal dentista" value={newName}
+              <input className={s.nameInput} type="text" placeholder={t.parent.storyPlaceholder} value={newName}
                 onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSaveStory()} autoFocus />
               <div className={s.formActions}>
-                <button className={s.cancelBtn} onClick={resetForm}>Annulla</button>
-                <button className={s.saveBtn} onClick={handleSaveStory} disabled={saving}>{saving ? '...' : 'Salva'}</button>
+                <button className={s.cancelBtn} onClick={resetForm}>{t.common.cancel}</button>
+                <button className={s.saveBtn} onClick={handleSaveStory} disabled={saving}>{saving ? '...' : t.common.save}</button>
               </div>
             </div>
           )}
-          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Nuova storia</button>}
+          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>{t.parent.newStory}</button>}
         </>
       )}
 
       {section === 'storie' && editingStory && (
         <>
-          <button className={s.storyBackBtn} onClick={() => { setEditingStoryId(null); setShowForm(false); setNewName('') }}>← Tutte le storie</button>
+          <button className={s.storyBackBtn} onClick={() => { setEditingStoryId(null); setShowForm(false); setNewName('') }}>{t.parent.allStories}</button>
           <div className={s.storyEditHeader}>
             <span className={s.storyIcon}>{editingStory.icon}</span>
             <span className={s.name}>{editingStory.title}</span>
@@ -473,8 +476,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
                 </button>
                 <span className={s.pageText}>{page.text}</span>
                 <div className={s.reorderBtns}>
-                  <button className={s.reorderBtn} onClick={() => handleMoveStoryPage(index, -1)} disabled={index === 0} aria-label="Sposta su">▲</button>
-                  <button className={s.reorderBtn} onClick={() => handleMoveStoryPage(index, 1)} disabled={index === editingStory.pages.length - 1} aria-label="Sposta giù">▼</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveStoryPage(index, -1)} disabled={index === 0} aria-label={t.common.moveUp}>▲</button>
+                  <button className={s.reorderBtn} onClick={() => handleMoveStoryPage(index, 1)} disabled={index === editingStory.pages.length - 1} aria-label={t.common.moveDown}>▼</button>
                 </div>
                 <button className={s.delBtn} onClick={() => handleDeleteStoryPage(page.id)}>×</button>
               </div>
@@ -484,25 +487,27 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             <div className={s.addFormCard}>
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-story">
-                  {newPhoto ? <Image src={newPhoto} alt="anteprima" width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>Foto</span></>}
+                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
                 </label>
                 <input id="new-photo-story" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
-                <textarea className={s.textArea} placeholder="Es. Prima saliamo in macchina con la mamma" value={newName}
+                <textarea className={s.textArea} placeholder={t.parent.pagePlaceholder} value={newName}
                   onChange={e => setNewName(e.target.value)} rows={3} autoFocus />
               </div>
               <div className={s.formActions}>
-                <button className={s.cancelBtn} onClick={resetForm}>Annulla</button>
-                <button className={s.saveBtn} onClick={handleSaveStoryPage} disabled={saving}>{saving ? '...' : 'Salva'}</button>
+                <button className={s.cancelBtn} onClick={resetForm}>{t.common.cancel}</button>
+                <button className={s.saveBtn} onClick={handleSaveStoryPage} disabled={saving}>{saving ? '...' : t.common.save}</button>
               </div>
             </div>
           )}
-          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>＋ Aggiungi pagina</button>}
+          {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>{t.parent.addPage}</button>}
         </>
       )}
 
+      <LanguagePicker />
+
       <ChildGenderPicker />
 
-      <button className={s.changePinBtn} onClick={onChangePinRequest}>🔑 Cambia PIN</button>
+      <button className={s.changePinBtn} onClick={onChangePinRequest}>{t.parent.changePin}</button>
     </>
   )
 }

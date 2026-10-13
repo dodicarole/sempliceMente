@@ -5,6 +5,7 @@ import ItemCard from './ItemCard'
 import { useAudio } from '@/hooks/useAudio'
 import type { RoutineItem } from '@/types'
 import s from './RoutineView.module.css'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   items: RoutineItem[]
@@ -16,6 +17,7 @@ function todayKey() {
 }
 
 export default function RoutineView({ items, onBack }: Props) {
+  const { t } = useT()
   const [checked, setChecked]       = useState<Set<string>>(new Set())
   const [showCelebr, setShowCelebr] = useState(false)
   const praise = usePraise(showCelebr)
@@ -51,11 +53,11 @@ export default function RoutineView({ items, onBack }: Props) {
 
   return (
     <>
-      <button className={s.back} onClick={onBack}>← Indietro</button>
+      <button className={s.back} onClick={onBack}>{t.common.back}</button>
 
       <div className={s.banner}>
         <div className={s.sunEmoji}>🌅</div>
-        <div className={s.title}>Routine Mattutina</div>
+        <div className={s.title}>{t.routine.title}</div>
       </div>
 
       <div className={s.progressRow}>
@@ -64,10 +66,10 @@ export default function RoutineView({ items, onBack }: Props) {
             <div key={item.id} className={`${s.dot}${checked.has(item.id) ? ` ${s.on}` : ''}`} />
           ))}
         </div>
-        <span className={s.progLabel}>{checked.size} di {items.length}</span>
+        <span className={s.progLabel}>{t.common.of(checked.size, items.length)}</span>
       </div>
 
-      <div className={s.instruction}>Fai una cosa alla volta!</div>
+      <div className={s.instruction}>{t.routine.instruction}</div>
 
       <div className={s.grid}>
         {items.map((item, index) => (
@@ -79,7 +81,7 @@ export default function RoutineView({ items, onBack }: Props) {
               item={item}
               checked={checked.has(item.id)}
               onToggle={() => toggle(item.id)}
-              doneLabel="Fatto!"
+              doneLabel={t.routine.done}
             />
           </div>
         ))}
@@ -90,8 +92,8 @@ export default function RoutineView({ items, onBack }: Props) {
           <div className={s.celebCard} onClick={e => e.stopPropagation()}>
             <div className={s.celebEmoji}>🌟</div>
             <div className={s.celebTitle}>{praise}</div>
-            <div className={s.celebSub}>Routine completata.<br />Buona giornata!</div>
-            <button className={s.celebBtn} onClick={() => setShowCelebr(false)}>Ottimo!</button>
+            <div className={s.celebSub}>{t.routine.completed}<br />{t.common.goodDay}</div>
+            <button className={s.celebBtn} onClick={() => setShowCelebr(false)}>{t.common.great}</button>
           </div>
         </div>
       )}

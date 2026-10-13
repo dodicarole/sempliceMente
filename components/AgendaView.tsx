@@ -1,8 +1,9 @@
 'use client'
 import { useMemo } from 'react'
 import Image from 'next/image'
-import { DAY_NAMES, DAY_COLORS, type AgendaItem } from '@/types'
+import { DAY_COLORS, type AgendaItem } from '@/types'
 import s from './AgendaView.module.css'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   items: AgendaItem[]
@@ -21,6 +22,7 @@ function formatTime(t: string): string {
 }
 
 export default function AgendaView({ items, dayIndex, dateLabel, onBack }: Props) {
+  const { t } = useT()
   const todayItems = useMemo(
     () => items.filter(i => i.day_of_week === dayIndex).sort((a, b) => timeToMinutes(a.time_start) - timeToMinutes(b.time_start)),
     [items, dayIndex]
@@ -39,11 +41,11 @@ export default function AgendaView({ items, dayIndex, dateLabel, onBack }: Props
   if (dayIndex === -1) {
     return (
       <>
-        <button className={s.back} onClick={onBack}>← Indietro</button>
+        <button className={s.back} onClick={onBack}>{t.common.back}</button>
         <div className={s.weekend}>
           <div className={s.weekendEmoji}>🏠</div>
-          <div className={s.weekendTitle}>Oggi niente scuola!</div>
-          <div className={s.weekendSub}>Buon riposo 😊</div>
+          <div className={s.weekendTitle}>{t.common.noSchool}</div>
+          <div className={s.weekendSub}>{t.common.rest}</div>
         </div>
       </>
     )
@@ -52,14 +54,14 @@ export default function AgendaView({ items, dayIndex, dateLabel, onBack }: Props
   if (todayItems.length === 0) {
     return (
       <>
-        <button className={s.back} onClick={onBack}>← Indietro</button>
+        <button className={s.back} onClick={onBack}>{t.common.back}</button>
         <div className={s.banner} style={{ background: DAY_COLORS[dayIndex] }}>
-          <div className={s.dayName}>{DAY_NAMES[dayIndex]}</div>
+          <div className={s.dayName}>{t.days.names[dayIndex]}</div>
           <div className={s.dayDate}>{dateLabel}</div>
         </div>
         <div className={s.empty}>
           <div className={s.emptyEmoji}>📅</div>
-          <div className={s.emptyText}>Nessuna attività per oggi</div>
+          <div className={s.emptyText}>{t.agenda.empty}</div>
         </div>
       </>
     )
@@ -67,10 +69,10 @@ export default function AgendaView({ items, dayIndex, dateLabel, onBack }: Props
 
   return (
     <>
-      <button className={s.back} onClick={onBack}>← Indietro</button>
+      <button className={s.back} onClick={onBack}>{t.common.back}</button>
 
       <div className={s.banner} style={{ background: DAY_COLORS[dayIndex] }}>
-        <div className={s.dayName}>{DAY_NAMES[dayIndex]}</div>
+        <div className={s.dayName}>{t.days.names[dayIndex]}</div>
         <div className={s.dayDate}>{dateLabel}</div>
       </div>
 
@@ -99,8 +101,8 @@ export default function AgendaView({ items, dayIndex, dateLabel, onBack }: Props
                   )}
                 </div>
                 <span className={s.cardName}>{item.name}</span>
-                {isCurrent && <span className={s.badgeNow}>Adesso!</span>}
-                {isNext    && <span className={s.badgeNext}>Dopo</span>}
+                {isCurrent && <span className={s.badgeNow}>{t.agenda.now}</span>}
+                {isNext    && <span className={s.badgeNext}>{t.agenda.next}</span>}
               </div>
             </div>
           )

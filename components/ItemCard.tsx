@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import type { BaseItem } from '@/types'
 import ZainoPicture from './ZainoPicture'
+import { useT } from '@/lib/i18n'
 import s from './ItemCard.module.css'
 
 interface Props {
@@ -13,7 +14,9 @@ interface Props {
   illustrate?: boolean
 }
 
-export default function ItemCard({ item, checked, onToggle, doneLabel = 'Dentro!', illustrate = false }: Props) {
+export default function ItemCard({ item, checked, onToggle, doneLabel, illustrate = false }: Props) {
+  const { t } = useT()
+  const label = doneLabel ?? t.zaino.inside
   return (
     <div
       className={`${s.wrap} ${checked ? s.done : ''}`}
@@ -45,7 +48,7 @@ export default function ItemCard({ item, checked, onToggle, doneLabel = 'Dentro!
         </div>
         <div className={`${s.face} ${s.back}`}>
           <div className={s.doneIcon}>✅</div>
-          <div className={s.doneLabel}>{doneLabel}</div>
+          <div className={s.doneLabel}>{label}</div>
         </div>
       </div>
     </div>

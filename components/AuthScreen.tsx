@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 import s from './AuthScreen.module.css'
+import { useT, translateServerError } from '@/lib/i18n'
+import LanguagePicker from './LanguagePicker'
 
 interface Props {
   onAuth: () => void
@@ -10,6 +12,7 @@ interface Props {
 type Mode = 'login' | 'register'
 
 export default function AuthScreen({ onAuth, onBack }: Props) {
+  const { t } = useT()
   const [mode,     setMode]     = useState<Mode>('login')
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -19,9 +22,9 @@ export default function AuthScreen({ onAuth, onBack }: Props) {
 
   const handleSubmit = async () => {
     setError('')
-    if (!email.trim() || !password) { setError('Inserisci email e password'); return }
-    if (mode === 'register' && password !== confirm) { setError('Le password non coincidono'); return }
-    if (mode === 'register' && password.length < 6)  { setError('Password di almeno 6 caratteri'); return }
+    if (!email.trim() || !password) { setError(t.auth.missing); return }
+    if (mode === 'register' && password !== confirm) { setError(t.auth.mismatch); return }
+    if (mode === 'register' && password.length < 6)  { setError(t.auth.tooShort); return }
 
     setLoading(true)
     const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register'
@@ -33,7 +36,7 @@ export default function AuthScreen({ onAuth, onBack }: Props) {
     const data = await res.json()
     setLoading(false)
 
-    if (!res.ok) { setError(data.error ?? 'Errore'); return }
+    if (!res.ok) { setError(data.error ? translateServerError(t, data.error) : t.auth.error); return }
     onAuth()
   }
 
@@ -47,19 +50,20 @@ export default function AuthScreen({ onAuth, onBack }: Props) {
   return (
     <div className={s.container}>
       {onBack && (
-        <button className={s.backBtn} onClick={onBack}>← Torna alla demo</button>
+        <button className={s.backBtn} onClick={onBack}>{t.auth.backToDemo}</button>
       )}
       <div className={s.logo}>🌟</div>
       <h1 className={s.appName}>SempliceMente Bimbi</h1>
-      <p className={s.tagline}>Ogni giorno, un passo alla volta</p>
+      <p className={s.tagline}>{t.auth.tagline}</p>
+      <div style={{ display: 'flex', justifyContent: 'center' }}><LanguagePicker compact /></div>
 
       <div className={s.card}>
         <div className={s.tabs}>
           <button className={`${s.tab}${mode === 'login' ? ` ${s.active}` : ''}`} onClick={() => switchMode('login')}>
-            Accedi
+            {t.auth.loginTab}
           </button>
           <button className={`${s.tab}${mode === 'register' ? ` ${s.active}` : ''}`} onClick={() => switchMode('register')}>
-            Registrati
+            {t.auth.registerTab}
           </button>
         </div>
 
@@ -67,7 +71,7 @@ export default function AuthScreen({ onAuth, onBack }: Props) {
           <input
             className={s.input}
             type="email"
-            placeholder="Email"
+            placeholder={t.auth.email}
             value={email}
             onChange={e => setEmail(e.target.value)}
             autoComplete="email"
@@ -75,7 +79,7 @@ export default function AuthScreen({ onAuth, onBack }: Props) {
           <input
             className={s.input}
             type="password"
-            placeholder="Password"
+            placeholder={t.auth.password}
             value={password}
             onChange={e => setPassword(e.target.value)}
             onKeyDown={e => mode === 'login' && e.key === 'Enter' && handleSubmit()}
@@ -85,7 +89,7 @@ export default function AuthScreen({ onAuth, onBack }: Props) {
             <input
               className={s.input}
               type="password"
-              placeholder="Ripeti password"
+              placeholder={t.auth.repeatPassword}
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSubmit()}
@@ -97,7 +101,7 @@ export default function AuthScreen({ onAuth, onBack }: Props) {
         {error && <div className={s.error}>{error}</div>}
 
         <button className={s.submitBtn} onClick={handleSubmit} disabled={loading}>
-          {loading ? '...' : mode === 'login' ? 'Accedi' : 'Crea account'}
+          {loading ? '...' : mode === 'login' ? t.auth.login : t.auth.register}
         </button>
       </div>
     </div>

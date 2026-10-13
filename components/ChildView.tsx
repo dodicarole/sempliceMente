@@ -3,8 +3,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { usePraise } from '@/hooks/usePraise'
 import ItemCard from './ItemCard'
 import { useAudio } from '@/hooks/useAudio'
-import { DAY_NAMES, DAY_COLORS, type ScheduleItem } from '@/types'
+import { DAY_COLORS, type ScheduleItem } from '@/types'
 import s from './ChildView.module.css'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   items: ScheduleItem[]
@@ -18,6 +19,7 @@ function todayKey() {
 }
 
 export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props) {
+  const { t } = useT()
   const [checked, setChecked]       = useState<Set<string>>(new Set())
   const [showCelebr, setShowCelebr] = useState(false)
   const praise = usePraise(showCelebr)
@@ -55,11 +57,11 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
   if (dayIndex === -1) {
     return (
       <>
-        <button className={s.back} onClick={onBack}>← Indietro</button>
+        <button className={s.back} onClick={onBack}>{t.common.back}</button>
         <div className={s.weekend}>
           <div className={s.weekendEmoji}>🏠</div>
-          <div className={s.weekendTitle}>Oggi niente scuola!</div>
-          <div className={s.weekendSub}>Buon riposo 😊</div>
+          <div className={s.weekendTitle}>{t.common.noSchool}</div>
+          <div className={s.weekendSub}>{t.common.rest}</div>
         </div>
       </>
     )
@@ -69,9 +71,9 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
 
   return (
     <>
-      <button className={s.back} onClick={onBack}>← Indietro</button>
+      <button className={s.back} onClick={onBack}>{t.common.back}</button>
       <div className={s.banner} style={{ background: color }}>
-        <div className={s.dayName}>{DAY_NAMES[dayIndex]}</div>
+        <div className={s.dayName}>{t.days.names[dayIndex]}</div>
         <div className={s.dayDate}>{dateLabel}</div>
       </div>
 
@@ -81,10 +83,10 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
             <div key={item.id} className={`${s.dot}${checked.has(item.id) ? ` ${s.on}` : ''}`} />
           ))}
         </div>
-        <span className={s.progLabel}>{checked.size} di {items.length}</span>
+        <span className={s.progLabel}>{t.common.of(checked.size, items.length)}</span>
       </div>
 
-      <div className={s.instruction}>Metti nello zaino!</div>
+      <div className={s.instruction}>{t.zaino.instruction}</div>
 
       <div className={s.grid}>
         {items.map(item => (
@@ -103,8 +105,8 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
           <div className={s.celebCard} onClick={e => e.stopPropagation()}>
             <div className={s.celebEmoji}>🎉</div>
             <div className={s.celebTitle}>{praise}</div>
-            <div className={s.celebSub}>Lo zaino è pronto.<br />Buona giornata!</div>
-            <button className={s.celebBtn} onClick={() => setShowCelebr(false)}>Ottimo!</button>
+            <div className={s.celebSub}>{t.zaino.ready}<br />{t.common.goodDay}</div>
+            <button className={s.celebBtn} onClick={() => setShowCelebr(false)}>{t.common.great}</button>
           </div>
         </div>
       )}

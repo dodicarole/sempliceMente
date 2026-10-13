@@ -1,13 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { loadChildGender, saveChildGender, loadChildName, saveChildName, type ChildGender } from '@/lib/praise'
+import { useT } from '@/lib/i18n'
 import s from './NumbersSettingsPanel.module.css'
 
-const OPTIONS: [ChildGender, string][] = [
-  ['m', '👦 Bambino'],
-  ['f', '👧 Bambina'],
-  ['n', 'Non specificare'],
-]
 
 const inputStyle: React.CSSProperties = {
   minHeight: 50,
@@ -23,6 +19,8 @@ const inputStyle: React.CSSProperties = {
 }
 
 export default function ChildGenderPicker() {
+  const { t } = useT()
+  const OPTIONS: [ChildGender, string][] = [['m', t.child.boy], ['f', t.child.girl], ['n', t.child.unspecified]]
   const [gender, setGender] = useState<ChildGender>('n')
   const [name, setName]     = useState('')
   const [saved, setSaved]   = useState(false)
@@ -47,27 +45,27 @@ export default function ChildGenderPicker() {
   return (
     <div className={s.panel}>
       <div className={s.group}>
-        <label className={s.label} htmlFor="child-name">Nome del bambino o della bambina</label>
+        <label className={s.label} htmlFor="child-name">{t.child.nameLabel}</label>
         <input
           id="child-name"
           style={inputStyle}
           value={name}
           maxLength={20}
-          placeholder="Per esempio: Christopher"
+          placeholder={t.child.namePlaceholder}
           autoComplete="off"
           onChange={e => changeName(e.target.value)}
         />
       </div>
       <div className={s.group}>
-        <span className={s.label}>Chi usa l&apos;app?</span>
+        <span className={s.label}>{t.child.who}</span>
         <div className={s.chips}>
           {OPTIONS.map(([g, label]) => (
             <button key={g} className={s.chip} aria-pressed={gender === g} onClick={() => choose(g)}>{label}</button>
           ))}
         </div>
-        <span className={s.label}>Servono per le frasi di incoraggiamento, come &quot;Bravo, Christopher!&quot; o &quot;Brava!&quot;. Con &quot;Non specificare&quot; l&apos;app usa solo frasi valide per tutti. Il nome resta solo su questo dispositivo.</span>
+        <span className={s.label}>{t.child.note}</span>
       </div>
-      {saved && <div className={s.saved}>✓ Salvato. Vale per questo dispositivo.</div>}
+      {saved && <div className={s.saved}>{t.common.saved}</div>}
     </div>
   )
 }

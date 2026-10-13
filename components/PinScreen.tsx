@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react'
 import { useAudio } from '@/hooks/useAudio'
 import s from './PinScreen.module.css'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   title?: string
@@ -11,7 +12,9 @@ interface Props {
   onSubmit: (pin: string) => Promise<boolean>
 }
 
-export default function PinScreen({ title = 'Area Genitore', subtitle, showHint = false, onSubmit }: Props) {
+export default function PinScreen({ title, subtitle, showHint = false, onSubmit }: Props) {
+  const { t } = useT()
+  const heading = title ?? t.pin.title
   const [buffer,   setBuffer]   = useState('')
   const [loading,  setLoading]  = useState(false)
   const [shaking,  setShaking]  = useState(false)
@@ -50,10 +53,10 @@ export default function PinScreen({ title = 'Area Genitore', subtitle, showHint 
 
   return (
     <div className={s.screen}>
-      {showHint && <div className={s.hint}>💡 Prima volta? Il PIN è <strong>1234</strong></div>}
+      {showHint && <div className={s.hint}>{t.pin.hint} <strong>1234</strong></div>}
 
       <div className={s.lockIcon}>🔐</div>
-      <div className={s.title}>{title}</div>
+      <div className={s.title}>{heading}</div>
       <div className={s.subtitle}>{subtitle}</div>
 
       <div className={`${s.dots} ${shaking ? s.shaking : ''}`} aria-live="polite">
@@ -71,7 +74,7 @@ export default function PinScreen({ title = 'Area Genitore', subtitle, showHint 
         ))}
         <div className={`${s.key} ${s.keyBlank}`} aria-hidden="true" />
         <button className={s.key} onClick={() => handlePress('0')} disabled={loading}>0</button>
-        <button className={`${s.key} ${s.keyDel}`} onClick={handleDelete} disabled={loading} aria-label="Cancella">⌫</button>
+        <button className={`${s.key} ${s.keyDel}`} onClick={handleDelete} disabled={loading} aria-label={t.pin.delete}>⌫</button>
       </div>
 
     </div>

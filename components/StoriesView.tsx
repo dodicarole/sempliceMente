@@ -6,6 +6,7 @@ import { useAudio } from '@/hooks/useAudio'
 import { type Story } from '@/types'
 import { loadReadingSettings } from '@/lib/readingSettings'
 import s from './StoriesView.module.css'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   stories: Story[]
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function StoriesView({ stories, onBack }: Props) {
+  const { t } = useT()
   const [story, setStory]           = useState<Story | null>(null)
   const [pageIndex, setPageIndex]   = useState(0)
   const [showCelebr, setShowCelebr] = useState(false)
@@ -60,9 +62,9 @@ export default function StoriesView({ stories, onBack }: Props) {
     const synth = window.speechSynthesis
     synth.cancel()
     const utt = new SpeechSynthesisUtterance(text)
-    utt.lang = 'it-IT'
+    utt.lang = t.locale
     utt.rate = 0.9
-    const voice = synth.getVoices().find(v => v.lang.toLowerCase().startsWith('it'))
+    const voice = synth.getVoices().find(v => v.lang.toLowerCase().startsWith(t.speechLang))
     if (voice) utt.voice = voice
     clearTimers()
     stopped.current = false
@@ -117,7 +119,7 @@ export default function StoriesView({ stories, onBack }: Props) {
     uttRef.current = utt
     setSpeaking(true)
     synth.speak(utt)
-  }, [canSpeak])
+  }, [canSpeak, t])
 
   const speak = useCallback((text: string) => {
     if (speaking) { stopSpeaking(); return }
@@ -172,20 +174,20 @@ export default function StoriesView({ stories, onBack }: Props) {
   if (!story) {
     return (
       <>
-        <button className={s.back} onClick={onBack}>← Indietro</button>
+        <button className={s.back} onClick={onBack}>{t.common.back}</button>
 
         <div className={s.banner}>
           <span className={s.bannerEmoji}>📖</span>
           <div>
-            <div className={s.bannerTitle}>Le mie storie</div>
-            <div className={s.bannerSub}>Scegli una storia da leggere</div>
+            <div className={s.bannerTitle}>{t.stories.title}</div>
+            <div className={s.bannerSub}>{t.stories.sub}</div>
           </div>
         </div>
 
         {stories.length === 0 ? (
           <div className={s.empty}>
             <span className={s.emptyEmoji}>📚</span>
-            <div className={s.emptyText}>Non ci sono ancora storie.<br />Chiedi a mamma o papà di crearne una!</div>
+            <div className={s.emptyText}>{t.stories.empty}<br />{t.stories.emptyAsk}</div>
           </div>
         ) : (
           <div className={s.list}>
@@ -194,7 +196,7 @@ export default function StoriesView({ stories, onBack }: Props) {
                 <span className={s.storyIcon}>{st.icon}</span>
                 <span className={s.storyInfo}>
                   <span className={s.storyTitle}>{st.title}</span>
-                  <span className={s.storyPages}>{st.pages.length} {st.pages.length === 1 ? 'pagina' : 'pagine'}</span>
+                  <span className={s.storyPages}>{t.stories.pages(st.pages.length)}</span>
                 </span>
                 <span className={s.storyArrow}>›</span>
               </button>
@@ -211,7 +213,7 @@ export default function StoriesView({ stories, onBack }: Props) {
 
   return (
     <>
-      <button className={s.back} onClick={closeStory}>← Le storie</button>
+      <button className={s.back} onClick={closeStory}>{t.stories.backToList}</button>
 
       <div className={s.readerHeader}>
         <span className={s.readerIcon}>{story.icon}</span>
@@ -249,16 +251,16 @@ export default function StoriesView({ stories, onBack }: Props) {
           <button
             className={`${s.speakBtn}${speaking ? ` ${s.speakOn}` : ''}`}
             onClick={() => speak(page.text)}
-            aria-label={speaking ? 'Ferma la lettura' : 'Leggi ad alta voce'}
+            aria-label={speaking ? t.stories.stopAria : t.stories.listenAria}
           >
-            {speaking ? '⏹ Ferma' : '🔊 Ascolta'}
+            {speaking ? t.stories.stop : t.stories.listen}
           </button>
         )}
       </div>
 
       <div className={s.navRow}>
         <button className={s.navBtn} onClick={goPrev} disabled={pageIndex === 0}>←</button>
-        <span className={s.navLabel}>{pageIndex + 1} di {story.pages.length}</span>
+        <span className={s.navLabel}>{t.common.of(pageIndex + 1, story.pages.length)}</span>
         <button className={`${s.navBtn} ${s.navNext}`} onClick={goNext}>
           {isLast ? '✓' : '→'}
         </button>
@@ -269,8 +271,8 @@ export default function StoriesView({ stories, onBack }: Props) {
           <div className={s.celebCard} onClick={e => e.stopPropagation()}>
             <div className={s.celebEmoji}>🌟</div>
             <div className={s.celebTitle}>{praise}</div>
-            <div className={s.celebSub}>Hai letto tutta la storia.</div>
-            <button className={s.celebBtn} onClick={closeStory}>Fine!</button>
+            <div className={s.celebSub}>{t.stories.readAll}</div>
+            <button className={s.celebBtn} onClick={closeStory}>{t.stories.end}</button>
           </div>
         </div>
       )}
