@@ -16,13 +16,18 @@ export const READING_DEFAULTS: ReadingSettings = {
   size: 'normal', font: 'standard', uppercase: false, spacing: 'normal', autoRead: false,
 }
 
-export const READING_OPTIONS: { key: keyof ReadingSettings; label: string; values: [ReadingSettings[keyof ReadingSettings], string][] }[] = [
-  { key: 'size',      label: 'Dimensione del testo',            values: [['normal', 'Normale'], ['large', 'Grande'], ['xlarge', 'Molto grande']] },
-  { key: 'font',      label: 'Carattere',                       values: [['standard', 'Standard'], ['leggibile', 'Alta leggibilità']] },
-  { key: 'uppercase', label: 'Scrittura',                       values: [[false, 'Normale'], [true, 'STAMPATO MAIUSCOLO']] },
-  { key: 'spacing',   label: 'Spazio tra lettere e righe',      values: [['normal', 'Normale'], ['wide', 'Più ampio']] },
-  { key: 'autoRead',  label: 'Leggi le storie ad alta voce da sole', values: [[false, 'No'], [true, 'Sì']] },
-]
+type ReadingTexts = import('@/lib/i18n/it').Dict['reading']
+
+/** Opzioni con le etichette nella lingua scelta */
+export function readingOptions(r: ReadingTexts): { key: keyof ReadingSettings; label: string; values: [ReadingSettings[keyof ReadingSettings], string][] }[] {
+  return [
+    { key: 'size',      label: r.size,     values: [['normal', r.sizeNormal], ['large', r.sizeLarge], ['xlarge', r.sizeXLarge]] },
+    { key: 'font',      label: r.font,     values: [['standard', r.fontStandard], ['leggibile', r.fontReadable]] },
+    { key: 'uppercase', label: r.writing,  values: [[false, r.writingNormal], [true, r.writingUpper]] },
+    { key: 'spacing',   label: r.spacing,  values: [['normal', r.spacingNormal], ['wide', r.spacingWide]] },
+    { key: 'autoRead',  label: r.autoRead, values: [[false, r.no], [true, r.yes]] },
+  ]
+}
 
 const KEY = 'lettura_impostazioni'
 
