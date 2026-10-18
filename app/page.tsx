@@ -10,6 +10,7 @@ import EmotionsView from '@/components/EmotionsView'
 import StoriesView from '@/components/StoriesView'
 import NumbersView from '@/components/NumbersView'
 import TablesView from '@/components/TablesView'
+import SplitView from '@/components/SplitView'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -22,7 +23,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -253,6 +254,11 @@ export default function Home() {
                   <span className={s.featureTitle}>{t.home.tablesTitle}</span>
                   <span className={s.featureSub}>{t.home.tablesSub}</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#2F9E44' } as React.CSSProperties} onClick={() => setChildSection('scomponi')}>
+                  <span className={s.featureEmoji}>🧱</span>
+                  <span className={s.featureTitle}>{t.split.title}</span>
+                  <span className={s.featureSub}>{t.split.homeSub}</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={demoZaino} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -268,6 +274,8 @@ export default function Home() {
               <NumbersView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'tabelline' ? (
               <TablesView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'scomponi' ? (
+              <SplitView allowSettings onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -378,6 +386,11 @@ export default function Home() {
                   <span className={s.featureTitle}>{t.home.tablesTitle}</span>
                   <span className={s.featureSub}>{t.home.tablesSub}</span>
                 </button>
+                <button className={s.featureCard} style={{ '--accent': '#2F9E44' } as React.CSSProperties} onClick={() => setChildSection('scomponi')}>
+                  <span className={s.featureEmoji}>🧱</span>
+                  <span className={s.featureTitle}>{t.split.title}</span>
+                  <span className={s.featureSub}>{t.split.homeSub}</span>
+                </button>
               </div>
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
@@ -393,6 +406,8 @@ export default function Home() {
               <NumbersView onBack={() => setChildSection('home')} />
             ) : childSection === 'tabelline' ? (
               <TablesView onBack={() => setChildSection('home')} />
+            ) : childSection === 'scomponi' ? (
+              <SplitView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
