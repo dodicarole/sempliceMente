@@ -210,6 +210,20 @@ export const fr: Dict = {
     note: 'Ces réglages s’appliquent à tout l’espace enfant. Dans les histoires, le bouton 🔊 Écouter lit le texte et met en valeur les mots au fur et à mesure.',
   },
 
+  tedo: {
+    name: 'Tedo la grenouille',
+    dance: `Tedo danse pour toi${nb}! 💃`,
+    flip: `Une galipette pour toi${nb}! 🤸`,
+    jump: `Quel saut${nb}! Jusqu’aux nuages${nb}! ☁️`,
+    wheel: `Tedo fait la roue pour toi${nb}! 🎡`,
+    five: `Tape m’en cinq${nb}! ✋`,
+    croak: `Croâ croâ${nb}! 🐸`,
+    burp: `Burp${nb}! Plein${nb}! 😋`,
+    settingFun: 'Ton rigolo (Tedo la grenouille et ses gags)',
+    settingSound: 'Sons rigolos',
+    settingNote: 'Avec le ton rigolo désactivé, l’application félicite seulement avec des phrases calmes et l’étoile habituelle.',
+  },
+
   serverErrors: {
     'Caricamento non riuscito': 'Le chargement a échoué',
     'Dati mancanti': 'Données manquantes',

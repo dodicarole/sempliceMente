@@ -208,6 +208,20 @@ export const it = {
     note: "Valgono per tutta l'area del bambino. Nelle storie, il bottone 🔊 Ascolta legge il testo e illumina le parole mentre la voce va avanti.",
   },
 
+  tedo: {
+    name: 'Tedo la rana',
+    dance: 'Tedo balla per te! 💃',
+    flip: 'Una capriola per te! 🤸',
+    jump: 'Che salto! Fino alle nuvole! ☁️',
+    wheel: 'Tedo fa la ruota per te! 🎡',
+    five: 'Batti il cinque! ✋',
+    croak: 'Cra cra! 🐸',
+    burp: 'Burp! Pieno! 😋',
+    settingFun: 'Tono divertente (Tedo la rana e le sue gag)',
+    settingSound: 'Suoni buffi',
+    settingNote: "Con il tono divertente spento, l'app festeggia solo con frasi tranquille e la stellina di sempre.",
+  },
+
   /** Messaggi d'errore del server: in italiano restano come sono */
   serverErrors: {} as Record<string, string>,
 }
