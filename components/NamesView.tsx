@@ -32,7 +32,6 @@ function useVoice(enabled: boolean) {
     const fin = () => { if (!done) { done = true; resolve() } }
     try {
       const synth = window.speechSynthesis
-      if (interrupt) synth.cancel()
       const u = new SpeechSynthesisUtterance(text)
       u.lang = 'it-IT'; u.rate = 0.85
       const v = synth.getVoices().find(v => v.lang.toLowerCase().startsWith('it'))
@@ -40,7 +39,8 @@ function useVoice(enabled: boolean) {
       u.onend = fin; u.onerror = fin
       keep.push(u); if (keep.length > 20) keep.shift()
       setTimeout(fin, 2000 + text.length * 120)
-      synth.speak(u)
+      // dopo cancel() alcuni browser ignorano la frase successiva se arriva subito: aspettiamo un attimo
+      if (interrupt) { synth.cancel(); setTimeout(() => synth.speak(u), 80) } else synth.speak(u)
     } catch (_) { fin() }
   }), [enabled])
   const say = useCallback((text: string, ms = 600) => Promise.all([speak(text), wait(ms)]).then(() => {}), [speak])
@@ -194,9 +194,10 @@ export default function NamesView({ onBack, allowSettings = false }: Props) {
   const [run, setRun]             = useState(0)
   const [celeb, setCeleb]         = useState<Celebration | null>(null)
   const [showPanel, setShowPanel] = useState(false)
+  const [ready, setReady]         = useState(false)  // il gioco parte solo con le impostazioni salvate già caricate
   const { speak, say } = useVoice(settings.voice)
 
-  useEffect(() => { setSettings(loadNamesSettings()) }, [])
+  useEffect(() => { setSettings(loadNamesSettings()); setReady(true) }, [])
   useEffect(() => () => hush(), [])
 
   const goMode = (m: ModeId) => { hush(); setCeleb(null); setMode(m); setRun(r => r + 1) }
@@ -216,7 +217,7 @@ export default function NamesView({ onBack, allowSettings = false }: Props) {
         ))}
       </nav>
       <section className={s.card} aria-live="polite">
-        {celeb ? (
+        {!ready ? null : celeb ? (
           <>
             <Tedo gag={celeb.gag} />
             <p className={s.winTitle}>{celeb.phrase}</p>

@@ -43,7 +43,6 @@ function useVoice(enabled: boolean, t: Dict) {
     const fin = () => { if (!done) { done = true; resolve() } }
     try {
       const synth = window.speechSynthesis
-      if (interrupt) synth.cancel()
       const u = new SpeechSynthesisUtterance(text)
       u.lang = t.locale
       u.rate = 0.85
@@ -52,7 +51,8 @@ function useVoice(enabled: boolean, t: Dict) {
       u.onend = fin; u.onerror = fin
       keep.push(u); if (keep.length > 20) keep.shift()
       setTimeout(fin, 2000 + text.length * 120) // sicurezza se il browser non avvisa
-      synth.speak(u)
+      // dopo cancel() alcuni browser ignorano la frase successiva se arriva subito: aspettiamo un attimo
+      if (interrupt) { synth.cancel(); setTimeout(() => synth.speak(u), 80) } else synth.speak(u)
     } catch (_) { fin() }
   }), [enabled, t])
   /** Parla e aspetta almeno `ms` millisecondi (anche con la voce spenta) */
@@ -207,7 +207,7 @@ function Split({ settings, speak, say, onFinish }: {
   onFinish: () => void
 }) {
   const { t } = useT()
-  const list = useMemo(() => pickNumbers(settings), [settings])
+  const list = useMemo(() => pickNumbers(settings), [settings.level, settings.zeros]) // eslint-disable-line react-hooks/exhaustive-deps
   const [qi, setQi]           = useState(0)
   const [pi, setPi]           = useState(0)
   const [hint, setHint]       = useState(false)
@@ -330,16 +330,19 @@ export default function SplitView({ onBack, allowSettings = false }: Props) {
   const [run, setRun]             = useState(0)
   const [celeb, setCeleb]         = useState<Celebration | null>(null)
   const [showPanel, setShowPanel] = useState(false)
+  const [ready, setReady]         = useState(false)  // il gioco parte solo con le impostazioni salvate già caricate
   const { speak, say } = useVoice(settings.voice, t)
 
-  useEffect(() => { setSettings(loadSplitSettings()) }, [])
+  useEffect(() => { setSettings(loadSplitSettings()); setReady(true) }, [])
   useEffect(() => () => hush(), [])
 
   const goTab = (next: 'build' | 'split') => { hush(); setCeleb(null); setTab(next); setRun(r => r + 1) }
   const finish = () => { const c = pickCelebration(t); setCeleb(c); speak(c.phrase) }
 
   let body: ReactNode
-  if (celeb) {
+  if (!ready) {
+    body = null
+  } else if (celeb) {
     body = (
       <>
         <Tedo gag={celeb.gag} />
