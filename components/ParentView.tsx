@@ -6,13 +6,14 @@ import NumbersSettingsPanel from './NumbersSettingsPanel'
 import TablesSettingsPanel from './TablesSettingsPanel'
 import ChildGenderPicker from './ChildGenderPicker'
 import FunSettingsPanel from './FunSettingsPanel'
+import SplitSettingsPanel from './SplitSettingsPanel'
 import ReadingSettingsPanel from './ReadingSettingsPanel'
 import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from './LanguagePicker'
 
-type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'lettura'
+type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -237,13 +238,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       </div>
 
       <div className={s.sectionToggle}>
-        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'numeri', 'tabelline', 'lettura'] as Section[]).map(sec => (
+        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'numeri', 'tabelline', 'scomponi', 'lettura'] as Section[]).map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : '🔤'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : '🔤'}
           </button>
         ))}
       </div>
@@ -419,6 +420,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <>
           <div className={s.emotionsHint}>{t.parent.tablesHint}</div>
           <TablesSettingsPanel />
+        </>
+      )}
+
+      {/* ── SCOMPONI ── */}
+      {section === 'scomponi' && (
+        <>
+          <div className={s.emotionsHint}>{t.split.parentHint}</div>
+          <SplitSettingsPanel />
         </>
       )}
 
