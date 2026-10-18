@@ -8,13 +8,14 @@ import ChildGenderPicker from './ChildGenderPicker'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
+import EnglishSettingsPanel from './EnglishSettingsPanel'
 import ReadingSettingsPanel from './ReadingSettingsPanel'
 import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from './LanguagePicker'
 
-type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'lettura'
+type Section = 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -239,13 +240,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       </div>
 
       <div className={s.sectionToggle}>
-        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'numeri', 'tabelline', 'scomponi', 'nomi', 'lettura'] as Section[]).filter(sec => sec !== 'nomi' || lang === 'it').map(sec => (
+        {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'numeri', 'tabelline', 'scomponi', 'nomi', 'english', 'lettura'] as Section[]).filter(sec => sec !== 'nomi' || lang === 'it').map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : '🔤'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : '🔤'}
           </button>
         ))}
       </div>
@@ -437,6 +438,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <>
           <div className={s.emotionsHint}>Scegli come funziona &quot;Classifica i nomi&quot; per il tuo bambino. Le modifiche si salvano subito.</div>
           <NamesSettingsPanel />
+        </>
+      )}
+
+      {/* ── ENGLISH TIME ── */}
+      {section === 'english' && (
+        <>
+          <div className={s.emotionsHint}>{t.english.parentHint}</div>
+          <EnglishSettingsPanel />
         </>
       )}
 

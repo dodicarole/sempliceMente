@@ -9,6 +9,7 @@
 /* Section toggle */
 .sectionToggle {
   display: flex;
+  flex-wrap: wrap;   /* con tante sezioni le icone vanno su due righe invece di schiacciarsi */
   background: rgba(31, 33, 71, 0.08);
   border-radius: 14px;
   padding: 4px;
@@ -16,7 +17,8 @@
 }
 
 .sectionBtn {
-  flex: 1;
+  flex: 1 0 44px;
+  min-height: 44px;
   padding: 10px 0;
   border: none;
   background: transparent;
