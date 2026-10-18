@@ -3,6 +3,7 @@ import type { Dict } from '@/lib/i18n/it'
 export interface SplitSettings {
   level: '2' | '3' | 'mix'
   zeros: boolean
+  table: boolean
   blocks: boolean
   zeroTags: boolean
   houses: boolean
@@ -11,7 +12,7 @@ export interface SplitSettings {
 }
 
 export const SPLIT_DEFAULTS: SplitSettings = {
-  level: 'mix', zeros: false, blocks: true, zeroTags: true, houses: true, voice: true, autoHelp: true,
+  level: 'mix', zeros: false, table: true, blocks: true, zeroTags: true, houses: true, voice: true, autoHelp: true,
 }
 
 const KEY = 'scomposizione_impostazioni'
@@ -30,6 +31,7 @@ export function splitOptions(t: Dict): { key: keyof SplitSettings; label: string
   return [
     { key: 'level',    label: s.setLevel,    values: [['2', s.level2], ['3', s.level3], ['mix', s.levelMix]] },
     { key: 'zeros',    label: s.setZeros,    values: [[false, no], [true, yes]] },
+    { key: 'table',    label: s.setTable,    values: [[true, yes], [false, no]] },
     { key: 'blocks',   label: s.setBlocks,   values: [[true, yes], [false, no]] },
     { key: 'zeroTags', label: s.setZeroTags, values: [[true, yes], [false, no]] },
     { key: 'houses',   label: s.setHouses,   values: [[true, yes], [false, no]] },
