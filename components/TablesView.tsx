@@ -5,7 +5,9 @@ import {
   TABLES_DEFAULTS, loadTablesSettings, loadTablesProgress, saveTablesProgress, phasesFor,
   type TablesSettings, type TablesProgress, type TablesPhase,
 } from '@/lib/tablesSettings'
-import { randomPraise } from '@/lib/praise'
+import { useT } from '@/lib/i18n'
+import { pickCelebration, type Celebration } from '@/lib/fun'
+import Tedo from './Tedo'
 import s from './TablesView.module.css'
 
 interface Props {
@@ -348,12 +350,13 @@ function TablePlay({ t, settings, progress, say, onPhaseDone, onHome }: {
   const [found, setFound] = useState<Set<number>>(new Set())
   const [won, setWon]     = useState(false)
   const [run, setRun]     = useState(0)
-  const [praise, setPraise] = useState('')
+  const [celeb, setCeleb] = useState<Celebration | null>(null)
+  const { t: tr } = useT()
   const done = (progress[t] as TablesPhase[] | undefined) ?? []
 
   const light = useCallback((k: number) => setFound(prev => new Set(prev).add(k)), [])
   const goTo  = (p: TablesPhase) => { setPhase(p); setWon(false); setRun(r => r + 1) }
-  const finish = () => { const p = randomPraise(); setPraise(p); onPhaseDone(t, phase); setWon(true); say(p) }
+  const finish = () => { const c = pickCelebration(tr); setCeleb(c); onPhaseDone(t, phase); setWon(true); say(c.phrase) }
   const next = list[list.indexOf(phase) + 1]
   const nextInfo = PHASES.find(p => p.id === next)
 
@@ -384,8 +387,8 @@ function TablePlay({ t, settings, progress, say, onPhaseDone, onHome }: {
         <div className={s.stage} aria-live="polite">
           {won ? (
             <>
-              <div className={s.star} aria-hidden="true">⭐</div>
-              <p className={s.winTitle}>{praise}</p>
+              <Tedo gag={celeb?.gag ?? null} />
+              <p className={s.winTitle}>{celeb?.phrase}</p>
               <div className={s.row}>
                 {nextInfo
                   ? <button className={`${s.btn} ${s.main}`} onClick={() => goTo(nextInfo.id)}>{nextInfo.em} Ora: {nextInfo.label}</button>
@@ -425,7 +428,8 @@ function Mixed({ settings, say, onDone, onHome }: {
 }) {
   const [run, setRun] = useState(0)
   const [won, setWon] = useState(false)
-  const [praise, setPraise] = useState('')
+  const [celeb, setCeleb] = useState<Celebration | null>(null)
+  const { t: tr } = useT()
 
   const questions = useMemo<[number, number][]>(() => {
     const pairs: [number, number][] = []
@@ -435,15 +439,15 @@ function Mixed({ settings, say, onDone, onHome }: {
     return list.slice(0, settings.mixCount)
   }, [settings.visible, settings.upTo, settings.mixCount, run])
 
-  const finish = () => { const p = randomPraise(); setPraise(p); onDone(); setWon(true); say(p) }
+  const finish = () => { const c = pickCelebration(tr); setCeleb(c); onDone(); setWon(true); say(c.phrase) }
 
   return (
     <section className={s.stagecard}>
       <div className={s.stage} aria-live="polite">
         {won ? (
           <>
-            <div className={s.star} aria-hidden="true">🏆</div>
-            <p className={s.winTitle}>{praise}</p>
+            <Tedo gag={celeb?.gag ?? null} fallback="🏆" />
+            <p className={s.winTitle}>{celeb?.phrase}</p>
             <div className={s.row}>
               <button className={`${s.btn} ${s.main}`} onClick={() => { setWon(false); setRun(r => r + 1) }}>🎲 Ancora</button>
               <button className={s.btn} onClick={onHome}>🏠 Tabelline</button>

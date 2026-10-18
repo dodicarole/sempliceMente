@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { usePraise } from '@/hooks/usePraise'
+import { BurpingBag } from './Tedo'
+import { loadFunSettings } from '@/lib/fun'
 import ItemCard from './ItemCard'
 import { useAudio } from '@/hooks/useAudio'
 import { DAY_COLORS, type ScheduleItem } from '@/types'
@@ -103,7 +105,7 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
       {showCelebr && (
         <div className={s.overlay} onClick={() => setShowCelebr(false)}>
           <div className={s.celebCard} onClick={e => e.stopPropagation()}>
-            <div className={s.celebEmoji}>🎉</div>
+            <BurpingBag fun={loadFunSettings().fun} />
             <div className={s.celebTitle}>{praise}</div>
             <div className={s.celebSub}>{t.zaino.ready}<br />{t.common.goodDay}</div>
             <button className={s.celebBtn} onClick={() => setShowCelebr(false)}>{t.common.great}</button>

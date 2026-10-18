@@ -5,6 +5,7 @@ import { DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIc
 import NumbersSettingsPanel from './NumbersSettingsPanel'
 import TablesSettingsPanel from './TablesSettingsPanel'
 import ChildGenderPicker from './ChildGenderPicker'
+import FunSettingsPanel from './FunSettingsPanel'
 import ReadingSettingsPanel from './ReadingSettingsPanel'
 import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
@@ -506,6 +507,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       <LanguagePicker />
 
       <ChildGenderPicker />
+
+      <FunSettingsPanel />
 
       <button className={s.changePinBtn} onClick={onChangePinRequest}>{t.parent.changePin}</button>
     </>
