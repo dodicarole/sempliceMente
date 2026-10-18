@@ -275,7 +275,7 @@ function Split({ settings, speak, say, onFinish }: {
     <>
       <div className={s.progress}>{list.map((_, i) => <span key={i} className={i < qi ? s.pOk : i === qi ? s.pOn : ''} />)}</div>
       <ColoredNumber n={n} />
-      <PlaceTable n={n} settings={settings} focus={part?.k} />
+      {settings.table && <PlaceTable n={n} settings={settings} focus={part?.k} />}
 
       <div className={s.equation}>
         <span>{n} =</span>
