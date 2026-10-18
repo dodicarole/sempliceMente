@@ -248,6 +248,7 @@ export const fr: Dict = {
     again: '🔄 Encore',
     setLevel: 'Nombres', level2: '2 chiffres', level3: '3 chiffres', levelMix: 'Mélangés',
     setZeros: 'Nombres avec un zéro (comme 305 ou 70)',
+    setTable: 'Tableau c · d · u dans « Décompose » (avec « Non », il reste seulement le nombre à compléter)',
     setBlocks: 'Afficher les blocs',
     setZeroTags: 'Rappel des zéros au-dessus des colonnes (00 · 0 · rien)',
     setHouses: 'Maisons avec les zéros qui tombent',

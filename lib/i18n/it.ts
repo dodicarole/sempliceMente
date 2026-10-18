@@ -246,6 +246,7 @@ export const it = {
     again: '🔄 Ancora',
     setLevel: 'Numeri', level2: '2 cifre', level3: '3 cifre', levelMix: 'Misti',
     setZeros: 'Numeri con lo zero (come 305 o 70)',
+    setTable: 'Tabella h · da · u in "Scomponi" (con "No" resta solo da completare il numero)',
     setBlocks: 'Mostra i blocchi',
     setZeroTags: 'Promemoria degli zeri sopra le colonne (00 · 0 · niente)',
     setHouses: 'Casette con gli zeri che cadono',
