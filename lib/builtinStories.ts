@@ -82,29 +82,29 @@ const STORIES: BuiltinStory[] = [
     icon: '🌈',
     pages: [
       { icon: '🌍', image: '/storie/siamo-diversi/01-mondo.png', text: {
-        it: 'Nel mondo ci sono tantissimi bambini. Nessuno è uguale a un altro, ed è proprio questo che rende ognuno speciale.',
-        fr: 'Dans le monde, il y a plein d’enfants. Personne n’est pareil qu’un autre, et c’est justement ce qui rend chacun unique.' } },
+        it: 'Nel mondo ci sono tantissimi bambini. Meky ha tanti amici, e nessuno è uguale a un altro: è proprio questo che rende ognuno speciale.',
+        fr: `Dans le monde, il y a plein d’enfants. Meky a beaucoup d’amis, et aucun n’est pareil qu’un autre${nb}: c’est justement ce qui rend chacun unique.` } },
       { icon: '😊', image: '/storie/siamo-diversi/02-aspetto.png', text: {
-        it: "Ognuno ha il suo aspetto: capelli ricci o lisci, lentiggini, occhiali, pelle chiara o scura. Ogni viso è bello così com'è.",
-        fr: `Chacun a son apparence${nb}: cheveux frisés ou raides, taches de rousseur, lunettes, peau claire ou foncée. Chaque visage est beau comme il est.` } },
+        it: "Ognuno ha il suo aspetto: Zoe ha i capelli ricci, Lila le lentiggini, Amina gli occhiali. C'è chi ha la pelle chiara e chi scura. Ogni viso è bello così com'è.",
+        fr: `Chacun a son apparence${nb}: Zoe a les cheveux frisés, Lila des taches de rousseur, Amina des lunettes. Certains ont la peau claire, d’autres foncée. Chaque visage est beau comme il est.` } },
       { icon: '🎨', image: '/storie/siamo-diversi/03-talenti.png', text: {
-        it: "Ognuno sa fare cose diverse. C'è chi corre veloce, chi disegna benissimo e chi, come Meky, costruisce torri altissime.",
-        fr: 'Chacun sait faire des choses différentes. Certains courent vite, d’autres dessinent très bien, et Meky construit des tours très hautes.' } },
+        it: 'Ognuno sa fare cose diverse. Zoe corre velocissima, Lila disegna benissimo e Meky costruisce torri altissime.',
+        fr: 'Chacun sait faire des choses différentes. Zoe court très vite, Lila dessine très bien et Meky construit des tours très hautes.' } },
       { icon: '🐢', image: '/storie/siamo-diversi/04-tempi.png', text: {
-        it: "Ognuno ha i suoi tempi. C'è chi impara in fretta e chi ha bisogno di più tempo. Va bene così: l'importante è provarci.",
-        fr: `Chacun a son rythme. Certains apprennent vite, d’autres ont besoin de plus de temps. C’est bien comme ça${nb}: l’important, c’est d’essayer.` } },
+        it: "Ognuno ha i suoi tempi. Amina ha bisogno di più tempo per leggere, ma ricorda tutte le storie. Va bene così: l'importante è provarci.",
+        fr: `Chacun a son rythme. Amina a besoin de plus de temps pour lire, mais elle se souvient de toutes les histoires. C’est bien comme ça${nb}: l’important, c’est d’essayer.` } },
       { icon: '🎧', image: '/storie/siamo-diversi/05-sentire.png', text: {
-        it: 'Ognuno sente il mondo a modo suo. A qualcuno i rumori forti danno fastidio, e allora mette le cuffie. Qualcuno parla tanto, qualcuno parla poco o usa le immagini.',
-        fr: 'Chacun ressent le monde à sa façon. Certains n’aiment pas les bruits forts, alors ils mettent un casque. Certains parlent beaucoup, d’autres parlent peu ou utilisent des images.' } },
+        it: 'Ognuno sente il mondo a modo suo. A Nico i rumori forti danno fastidio, e allora mette le cuffie. Lila parla poco, e a volte usa le immagini per dire come si sente.',
+        fr: 'Chacun ressent le monde à sa façon. Nico n’aime pas les bruits forts, alors il met un casque. Lila parle peu, et parfois elle utilise des images pour dire ce qu’elle ressent.' } },
       { icon: '⚽', image: '/storie/siamo-diversi/06-insieme.png', text: {
-        it: 'Qualcuno corre, qualcuno cammina, qualcuno si muove con la sedia a rotelle. E tutti insieme si può giocare.',
-        fr: 'Certains courent, certains marchent, certains se déplacent en fauteuil roulant. Et tous ensemble, on peut jouer.' } },
+        it: 'Zoe corre, Meky cammina, Elio si muove con la sedia a rotelle. E tutti insieme si gioca a palla!',
+        fr: `Zoe court, Meky marche, Elio se déplace en fauteuil roulant. Et tous ensemble, on joue au ballon${nb}!` } },
       { icon: '💛', image: '/storie/siamo-diversi/07-specchio.png', text: {
         it: "Anche Meky è speciale, proprio così com'è. Non deve diventare come gli altri per essere bravo e per essere voluto bene.",
         fr: 'Meky aussi est unique, juste comme il est. Il n’a pas besoin de devenir comme les autres pour être génial et pour être aimé.' } },
       { icon: '🤝', image: '/storie/siamo-diversi/08-aiutarsi.png', text: {
-        it: 'Quando siamo diversi, possiamo imparare gli uni dagli altri e darci una mano.',
-        fr: 'Quand on est différents, on peut apprendre les uns des autres et s’entraider.' } },
+        it: 'Quando siamo diversi, possiamo imparare gli uni dagli altri e darci una mano. Nour, che parla due lingue, insegna agli amici parole nuove.',
+        fr: 'Quand on est différents, on peut apprendre les uns des autres et s’entraider. Nour, qui parle deux langues, apprend de nouveaux mots à ses amis.' } },
       { icon: '🌈', image: '/storie/siamo-diversi/09-arcobaleno.png', text: {
         it: 'Il mondo è bello perché siamo tutti diversi. E tu vai benissimo così come sei!',
         fr: `Le monde est beau parce que nous sommes tous différents. Et toi, tu es très bien comme tu es${nb}!` } },
