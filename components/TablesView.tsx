@@ -9,6 +9,7 @@ import { useT } from '@/lib/i18n'
 import { pickCelebration, type Celebration } from '@/lib/fun'
 import Tedo from './Tedo'
 import s from './TablesView.module.css'
+import Buddy from './Buddy'
 
 interface Props {
   onBack: () => void
@@ -525,6 +526,7 @@ export default function TablesView({ onBack, allowSettings = false }: Props) {
 
       {screen.kind === 'home' && (
         <>
+          <Buddy spot="tabelline" />
           <p className={s.hello}>Scegli una tabellina</p>
           <div className={s.tiles}>
             {visible.map(n => {

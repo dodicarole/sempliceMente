@@ -8,6 +8,7 @@ import { useAudio } from '@/hooks/useAudio'
 import { DAY_COLORS, type ScheduleItem } from '@/types'
 import s from './ChildView.module.css'
 import { useT } from '@/lib/i18n'
+import Buddy from './Buddy'
 
 interface Props {
   items: ScheduleItem[]
@@ -78,6 +79,7 @@ export default function ChildView({ items, dayIndex, dateLabel, onBack }: Props)
         <div className={s.dayName}>{t.days.names[dayIndex]}</div>
         <div className={s.dayDate}>{dateLabel}</div>
       </div>
+      <Buddy spot="zaino" />
 
       <div className={s.progressRow}>
         <div className={s.dots}>

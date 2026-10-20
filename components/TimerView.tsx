@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useAudio } from '@/hooks/useAudio'
 import s from './TimerView.module.css'
 import { useT } from '@/lib/i18n'
+import Buddy from './Buddy'
 
 interface Props {
   onBack: () => void
@@ -88,6 +89,7 @@ export default function TimerView({ onBack }: Props) {
           <div className={s.bannerSub}>{t.timer.sub}</div>
         </div>
       </div>
+      <Buddy spot="timer" />
 
       <div className={s.presets}>
         {PRESETS.map(p => (

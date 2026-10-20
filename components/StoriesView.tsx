@@ -7,6 +7,7 @@ import { type Story } from '@/types'
 import { loadReadingSettings } from '@/lib/readingSettings'
 import s from './StoriesView.module.css'
 import { useT } from '@/lib/i18n'
+import Buddy from './Buddy'
 
 interface Props {
   stories: Story[]
@@ -183,6 +184,7 @@ export default function StoriesView({ stories, onBack }: Props) {
             <div className={s.bannerSub}>{t.stories.sub}</div>
           </div>
         </div>
+        <Buddy spot="storie" />
 
         {stories.length === 0 ? (
           <div className={s.empty}>

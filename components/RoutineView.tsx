@@ -7,6 +7,7 @@ import { useAudio } from '@/hooks/useAudio'
 import type { RoutineItem } from '@/types'
 import s from './RoutineView.module.css'
 import { useT } from '@/lib/i18n'
+import Buddy from './Buddy'
 
 interface Props {
   items: RoutineItem[]
@@ -60,6 +61,7 @@ export default function RoutineView({ items, onBack }: Props) {
         <div className={s.sunEmoji}>🌅</div>
         <div className={s.title}>{t.routine.title}</div>
       </div>
+      <Buddy spot="routine" />
 
       <div className={s.progressRow}>
         <div className={s.dots}>

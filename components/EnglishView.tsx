@@ -9,6 +9,7 @@ import EnglishSettingsPanel from './EnglishSettingsPanel'
 import Tedo from './Tedo'
 import type { Gag } from '@/lib/fun'
 import s from './EnglishView.module.css'
+import Buddy from './Buddy'
 
 interface Props {
   onBack: () => void
@@ -240,6 +241,7 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
         </div>
         {allowSettings && <button className={s.gear} onClick={() => setShowPanel(p => !p)} aria-label="⚙️" aria-expanded={showPanel}>⚙️</button>}
       </div>
+      <Buddy spot="english" />
       {allowSettings && showPanel && <EnglishSettingsPanel onChange={next => { setSettings(next); restart() }} />}
 
       {tab !== 'phrase' && (

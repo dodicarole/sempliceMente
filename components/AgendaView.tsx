@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { DAY_COLORS, type AgendaItem } from '@/types'
 import s from './AgendaView.module.css'
 import { useT } from '@/lib/i18n'
+import Buddy from './Buddy'
 
 interface Props {
   items: AgendaItem[]
@@ -75,6 +76,7 @@ export default function AgendaView({ items, dayIndex, dateLabel, onBack }: Props
         <div className={s.dayName}>{t.days.names[dayIndex]}</div>
         <div className={s.dayDate}>{dateLabel}</div>
       </div>
+      <Buddy spot="agenda" />
 
       <div className={s.timeline}>
         {todayItems.map((item, index) => {

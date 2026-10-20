@@ -7,6 +7,7 @@ import { NAMES_DEFAULTS, loadNamesSettings, type NamesSettings } from '@/lib/nam
 import NamesSettingsPanel from './NamesSettingsPanel'
 import Tedo from './Tedo'
 import s from './NamesView.module.css'
+import Buddy from './Buddy'
 
 interface Props {
   onBack: () => void
@@ -210,6 +211,7 @@ export default function NamesView({ onBack, allowSettings = false }: Props) {
         <h2 className={s.title}>Classifica i nomi</h2>
         {allowSettings && <button className={s.gear} onClick={() => setShowPanel(p => !p)} aria-label="Impostazioni" aria-expanded={showPanel}>⚙️</button>}
       </div>
+      <Buddy spot="nomi" />
       {allowSettings && showPanel && <NamesSettingsPanel onChange={next => { setSettings(next); setCeleb(null); setRun(r => r + 1) }} />}
       <nav className={s.modes}>
         {MODES.map(m => (

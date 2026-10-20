@@ -7,6 +7,7 @@ import { pickCelebration, type Celebration } from '@/lib/fun'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import Tedo from './Tedo'
 import s from './SplitView.module.css'
+import Buddy from './Buddy'
 
 interface Props {
   onBack: () => void
@@ -364,6 +365,7 @@ export default function SplitView({ onBack, allowSettings = false }: Props) {
         <h2 className={s.title}>{t.split.title}</h2>
         {allowSettings && <button className={s.gear} onClick={() => setShowPanel(p => !p)} aria-label="⚙️" aria-expanded={showPanel}>⚙️</button>}
       </div>
+      <Buddy spot="scomponi" />
       {allowSettings && showPanel && <SplitSettingsPanel onChange={next => { setSettings(next); setCeleb(null); setRun(r => r + 1) }} />}
       <nav className={s.tabs}>
         <button className={s.tab} aria-current={tab === 'build'} onClick={() => goTab('build')}>{t.split.tabBuild}</button>

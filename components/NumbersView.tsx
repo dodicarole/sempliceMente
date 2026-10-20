@@ -7,6 +7,7 @@ import { useT } from '@/lib/i18n'
 import { pickCelebration, type Celebration } from '@/lib/fun'
 import Tedo from './Tedo'
 import s from './NumbersView.module.css'
+import Buddy from './Buddy'
 
 interface Props {
   onBack: () => void
@@ -191,6 +192,7 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
           >⚙️</button>
         )}
       </div>
+      <Buddy spot="numeri" />
 
       {allowSettings && showPanel && <NumbersSettingsPanel onChange={handleSettingsChange} />}
 

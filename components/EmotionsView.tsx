@@ -5,6 +5,7 @@ import { useAudio } from '@/hooks/useAudio'
 import { type EmotionItem } from '@/types'
 import s from './EmotionsView.module.css'
 import { useT } from '@/lib/i18n'
+import Buddy from './Buddy'
 
 interface Props {
   items: EmotionItem[]
@@ -32,6 +33,7 @@ export default function EmotionsView({ items, onBack }: Props) {
           <div className={s.bannerSub}>{t.emotions.sub}</div>
         </div>
       </div>
+      <Buddy spot="emozioni" />
 
       <div className={s.grid}>
         {items.map(item => (
