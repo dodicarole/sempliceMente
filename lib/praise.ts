@@ -66,6 +66,17 @@ let last = ''
  * Sceglie una frase a caso, adatta al bambino o alla bambina, mai uguale a quella appena usata.
  * Se c'è il nome, più o meno una volta su due lo aggiunge: "Bravo, Christopher!"
  */
+/**
+ * Aggiunge il nome del bambino prima del primo punto esclamativo:
+ * "Tedo balla per te! 💃" → "Tedo balla per te, Christopher! 💃", "Well done!" → "Well done, Christopher!".
+ * Se il nome non c'è, la frase resta com'è. `lang` decide lo spazio prima di "!" (in francese sì).
+ */
+export function withChildName(phrase: string, lang: PraiseLang | 'en' = currentLang()): string {
+  const name = loadChildName()
+  if (!name || !phrase.includes('!')) return phrase
+  return phrase.replace(/\s?!/, `, ${name}${lang === 'fr' ? nb : ''}!`)
+}
+
 export function randomPraise(): string {
   const lang = currentLang()
   const list = praisesFor(loadChildGender(), lang)

@@ -3,7 +3,7 @@
  * Le impostazioni si scelgono nell'area Genitore e restano sul dispositivo.
  */
 import type { Dict } from '@/lib/i18n/it'
-import { randomPraise } from '@/lib/praise'
+import { randomPraise, withChildName } from '@/lib/praise'
 
 export interface FunSettings { fun: boolean; sound: boolean }
 export const FUN_DEFAULTS: FunSettings = { fun: true, sound: true }
@@ -30,7 +30,9 @@ export function pickCelebration(t: Dict): Celebration {
   const { fun } = loadFunSettings()
   if (!fun) return { gag: null, phrase: randomPraise() }
   const gag = GAGS[Math.floor(Math.random() * GAGS.length)]
-  const phrase = gag === 'five' || Math.random() < 0.5 ? t.tedo[gag] : randomPraise()
+  // anche nelle frasi di Tedo, una volta su due compare il nome del bambino
+  const gagPhrase = Math.random() < 0.5 ? withChildName(t.tedo[gag]) : t.tedo[gag]
+  const phrase = gag === 'five' || Math.random() < 0.5 ? gagPhrase : randomPraise()
   return { gag, phrase }
 }
 
