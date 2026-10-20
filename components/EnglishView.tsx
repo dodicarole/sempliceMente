@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useT } from '@/lib/i18n'
 import { pickCelebration } from '@/lib/fun'
+import { withChildName } from '@/lib/praise'
 import { TOPICS, PHRASES, EN_PRAISE, enOf, type EnItem, type TopicId, type Accent } from '@/lib/englishData'
 import { ENGLISH_DEFAULTS, loadEnglishSettings, type EnglishSettings } from '@/lib/englishSettings'
 import EnglishSettingsPanel from './EnglishSettingsPanel'
@@ -223,7 +224,8 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
 
   // Tedo festeggia, ma le frasi sono in inglese
   const finish = () => {
-    const phrase = EN_PRAISE[Math.floor(Math.random() * EN_PRAISE.length)]
+    const base = EN_PRAISE[Math.floor(Math.random() * EN_PRAISE.length)]
+    const phrase = Math.random() < 0.5 ? withChildName(base, 'en') : base   // "Well done, Christopher!"
     setCeleb({ gag: pickCelebration(t).gag, phrase })
     speak(phrase, { interrupt: true })
   }
