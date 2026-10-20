@@ -283,6 +283,20 @@ export const it = {
     parentHint: 'Scegli come funziona "English time" per il tuo bambino. Le modifiche si salvano subito.',
   },
 
+  buddies: {
+    zaino: 'Controlliamo insieme: un oggetto alla volta.',
+    agenda: 'Anche a me piace sapere cosa succede dopo!',
+    routine: 'Una cosa alla volta, e poi si corre!',
+    timer: 'Quando aspetto, mi aiuta vedere il tempo che passa.',
+    emozioni: 'Anche io a volte non trovo le parole: tocca un\'immagine!',
+    storie: 'Leggiamo con calma: anch\'io ho bisogno del mio tempo.',
+    nomi: 'Ti svelo un trucco: prova a dire la parola con l\'articolo davanti!',
+    numeri: 'Andiamo in ordine, piano piano!',
+    tabelline: 'Le tabelline sono più facili di quanto sembra!',
+    scomponi: 'Ogni cifra ha la sua casetta!',
+    english: 'Anch\'io ho imparato una lingua nuova: si comincia ascoltando!',
+  },
+
   tedo: {
     name: 'Tedo la rana',
     dance: 'Tedo balla per te! 💃',

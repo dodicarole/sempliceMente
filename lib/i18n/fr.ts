@@ -285,6 +285,20 @@ export const fr: Dict = {
     parentHint: 'Choisissez comment fonctionne « English time » pour votre enfant. Les modifications sont enregistrées tout de suite.',
   },
 
+  buddies: {
+    zaino: `On vérifie ensemble${nb}: un objet à la fois.`,
+    agenda: `Moi aussi, j’aime savoir ce qui se passe après${nb}!`,
+    routine: `Une chose à la fois, et après on court${nb}!`,
+    timer: 'Quand j’attends, ça m’aide de voir le temps passer.',
+    emozioni: `Moi aussi, parfois je ne trouve pas les mots${nb}: touche une image${nb}!`,
+    storie: `On lit tranquillement${nb}: moi aussi, j’ai besoin de mon temps.`,
+    nomi: `Je te donne une astuce${nb}: essaie de dire le mot avec l’article devant${nb}!`,
+    numeri: `On range dans l’ordre, tout doucement${nb}!`,
+    tabelline: `Les tables sont plus faciles qu’on ne le croit${nb}!`,
+    scomponi: `Chaque chiffre a sa maison${nb}!`,
+    english: `Moi aussi, j’ai appris une nouvelle langue${nb}: on commence par écouter${nb}!`,
+  },
+
   tedo: {
     name: 'Tedo la grenouille',
     dance: `Tedo danse pour toi${nb}! 💃`,
