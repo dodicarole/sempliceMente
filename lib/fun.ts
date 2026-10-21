@@ -4,6 +4,7 @@
  */
 import type { Dict } from '@/lib/i18n/it'
 import { randomPraise, withChildName } from '@/lib/praise'
+import { autoStar } from '@/lib/stars'
 
 export interface FunSettings { fun: boolean; sound: boolean }
 export const FUN_DEFAULTS: FunSettings = { fun: true, sound: true }
@@ -27,6 +28,12 @@ export interface Celebration { gag: Gag | null; phrase: string }
  * una volta su due, la sua frase; altrimenti una frase di incoraggiamento classica.
  */
 export function pickCelebration(t: Dict): Celebration {
+  autoStar() // una stellina se il genitore ha attivato le stelline automatiche
+  return pickCelebrationNoStar(t)
+}
+
+/** Come pickCelebration, ma senza dare la stellina (quando la dà già chi chiama) */
+export function pickCelebrationNoStar(t: Dict): Celebration {
   const { fun } = loadFunSettings()
   if (!fun) return { gag: null, phrase: randomPraise() }
   const gag = GAGS[Math.floor(Math.random() * GAGS.length)]
