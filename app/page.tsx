@@ -6,13 +6,19 @@ import ChildView from '@/components/ChildView'
 import RoutineView from '@/components/RoutineView'
 import AgendaView from '@/components/AgendaView'
 import TimerView from '@/components/TimerView'
-import EmotionsView from '@/components/EmotionsView'
 import StoriesView from '@/components/StoriesView'
 import NumbersView from '@/components/NumbersView'
 import TablesView from '@/components/TablesView'
 import SplitView from '@/components/SplitView'
 import NamesView from '@/components/NamesView'
 import EnglishView from '@/components/EnglishView'
+import FirstThenView from '@/components/FirstThenView'
+import WordsView from '@/components/WordsView'
+import CalmView from '@/components/CalmView'
+import StarsView from '@/components/StarsView'
+import ClockView from '@/components/ClockView'
+import MoneyView from '@/components/MoneyView'
+import SyllablesView from '@/components/SyllablesView'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -25,7 +31,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -69,6 +75,47 @@ export default function Home() {
   const [confirmLogout, setConfirmLogout] = useState(false)
   const [gender, setGender] = useState<ChildGender>('n')
   useEffect(() => { setGender(loadChildGender()) }, [childSection])
+
+  /** La home: le schede del bambino, divise in "Ogni giorno" e "Per imparare" */
+  const renderHome = () => {
+    type Card = { id: ChildSection; e: string; c: string; title: string; sub: string; it?: boolean }
+    const daily: Card[] = [
+      { id: 'zaino', e: '🎒', c: '#6B7FE3', title: t.home.zainoTitle, sub: t.home.zainoSub },
+      { id: 'routine', e: '🌅', c: '#FF8C42', title: t.home.routineTitle, sub: t.home.routineSub(gender) },
+      { id: 'agenda', e: '📅', c: '#3EAB7A', title: t.home.agendaTitle, sub: t.home.agendaSub },
+      { id: 'primapoi', e: '🔄', c: '#F08C00', title: t.daily.firstThenTitle, sub: t.daily.firstThenSub },
+      { id: 'emotions', e: '💬', c: '#C2255C', title: t.daily.wordsTitle, sub: t.daily.wordsSub },
+      { id: 'calma', e: '🌬️', c: '#2F9E44', title: t.daily.calmTitle, sub: t.daily.calmSub },
+      { id: 'timer', e: '⏱️', c: '#0EA5B7', title: t.home.timerTitle, sub: t.home.timerSub },
+      { id: 'stelline', e: '⭐', c: '#E8A400', title: t.daily.starsTitle, sub: t.daily.starsSub },
+      { id: 'storie', e: '📖', c: '#8E6CE0', title: t.home.storiesTitle, sub: t.home.storiesSub },
+    ]
+    const learn: Card[] = [
+      { id: 'numeri', e: '🔢', c: '#F59F00', title: t.home.numbersTitle, sub: t.home.numbersSub },
+      { id: 'tabelline', e: '✖️', c: '#7048E8', title: t.home.tablesTitle, sub: t.home.tablesSub },
+      { id: 'scomponi', e: '🧱', c: '#2F9E44', title: t.split.title, sub: t.split.homeSub },
+      { id: 'orologio', e: '🕐', c: '#1C7ED6', title: t.daily.clockTitle, sub: t.daily.clockSub },
+      { id: 'soldi', e: '💶', c: '#2F9E44', title: t.daily.moneyTitle, sub: t.daily.moneySub },
+      { id: 'sillabe', e: '🔤', c: '#E03131', title: 'Le sillabe', sub: 'Unisci le sillabe per leggere', it: true },
+      { id: 'nomi', e: '📝', c: '#7048E8', title: 'Classifica i nomi', sub: 'Persona, animale o cosa?', it: true },
+      { id: 'english', e: '🇬🇧', c: '#1C3F94', title: t.english.title, sub: t.english.homeSub },
+    ]
+    const card = (x: Card) => (x.it && lang !== 'it') ? null : (
+      <button key={x.id} className={s.featureCard} style={{ '--accent': x.c } as React.CSSProperties} onClick={() => setChildSection(x.id)}>
+        <span className={s.featureEmoji}>{x.e}</span>
+        <span className={s.featureTitle}>{x.title}</span>
+        <span className={s.featureSub}>{x.sub}</span>
+      </button>
+    )
+    return (
+      <div className={s.homeGrid}>
+        <h2 className={s.homeGroup}>{t.daily.groupDaily}</h2>
+        {daily.map(card)}
+        <h2 className={s.homeGroup}>{t.daily.groupLearn}</h2>
+        {learn.map(card)}
+      </div>
+    )
+  }
   const [parentState,  setParentState]  = useState<ParentState>('locked')
   const [schedule,     setSchedule]     = useState<ScheduleItem[][]>(Array(5).fill([]))
   const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
@@ -215,65 +262,7 @@ export default function Home() {
 
           <div className={`${s.view} reading-area`}>
             {childSection === 'home' ? (
-              <div className={s.homeGrid}>
-                <button className={s.featureCard} style={{ '--accent': '#6B7FE3' } as React.CSSProperties} onClick={() => setChildSection('zaino')}>
-                  <span className={s.featureEmoji}>🎒</span>
-                  <span className={s.featureTitle}>{t.home.zainoTitle}</span>
-                  <span className={s.featureSub}>{t.home.zainoSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#FF8C42' } as React.CSSProperties} onClick={() => setChildSection('routine')}>
-                  <span className={s.featureEmoji}>🌅</span>
-                  <span className={s.featureTitle}>{t.home.routineTitle}</span>
-                  <span className={s.featureSub}>{t.home.routineSub(gender)}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#3EAB7A' } as React.CSSProperties} onClick={() => setChildSection('agenda')}>
-                  <span className={s.featureEmoji}>📅</span>
-                  <span className={s.featureTitle}>{t.home.agendaTitle}</span>
-                  <span className={s.featureSub}>{t.home.agendaSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#00ACC1' } as React.CSSProperties} onClick={() => setChildSection('timer')}>
-                  <span className={s.featureEmoji}>⏱️</span>
-                  <span className={s.featureTitle}>{t.home.timerTitle}</span>
-                  <span className={s.featureSub}>{t.home.timerSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#E0559E' } as React.CSSProperties} onClick={() => setChildSection('emotions')}>
-                  <span className={s.featureEmoji}>💗</span>
-                  <span className={s.featureTitle}>{t.home.emotionsTitle}</span>
-                  <span className={s.featureSub}>{t.home.emotionsSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#9167D8' } as React.CSSProperties} onClick={() => setChildSection('storie')}>
-                  <span className={s.featureEmoji}>📖</span>
-                  <span className={s.featureTitle}>{t.home.storiesTitle}</span>
-                  <span className={s.featureSub}>{t.home.storiesSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#F59F00' } as React.CSSProperties} onClick={() => setChildSection('numeri')}>
-                  <span className={s.featureEmoji}>🔢</span>
-                  <span className={s.featureTitle}>{t.home.numbersTitle}</span>
-                  <span className={s.featureSub}>{t.home.numbersSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#7048E8' } as React.CSSProperties} onClick={() => setChildSection('tabelline')}>
-                  <span className={s.featureEmoji}>✖️</span>
-                  <span className={s.featureTitle}>{t.home.tablesTitle}</span>
-                  <span className={s.featureSub}>{t.home.tablesSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#2F9E44' } as React.CSSProperties} onClick={() => setChildSection('scomponi')}>
-                  <span className={s.featureEmoji}>🧱</span>
-                  <span className={s.featureTitle}>{t.split.title}</span>
-                  <span className={s.featureSub}>{t.split.homeSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#1C3F94' } as React.CSSProperties} onClick={() => setChildSection('english')}>
-                  <span className={s.featureEmoji}>🇬🇧</span>
-                  <span className={s.featureTitle}>{t.english.title}</span>
-                  <span className={s.featureSub}>{t.english.homeSub}</span>
-                </button>
-                {lang === 'it' && (
-                  <button className={s.featureCard} style={{ '--accent': '#7048E8' } as React.CSSProperties} onClick={() => setChildSection('nomi')}>
-                    <span className={s.featureEmoji}>📝</span>
-                    <span className={s.featureTitle}>Classifica i nomi</span>
-                    <span className={s.featureSub}>Persona, animale o cosa?</span>
-                  </button>
-                )}
-              </div>
+              renderHome()
             ) : childSection === 'zaino' ? (
               <ChildView items={demoZaino} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             ) : childSection === 'routine' ? (
@@ -281,7 +270,7 @@ export default function Home() {
             ) : childSection === 'timer' ? (
               <TimerView onBack={() => setChildSection('home')} />
             ) : childSection === 'emotions' ? (
-              <EmotionsView items={DEMO_EMOTIONS} onBack={() => setChildSection('home')} />
+              <WordsView emotions={DEMO_EMOTIONS} onBack={() => setChildSection('home')} onCalm={() => setChildSection('calma')} />
             ) : childSection === 'storie' ? (
               <StoriesView stories={[...DEMO_STORIES, ...builtinStories(lang)]} onBack={() => setChildSection('home')} />
             ) : childSection === 'numeri' ? (
@@ -294,6 +283,18 @@ export default function Home() {
               <NamesView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'english' ? (
               <EnglishView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'primapoi' ? (
+              <FirstThenView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'calma' ? (
+              <CalmView onBack={() => setChildSection('home')} />
+            ) : childSection === 'stelline' ? (
+              <StarsView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'orologio' ? (
+              <ClockView onBack={() => setChildSection('home')} />
+            ) : childSection === 'soldi' ? (
+              <MoneyView onBack={() => setChildSection('home')} />
+            ) : childSection === 'sillabe' ? (
+              <SyllablesView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -363,65 +364,7 @@ export default function Home() {
             {dataLoading ? (
               <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-soft)' }}>{t.common.loading}</div>
             ) : childSection === 'home' ? (
-              <div className={s.homeGrid}>
-                <button className={s.featureCard} style={{ '--accent': '#6B7FE3' } as React.CSSProperties} onClick={() => setChildSection('zaino')}>
-                  <span className={s.featureEmoji}>🎒</span>
-                  <span className={s.featureTitle}>{t.home.zainoTitle}</span>
-                  <span className={s.featureSub}>{t.home.zainoSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#FF8C42' } as React.CSSProperties} onClick={() => setChildSection('routine')}>
-                  <span className={s.featureEmoji}>🌅</span>
-                  <span className={s.featureTitle}>{t.home.routineTitle}</span>
-                  <span className={s.featureSub}>{t.home.routineSub(gender)}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#3EAB7A' } as React.CSSProperties} onClick={() => setChildSection('agenda')}>
-                  <span className={s.featureEmoji}>📅</span>
-                  <span className={s.featureTitle}>{t.home.agendaTitle}</span>
-                  <span className={s.featureSub}>{t.home.agendaSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#00ACC1' } as React.CSSProperties} onClick={() => setChildSection('timer')}>
-                  <span className={s.featureEmoji}>⏱️</span>
-                  <span className={s.featureTitle}>{t.home.timerTitle}</span>
-                  <span className={s.featureSub}>{t.home.timerSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#E0559E' } as React.CSSProperties} onClick={() => setChildSection('emotions')}>
-                  <span className={s.featureEmoji}>💗</span>
-                  <span className={s.featureTitle}>{t.home.emotionsTitle}</span>
-                  <span className={s.featureSub}>{t.home.emotionsSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#9167D8' } as React.CSSProperties} onClick={() => setChildSection('storie')}>
-                  <span className={s.featureEmoji}>📖</span>
-                  <span className={s.featureTitle}>{t.home.storiesTitle}</span>
-                  <span className={s.featureSub}>{t.home.storiesSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#F59F00' } as React.CSSProperties} onClick={() => setChildSection('numeri')}>
-                  <span className={s.featureEmoji}>🔢</span>
-                  <span className={s.featureTitle}>{t.home.numbersTitle}</span>
-                  <span className={s.featureSub}>{t.home.numbersSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#7048E8' } as React.CSSProperties} onClick={() => setChildSection('tabelline')}>
-                  <span className={s.featureEmoji}>✖️</span>
-                  <span className={s.featureTitle}>{t.home.tablesTitle}</span>
-                  <span className={s.featureSub}>{t.home.tablesSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#2F9E44' } as React.CSSProperties} onClick={() => setChildSection('scomponi')}>
-                  <span className={s.featureEmoji}>🧱</span>
-                  <span className={s.featureTitle}>{t.split.title}</span>
-                  <span className={s.featureSub}>{t.split.homeSub}</span>
-                </button>
-                <button className={s.featureCard} style={{ '--accent': '#1C3F94' } as React.CSSProperties} onClick={() => setChildSection('english')}>
-                  <span className={s.featureEmoji}>🇬🇧</span>
-                  <span className={s.featureTitle}>{t.english.title}</span>
-                  <span className={s.featureSub}>{t.english.homeSub}</span>
-                </button>
-                {lang === 'it' && (
-                  <button className={s.featureCard} style={{ '--accent': '#7048E8' } as React.CSSProperties} onClick={() => setChildSection('nomi')}>
-                    <span className={s.featureEmoji}>📝</span>
-                    <span className={s.featureTitle}>Classifica i nomi</span>
-                    <span className={s.featureSub}>Persona, animale o cosa?</span>
-                  </button>
-                )}
-              </div>
+              renderHome()
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             ) : childSection === 'routine' ? (
@@ -429,7 +372,7 @@ export default function Home() {
             ) : childSection === 'timer' ? (
               <TimerView onBack={() => setChildSection('home')} />
             ) : childSection === 'emotions' ? (
-              <EmotionsView items={emotionItems} onBack={() => setChildSection('home')} />
+              <WordsView emotions={emotionItems} onBack={() => setChildSection('home')} onCalm={() => setChildSection('calma')} />
             ) : childSection === 'storie' ? (
               <StoriesView stories={[...stories, ...builtinStories(lang)]} onBack={() => setChildSection('home')} />
             ) : childSection === 'numeri' ? (
@@ -442,6 +385,18 @@ export default function Home() {
               <NamesView onBack={() => setChildSection('home')} />
             ) : childSection === 'english' ? (
               <EnglishView onBack={() => setChildSection('home')} />
+            ) : childSection === 'primapoi' ? (
+              <FirstThenView onBack={() => setChildSection('home')} />
+            ) : childSection === 'calma' ? (
+              <CalmView onBack={() => setChildSection('home')} />
+            ) : childSection === 'stelline' ? (
+              <StarsView onBack={() => setChildSection('home')} />
+            ) : childSection === 'orologio' ? (
+              <ClockView onBack={() => setChildSection('home')} />
+            ) : childSection === 'soldi' ? (
+              <MoneyView onBack={() => setChildSection('home')} />
+            ) : childSection === 'sillabe' ? (
+              <SyllablesView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}

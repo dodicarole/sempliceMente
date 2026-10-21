@@ -219,3 +219,13 @@
 }
 .confirmStay { background: var(--done); border: 2px solid var(--done); color: #fff; }
 .confirmLeave { background: var(--card); border: 2px solid #D6DBF2; color: var(--text); }
+
+/* Titoli dei gruppi della home: "Ogni giorno" e "Per imparare" */
+.homeGroup {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin: 8px 4px -4px;
+}
