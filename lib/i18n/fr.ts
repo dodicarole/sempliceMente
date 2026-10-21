@@ -285,6 +285,91 @@ export const fr: Dict = {
     parentHint: 'Choisissez comment fonctionne « English time » pour votre enfant. Les modifications sont enregistrées tout de suite.',
   },
 
+  daily: {
+    groupDaily: 'Chaque jour',
+    groupLearn: 'Pour apprendre',
+    wordsTitle: 'Mes mots', wordsSub: 'Je dis comment je vais et ce dont j’ai besoin',
+    firstThenTitle: 'D’abord… ensuite…', firstThenSub: 'D’abord le travail, ensuite la récompense',
+    calmTitle: 'Le coin calme', calmSub: 'Respire, compte, détends-toi',
+    starsTitle: 'Mes étoiles', starsSub: 'Gagne des étoiles, gagne un cadeau',
+    clockTitle: `Quelle heure est-il${nb}?`, clockSub: 'Apprends à lire l’heure',
+    moneyTitle: 'L’argent', moneySub: 'Compte et paie',
+  },
+
+  firstThen: {
+    first: 'D’ABORD', then: 'ENSUITE',
+    done: `✓ Fini${nb}!`, again: '↺ Recommencer', listen: '🔊 Écoute',
+    sentence: (a, b) => `D’abord ${a}, ensuite ${b}`,
+    nowThen: b => `Bravo${nb}! Maintenant${nb}: ${b}${nb}!`,
+    firstItems: { compiti: 'les devoirs', denti: 'se brosser les dents', vestirsi: 's’habiller', ordine: 'ranger', mangiare: 'manger', bagno: 'prendre le bain', zaino: 'préparer le cartable', nanna: 'faire dodo' },
+    thenItems: { tablet: 'la tablette', giocare: 'jouer', parco: 'le parc', cartoni: 'les dessins animés', merenda: 'le goûter', coccole: 'des câlins', storia: 'une histoire', bici: 'le vélo' },
+    parentHint: 'Choisissez les deux images de « D’abord… ensuite… ». L’enfant les verra dans sa section.',
+  },
+
+  words: {
+    yes: '👍 Oui', no: '👎 Non', yesWord: 'Oui', noWord: 'Non',
+    again: '🔊 Encore', ok: 'OK', toCalm: '🌬️ Coin calme',
+    cats: { need: 'J’ai besoin', want: 'Je veux', feel: 'Je me sens', help: 'Aide' },
+    need: ['J’ai faim', 'J’ai soif', 'Je dois aller aux toilettes', 'J’ai mal', 'J’ai froid', 'J’ai sommeil'],
+    want: ['Je veux jouer', 'Je veux une histoire', 'Je veux un câlin', 'Je veux sortir', 'Je veux de la musique', 'Je veux rentrer à la maison'],
+    help: ['Aide-moi, s’il te plaît', 'J’ai besoin d’une pause', 'Il y a trop de bruit', 'Attends, je réfléchis', `Tu peux répéter${nb}?`, 'Arrête, s’il te plaît'],
+    feel: (key, g) => ({
+      felice: g === 'f' ? 'Je suis contente' : 'Je suis content', triste: 'Je suis triste',
+      arrabbiato: g === 'f' ? 'Je suis fâchée' : 'Je suis fâché', spaventato: 'J’ai peur',
+      stanco: g === 'f' ? 'Je suis fatiguée' : 'Je suis fatigué', annoiato: 'Je m’ennuie',
+    } as Record<string, string>)[key] ?? key,
+  },
+
+  calm: {
+    breathe: 'Respire', count: 'Compte jusqu’à 10', bubbles: 'Bulles',
+    smell: 'Sens la fleur…', blow: '…souffle sur la bougie',
+    smellVoice: 'Sens la fleur', blowVoice: 'Souffle doucement sur la bougie',
+    breathN: (i, n) => `Respiration ${i} sur ${n}`,
+    wellDone: 'Bravo 💚', wellDoneVoice: 'Bravo.', better: `Ça va un peu mieux${nb}?`,
+    countSub: 'Comptons tout doucement ensemble', countAgain: `Bravo 💚 Tu veux recommencer${nb}?`,
+    bubblesSub: 'Touche les bulles tout doucement', popped: n => `Bulles éclatées${nb}: ${n}`,
+  },
+
+  stars: {
+    prize: 'Le cadeau, c’est…',
+    left: n => `Encore ${n} étoile${n > 1 ? 's' : ''} pour le cadeau${nb}!`,
+    won: r => `Tu as réussi${nb}! Tu as gagné${nb}: ${r}${nb}!`,
+    restart: '↺ On recommence',
+    rewards: { parco: 'aller au parc', gelato: 'une glace', storia: 'une histoire en plus', gioco: 'un jeu spécial', disegno: 'dessiner ensemble', film: 'un film' },
+    give: '＋ Donner une étoile', oneMore: `Une étoile en plus${nb}!`,
+    have: (h, t) => `Étoiles${nb}: ${h} sur ${t}`,
+    setTarget: `Combien d’étoiles faut-il${nb}?`, targetLabel: n => `${n} étoiles`,
+    setReward: `Quel est le cadeau${nb}?`,
+    setAuto: 'Étoiles automatiques (quand il termine la routine, le cartable ou un jeu)',
+    reset: '↺ Remettre à zéro',
+    parentHint: 'Choisissez le cadeau et le nombre d’étoiles. Vous pouvez donner une étoile quand vous voulez récompenser un effort.',
+  },
+
+  clock: {
+    tabLearn: '👀 Découvre', tabQuiz: `❓ Quelle heure est-il${nb}?`,
+    levels: { intere: 'Heures pile', mezze: 'Et demie', quarti: 'Les quarts', cinque: 'Toutes les 5 minutes' },
+    legendHour: '━ heures (petite)', legendMin: '━ minutes (grande)',
+    back: '◀ Avant', forward: 'Après ▶', ask: `Quelle heure est-il${nb}?`, help: '💡 Aide', again: '🔄 Encore',
+    hint: (hh, onHour, mm) => `La petite aiguille montre les heures${nb}: elle est ${onHour ? `sur le ${hh}` : `après le ${hh}`}. La grande aiguille montre les minutes${nb}: elle est sur le ${mm}.`,
+  },
+
+  money: {
+    tabCount: '🧮 Compte', tabPay: '🛒 Paie',
+    levels: { 10: 'Jusqu’à 10 €', 20: 'Jusqu’à 20 €', 100: 'Jusqu’à 100 €' },
+    countAsk: `Combien d’argent y a-t-il${nb}?`, countSub: 'Touche l’argent un par un pour compter',
+    countHelp: `Essaie de toucher l’argent un par un${nb}: la voix compte avec toi.`,
+    isTotal: n => `Ça fait ${n === 1 ? 'un euro' : `${n} euros`}${nb}!`,
+    payAsk: 'Paie le bon prix', put: 'Mets l’argent ici',
+    partial: (t, m) => `Tu as mis ${t} €${nb}: il manque ${m} €`,
+    exact: p => `Bravo${nb}! Tu as payé ${p} € 🎉`,
+    over: (t, x) => `Trop${nb}! Tu as mis ${t} €${nb}: enlèves-en ${x} €`,
+    overVoice: `Trop${nb}! Touche l’argent dans le plateau pour l’enlever.`,
+    bought: n => `Parfait${nb}! Tu as acheté ${n}${nb}!`,
+    wallet: `Ton porte-monnaie${nb}: touche pour payer`,
+    euros: n => (n === 1 ? 'un euro' : `${n} euros`),
+    shop: ['une pomme', 'un jus', 'un cahier', 'un nounours', 'un ballon', 'des crayons de couleur', 'un petit train', 'un livre'],
+  },
+
   buddies: {
     zaino: `On vérifie ensemble${nb}: un objet à la fois.`,
     agenda: `Moi aussi, j’aime savoir ce qui se passe après${nb}!`,
@@ -297,6 +382,12 @@ export const fr: Dict = {
     tabelline: `Les tables sont plus faciles qu’on ne le croit${nb}!`,
     scomponi: `Chaque chiffre a sa maison${nb}!`,
     english: `Moi aussi, j’ai appris une nouvelle langue${nb}: on commence par écouter${nb}!`,
+    primapoi: `Moi aussi, d’abord je fais mes devoirs, ensuite je cours au parc${nb}!`,
+    calma: `Quand c’est trop, je viens ici. Choisis ce que tu veux faire${nb}!`,
+    stelline: `Une étoile à la fois, et le cadeau arrive${nb}!`,
+    orologio: `Moi, je regarde toujours l’heure${nb}: comme ça, je sais quand le train passe${nb}!`,
+    soldi: `Compter l’argent, c’est facile${nb}: on commence par les plus grands${nb}!`,
+    sillabe: `Une syllabe à la fois${nb}: même les mots longs deviennent faciles${nb}!`,
   },
 
   tedo: {

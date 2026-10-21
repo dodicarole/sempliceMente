@@ -283,6 +283,90 @@ export const it = {
     parentHint: 'Scegli come funziona "English time" per il tuo bambino. Le modifiche si salvano subito.',
   },
 
+  daily: {
+    groupDaily: 'Ogni giorno',
+    groupLearn: 'Per imparare',
+    wordsTitle: 'Le mie parole', wordsSub: 'Dico come sto e cosa mi serve',
+    firstThenTitle: 'Prima… poi…', firstThenSub: 'Prima il dovere, poi il premio',
+    calmTitle: "L'angolo della calma", calmSub: 'Respira, conta, rilassati',
+    starsTitle: 'Le mie stelline', starsSub: 'Raccogli stelle, vinci un premio',
+    clockTitle: 'Che ore sono?', clockSub: "Impara a leggere l'orologio",
+    moneyTitle: 'I soldi', moneySub: 'Conta e paga',
+  },
+
+  firstThen: {
+    first: 'PRIMA', then: 'POI',
+    done: '✓ Fatto!', again: '↺ Ricomincia', listen: '🔊 Ascolta',
+    sentence: (a: string, b: string): string => `Prima ${a}, poi ${b}`,
+    nowThen: (b: string): string => `Ben fatto! Ora: ${b}!`,
+    firstItems: { compiti: 'compiti', denti: 'lavarsi i denti', vestirsi: 'vestirsi', ordine: 'mettere a posto', mangiare: 'mangiare', bagno: 'fare il bagno', zaino: 'preparare lo zaino', nanna: 'fare la nanna' } as Record<string, string>,
+    thenItems: { tablet: 'tablet', giocare: 'giocare', parco: 'parco', cartoni: 'cartoni', merenda: 'merenda', coccole: 'coccole', storia: 'una storia', bici: 'bicicletta' } as Record<string, string>,
+    parentHint: 'Scegli le due immagini di "Prima… poi…". Il bambino le vedrà nella sua sezione.',
+  },
+
+  words: {
+    yes: '👍 Sì', no: '👎 No', yesWord: 'Sì', noWord: 'No',
+    again: '🔊 Di nuovo', ok: 'OK', toCalm: "🌬️ Angolo della calma",
+    cats: { need: 'Ho bisogno', want: 'Voglio', feel: 'Mi sento', help: 'Aiuto' } as Record<string, string>,
+    need: ['Ho fame', 'Ho sete', 'Devo andare in bagno', 'Mi fa male', 'Ho freddo', 'Ho sonno'],
+    want: ['Voglio giocare', 'Voglio una storia', 'Voglio un abbraccio', 'Voglio uscire', 'Voglio la musica', 'Voglio andare a casa'],
+    help: ['Aiutami, per favore', 'Mi serve una pausa', "C'è troppo rumore", 'Aspetta, sto pensando', 'Puoi ripetere?', 'Basta, per favore'],
+    feel: (key: string, g: 'm' | 'f' | 'n'): string => ({
+      felice: 'Sono felice', triste: 'Sono triste', arrabbiato: g === 'f' ? 'Sono arrabbiata' : 'Sono arrabbiato',
+      spaventato: 'Ho paura', stanco: g === 'f' ? 'Sono stanca' : 'Sono stanco', annoiato: 'Mi annoio',
+    } as Record<string, string>)[key] ?? key,
+  },
+
+  calm: {
+    breathe: 'Respira', count: 'Conta fino a 10', bubbles: 'Bolle',
+    smell: 'Annusa il fiore…', blow: '…soffia sulla candelina',
+    smellVoice: 'Annusa il fiore', blowVoice: 'Soffia piano sulla candelina',
+    breathN: (i: number, n: number): string => `Respiro ${i} di ${n}`,
+    wellDone: 'Ben fatto 💚', wellDoneVoice: 'Ben fatto.', better: "Ora va un po' meglio?",
+    countSub: 'Contiamo piano piano insieme', countAgain: 'Ben fatto 💚 Vuoi ricominciare?',
+    bubblesSub: 'Tocca le bolle piano piano', popped: (n: number): string => `Bolle scoppiate: ${n}`,
+  },
+
+  stars: {
+    prize: 'Il premio è…',
+    left: (n: number): string => `Ancora ${n} ${n === 1 ? 'stellina' : 'stelline'} per il premio!`,
+    won: (r: string): string => `Ce l'hai fatta! Hai vinto: ${r}!`,
+    restart: '↺ Ricominciamo',
+    rewards: { parco: 'andare al parco', gelato: 'un gelato', storia: 'una storia in più', gioco: 'un gioco speciale', disegno: 'disegnare insieme', film: 'un film' } as Record<string, string>,
+    give: '＋ Dai una stellina', oneMore: 'Una stellina in più!',
+    have: (h: number, t: number): string => `Stelline: ${h} di ${t}`,
+    setTarget: 'Quante stelline servono?', targetLabel: (n: number): string => `${n} stelline`,
+    setReward: "Qual è il premio?",
+    setAuto: 'Stelline automatiche (quando completa la routine, lo zaino o un gioco)',
+    reset: '↺ Azzera le stelline',
+    parentHint: 'Scegli il premio e quante stelline servono. Puoi dare una stellina quando vuoi premiare un impegno.',
+  },
+
+  clock: {
+    tabLearn: '👀 Scopri', tabQuiz: '❓ Che ore sono?',
+    levels: { intere: 'Ore intere', mezze: 'E mezza', quarti: 'I quarti', cinque: 'Ogni 5 minuti' } as Record<string, string>,
+    legendHour: '━ ore (corta)', legendMin: '━ minuti (lunga)',
+    back: '◀ Indietro', forward: 'Avanti ▶', ask: 'Che ore sono?', help: '💡 Aiuto', again: '🔄 Ancora',
+    hint: (hh: number, onHour: boolean, mm: string): string => `La lancetta corta indica le ore: ${onHour ? `è sul ${hh}` : `è dopo il ${hh}`}. La lancetta lunga indica i minuti: è sul ${mm}.`,
+  },
+
+  money: {
+    tabCount: '🧮 Conta', tabPay: '🛒 Paga',
+    levels: { 10: 'Fino a 10 €', 20: 'Fino a 20 €', 100: 'Fino a 100 €' } as Record<string, string>,
+    countAsk: 'Quanti soldi ci sono?', countSub: 'Tocca i soldi uno alla volta per contarli',
+    countHelp: 'Prova a toccare i soldi uno alla volta: la voce conta con te.',
+    isTotal: (n: number): string => `Sono ${n === 1 ? 'un' : n} euro!`,
+    payAsk: 'Paga il prezzo giusto', put: 'Metti i soldi qui sopra',
+    partial: (t: number, m: number): string => `Hai messo ${t} €: mancano ${m} €`,
+    exact: (p: number): string => `Giusto! Hai pagato ${p} € 🎉`,
+    over: (t: number, x: number): string => `Troppi! Hai messo ${t} €: togline ${x} €`,
+    overVoice: 'Troppi! Tocca i soldi nel vassoio per toglierli.',
+    bought: (n: string): string => `Perfetto! Hai comprato ${n}!`,
+    wallet: 'Il tuo portafoglio: tocca per pagare',
+    euros: (n: number): string => `${n === 1 ? 'un' : n} euro`,
+    shop: ['una mela', 'un succo', 'un quaderno', 'un orsetto', 'un pallone', 'i colori', 'un trenino', 'un libro'],
+  },
+
   buddies: {
     zaino: 'Controlliamo insieme: un oggetto alla volta.',
     agenda: 'Anche a me piace sapere cosa succede dopo!',
@@ -295,6 +379,12 @@ export const it = {
     tabelline: 'Le tabelline sono più facili di quanto sembra!',
     scomponi: 'Ogni cifra ha la sua casetta!',
     english: 'Anch\'io ho imparato una lingua nuova: si comincia ascoltando!',
+    primapoi: 'Anch\'io prima faccio i compiti, poi corro al parco!',
+    calma: 'Quando c\'è troppo, vengo qui. Scegli cosa fare!',
+    stelline: 'Una stellina alla volta, e il premio arriva!',
+    orologio: 'Io guardo sempre l\'orologio: così so quando passa il treno!',
+    soldi: 'Contare i soldi è facile: si parte dai più grandi!',
+    sillabe: 'Una sillaba alla volta: anche le parole lunghe diventano facili!',
   },
 
   tedo: {
