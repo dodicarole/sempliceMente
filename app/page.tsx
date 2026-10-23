@@ -19,6 +19,7 @@ import StarsView from '@/components/StarsView'
 import ClockView from '@/components/ClockView'
 import MoneyView from '@/components/MoneyView'
 import SyllablesView from '@/components/SyllablesView'
+import DoublesView from '@/components/DoublesView'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -31,7 +32,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -97,6 +98,7 @@ export default function Home() {
       { id: 'orologio', e: '🕐', c: '#1C7ED6', title: t.daily.clockTitle, sub: t.daily.clockSub },
       { id: 'soldi', e: '💶', c: '#2F9E44', title: t.daily.moneyTitle, sub: t.daily.moneySub },
       { id: 'sillabe', e: '🔤', c: '#E03131', title: 'Le sillabe', sub: 'Unisci le sillabe per leggere', it: true },
+      { id: 'doppie', e: '✏️', c: '#F08C00', title: 'Le doppie', sub: 'Una lettera o due?', it: true },
       { id: 'nomi', e: '📝', c: '#7048E8', title: 'Classifica i nomi', sub: 'Persona, animale o cosa?', it: true },
       { id: 'english', e: '🇬🇧', c: '#1C3F94', title: t.english.title, sub: t.english.homeSub },
     ]
@@ -295,6 +297,8 @@ export default function Home() {
               <MoneyView onBack={() => setChildSection('home')} />
             ) : childSection === 'sillabe' ? (
               <SyllablesView onBack={() => setChildSection('home')} />
+            ) : childSection === 'doppie' ? (
+              <DoublesView allowSettings onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -397,6 +401,8 @@ export default function Home() {
               <MoneyView onBack={() => setChildSection('home')} />
             ) : childSection === 'sillabe' ? (
               <SyllablesView onBack={() => setChildSection('home')} />
+            ) : childSection === 'doppie' ? (
+              <DoublesView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
