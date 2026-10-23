@@ -1,6 +1,7 @@
 'use client'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { loadChildName, loadChildGender, saveChildName, saveChildGender, type ChildGender } from '@/lib/praise'
+import { hiddenOf, type SectionId } from '@/lib/homeSections'
 
 /**
  * Più figli per famiglia.
@@ -8,7 +9,9 @@ import { loadChildName, loadChildGender, saveChildName, saveChildGender, type Ch
  * richiesta a /api (intestazione x-child-id): così zaino, routine, agenda ed emozioni
  * arrivano già quelli giusti, senza cambiare tutte le chiamate dell'app.
  */
-export interface Child { id: string; name: string; gender: ChildGender; avatar: string; sort_order: number }
+export interface Child { id: string; name: string; gender: ChildGender; avatar: string; sort_order: number; hidden: SectionId[] }
+type RawChild = Omit<Child, 'hidden'> & { settings?: unknown }
+const toChild = (c: RawChild): Child => ({ id: c.id, name: c.name, gender: c.gender, avatar: c.avatar, sort_order: c.sort_order, hidden: hiddenOf(c.settings) })
 export const AVATARS = ['tedo', 'meky', 'zoe', 'lila', 'nico', 'amina', 'elio', 'nour'] as const
 
 const ACTIVE = 'figlio_attivo'        // il figlio scelto su questo dispositivo
@@ -45,8 +48,8 @@ interface Ctx {
   choose: (id: string, remember?: boolean) => void
   askAgain: () => void
   reload: () => Promise<void>
-  add: (c: { name: string; gender: ChildGender; avatar: string }) => Promise<string | null>
-  update: (id: string, patch: Partial<Pick<Child, 'name' | 'gender' | 'avatar'>>) => Promise<void>
+  add: (c: { name: string; gender: ChildGender; avatar: string; hidden?: SectionId[] }) => Promise<string | null>
+  update: (id: string, patch: Partial<Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>>) => Promise<void>
   remove: (id: string) => Promise<string | null>
 }
 const ChildrenContext = createContext<Ctx | null>(null)
@@ -65,12 +68,12 @@ export function ChildrenProvider({ children: kids }: { children: ReactNode }) {
     let data: Child[] = []
     try {
       const res = await fetch('/api/children')
-      if (res.ok) data = (await res.json()).children ?? []
+      if (res.ok) data = ((await res.json()).children ?? []).map(toChild)
     } catch (_) {}
     // il primo figlio nasce senza nome: prende quello che il genitore aveva scritto su questo telefono
     if (data.length && !data[0].name && loadChildName()) {
       const res = await fetch(`/api/children/${data[0].id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: loadChildName(), gender: loadChildGender() }) })
-      if (res.ok) data[0] = (await res.json()).child
+      if (res.ok) data[0] = toChild((await res.json()).child)
     }
     setList(data)
     const fixed = get(FIXED), saved = get(ACTIVE)
@@ -99,7 +102,7 @@ export function ChildrenProvider({ children: kids }: { children: ReactNode }) {
   const update: Ctx['update'] = async (id, patch) => {
     const res = await fetch(`/api/children/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(patch) })
     if (!res.ok) return
-    const { child } = await res.json()
+    const child = toChild((await res.json()).child)
     setList(l => l.map(x => (x.id === id ? child : x)))
     if (id === activeId) bridge(child)
   }
