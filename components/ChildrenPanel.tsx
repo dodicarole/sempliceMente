@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useT } from '@/lib/i18n'
 import { useChildren, AVATARS, type Child } from '@/lib/children'
 import type { ChildGender } from '@/lib/praise'
+import { homeSections, type SectionId } from '@/lib/homeSections'
 import s from './NumbersSettingsPanel.module.css'
 import c from './ChildPicker.module.css'
 
@@ -28,7 +29,7 @@ export function ChildTabs() {
   )
 }
 
-function ChildForm({ start, onSave, onCancel, onRemove }: { start: Pick<Child, 'name' | 'gender' | 'avatar'>; onSave: (v: Pick<Child, 'name' | 'gender' | 'avatar'>) => void; onCancel?: () => void; onRemove?: () => void }) {
+function ChildForm({ start, onSave, onCancel, onRemove }: { start: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>; onSave: (v: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>) => void; onCancel?: () => void; onRemove?: () => void }) {
   const { t } = useT()
   const [v, setV] = useState(start)
   const G: [ChildGender, string][] = [['m', t.child.boy], ['f', t.child.girl], ['n', t.child.unspecified]]
@@ -52,6 +53,7 @@ function ChildForm({ start, onSave, onCancel, onRemove }: { start: Pick<Child, '
           ))}
         </div>
       </div>
+      <SectionsPicker hidden={v.hidden} gender={v.gender} onChange={hidden => setV({ ...v, hidden })} />
       <div className={s.chips}>
         <button className={s.chip} aria-pressed={true} disabled={!v.name.trim()} onClick={() => onSave({ ...v, name: v.name.trim() })}>{t.common.save}</button>
         {onCancel && <button className={s.chip} onClick={onCancel}>{t.common.cancel}</button>}
@@ -81,9 +83,38 @@ export default function ChildrenPanel() {
             </button>
       ))}
       {open === 'new'
-        ? <ChildForm start={{ name: '', gender: 'n', avatar: 'tedo' }} onCancel={() => setOpen(null)} onSave={async v => { const e = await add(v); setMsg(e ?? ''); setOpen(null) }} />
+        ? <ChildForm start={{ name: '', gender: 'n', avatar: 'tedo', hidden: [] }} onCancel={() => setOpen(null)} onSave={async v => { const e = await add(v); setMsg(e ?? ''); setOpen(null) }} />
         : <button className={s.chip} onClick={() => setOpen('new')}>{t.children.add}</button>}
       {msg && <div className={s.label} style={{ color: '#C92A2A' }}>{msg}</div>}
+    </div>
+  )
+}
+
+/** Le sezioni che vede questo figlio: acceso = visibile nella sua home, spento = nascosto */
+function SectionsPicker({ hidden, gender, onChange }: { hidden: SectionId[]; gender: ChildGender; onChange: (h: SectionId[]) => void }) {
+  const { t, lang } = useT()
+  const { daily, learn } = homeSections(t, gender)
+  const toggle = (id: SectionId) => onChange(hidden.includes(id) ? hidden.filter(x => x !== id) : [...hidden, id])
+  const group = (title: string, list: typeof daily) => (
+    <>
+      <span className={s.label} style={{ fontSize: 13 }}>{title}</span>
+      <div className={s.chips}>
+        {list.filter(x => !x.it || lang === 'it').map(x => (
+          <button key={x.id} className={s.chip} aria-pressed={!hidden.includes(x.id)} onClick={() => toggle(x.id)}
+            style={hidden.includes(x.id) ? { opacity: 0.55, textDecoration: 'line-through' } : undefined}>
+            {x.e} {x.title}
+          </button>
+        ))}
+      </div>
+    </>
+  )
+  return (
+    <div className={s.group}>
+      <span className={s.label}>{t.children.sections}</span>
+      <span className={s.label} style={{ fontWeight: 600, fontSize: 13 }}>{t.children.sectionsHint}</span>
+      {group(t.daily.groupDaily, daily)}
+      {group(t.daily.groupLearn, learn)}
+      {hidden.length > 0 && <div className={s.chips}><button className={s.chip} onClick={() => onChange([])}>{t.children.showAll}</button></div>}
     </div>
   )
 }
