@@ -23,6 +23,8 @@ import DoublesView from '@/components/DoublesView'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
+import ChildPicker, { ChildSwitch } from '@/components/ChildPicker'
+import { useChildren } from '@/lib/children'
 import { loadChildGender, type ChildGender } from '@/lib/praise'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
@@ -69,13 +71,14 @@ function getDayInfo(locale: string): { dayIndex: number; dateLabel: string } {
 
 export default function Home() {
   const { t, lang } = useT()
+  const kids = useChildren()
   const [authState,    setAuthState]    = useState<AuthState>('loading')
   const [showAuth,     setShowAuth]     = useState(false)
   const [view,         setView]         = useState<View>('child')
   const [childSection, setChildSection] = useState<ChildSection>('home')
   const [confirmLogout, setConfirmLogout] = useState(false)
   const [gender, setGender] = useState<ChildGender>('n')
-  useEffect(() => { setGender(loadChildGender()) }, [childSection])
+  useEffect(() => { setGender(loadChildGender()) }, [childSection, kids.version])
 
   /** La home: le schede del bambino, divise in "Ogni giorno" e "Per imparare" */
   const renderHome = () => {
@@ -180,9 +183,11 @@ export default function Home() {
     if (authState === 'authenticated') {
       Promise.all([fetchSchedule(), fetchRoutine(), fetchAgenda(), fetchEmotions(), fetchStories()]).then(() => setDataLoading(false))
     }
-  }, [authState, fetchSchedule, fetchRoutine, fetchAgenda, fetchEmotions, fetchStories])
+    // kids.version: quando cambia il figlio attivo si ricaricano i suoi contenuti
+  }, [authState, kids.version, fetchSchedule, fetchRoutine, fetchAgenda, fetchEmotions, fetchStories])
 
   const handleAuth = () => {
+    kids.reload()
     setAuthState('authenticated')
     setShowAuth(false)
     setChildSection('home')
@@ -191,6 +196,7 @@ export default function Home() {
   const handleLogout = async () => {
     setConfirmLogout(false)
     await fetch('/api/auth/logout', { method: 'POST' })
+    await kids.reload()
     setAuthState('unauthenticated')
     setShowAuth(false)
     setView('child')
@@ -367,8 +373,10 @@ export default function Home() {
           <div className={`${s.view} reading-area`}>
             {dataLoading ? (
               <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-soft)' }}>{t.common.loading}</div>
+            ) : kids.needsChoice ? (
+              <ChildPicker />
             ) : childSection === 'home' ? (
-              renderHome()
+              <><ChildSwitch />{renderHome()}</>
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             ) : childSection === 'routine' ? (

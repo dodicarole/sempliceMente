@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/next'
 import UpdateBanner from '@/components/UpdateBanner'
 import ReadingPrefs from '@/components/ReadingPrefs'
 import { I18nProvider } from '@/lib/i18n'
+import { ChildrenProvider } from '@/lib/children'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -23,8 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="it">
       <body>
         <I18nProvider>
-          <ReadingPrefs />
-          {children}
+          <ChildrenProvider>
+            <ReadingPrefs />
+            {children}
+          </ChildrenProvider>
           <UpdateBanner />
         </I18nProvider>
         <Analytics />
