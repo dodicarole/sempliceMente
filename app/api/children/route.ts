@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { getFamilyId, getParentFamilyId } from '@/lib/session'
 import { DEFAULT_SCHEDULE, DEFAULT_ROUTINE, DEFAULT_AGENDA } from '@/lib/defaults'
+import { hiddenOf } from '@/lib/homeSections'
 
 const AVATARS = ['tedo', 'meky', 'zoe', 'lila', 'nico', 'amina', 'elio', 'nour']
 const GENDERS = ['m', 'f', 'n']
@@ -11,7 +12,7 @@ export async function GET() {
   const familyId = await getFamilyId()
   if (familyId instanceof Response) return familyId
   const { data, error } = await getSupabase()
-    .from('children').select('id, name, gender, avatar, sort_order')
+    .from('children').select('id, name, gender, avatar, sort_order, settings')
     .eq('family_id', familyId).order('sort_order').order('created_at')
   if (error) return NextResponse.json({ error: error.message, children: [] }, { status: 500 })
   return NextResponse.json({ children: data })
@@ -25,6 +26,7 @@ export async function POST(req: NextRequest) {
   const name = String(body.name ?? '').trim().slice(0, 40)
   const gender = GENDERS.includes(body.gender) ? body.gender : 'n'
   const avatar = AVATARS.includes(body.avatar) ? body.avatar : 'tedo'
+  const settings = { hidden: hiddenOf({ hidden: body.hidden }) }
   if (!name) return NextResponse.json({ error: 'Nome richiesto' }, { status: 400 })
 
   const supabase = getSupabase()
@@ -32,8 +34,8 @@ export async function POST(req: NextRequest) {
   if ((count ?? 0) >= 8) return NextResponse.json({ error: 'Al massimo 8 figli' }, { status: 400 })
 
   const { data: child, error } = await supabase
-    .from('children').insert({ family_id: familyId, name, gender, avatar, sort_order: count ?? 0 })
-    .select('id, name, gender, avatar, sort_order').single()
+    .from('children').insert({ family_id: familyId, name, gender, avatar, settings, sort_order: count ?? 0 })
+    .select('id, name, gender, avatar, sort_order, settings').single()
   if (error || !child) return NextResponse.json({ error: error?.message ?? 'Errore' }, { status: 500 })
 
   const own = { family_id: familyId, child_id: child.id }
