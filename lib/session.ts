@@ -1,5 +1,6 @@
 import { getIronSession } from 'iron-session'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
+import { getSupabase } from './supabase'
 
 interface SessionData {
   familyId?: string
@@ -52,4 +53,18 @@ export async function requireParent(): Promise<Response | null> {
     })
   }
   return null
+}
+
+/**
+ * Il figlio su cui lavorare: lo sceglie il dispositivo (intestazione x-child-id).
+ * Si accetta solo un figlio della famiglia; altrimenti, o se manca, il primo figlio.
+ * Restituisce null solo se la tabella dei figli non c'è ancora (vecchio database).
+ */
+export async function getChildId(familyId: string): Promise<string | null> {
+  const wanted = (await headers()).get('x-child-id')
+  const { data, error } = await getSupabase()
+    .from('children').select('id').eq('family_id', familyId)
+    .order('sort_order').order('created_at')
+  if (error || !data?.length) return null
+  return data.find(c => c.id === wanted)?.id ?? data[0].id
 }
