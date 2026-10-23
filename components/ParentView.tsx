@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIcon, type ScheduleItem, type RoutineItem, type AgendaItem, type EmotionItem, type Story } from '@/types'
 import NumbersSettingsPanel from './NumbersSettingsPanel'
 import TablesSettingsPanel from './TablesSettingsPanel'
-import ChildGenderPicker from './ChildGenderPicker'
+import ChildrenPanel, { ChildTabs } from './ChildrenPanel'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
@@ -241,6 +241,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <div className={s.title}>{t.parent.title}</div>
         <button className={s.lockBtn} onClick={onLock} title={t.parent.lock} aria-label={t.parent.lock}>🔒</button>
       </div>
+
+      <ChildTabs />
 
       <div className={s.sectionToggle}>
         {(['zaino', 'routine', 'agenda', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'tabelline', 'scomponi', 'nomi', 'doppie', 'english', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie') || lang === 'it').map(sec => (
@@ -560,7 +562,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
 
       <LanguagePicker />
 
-      <ChildGenderPicker />
+      <ChildrenPanel />
 
       <FunSettingsPanel />
 
