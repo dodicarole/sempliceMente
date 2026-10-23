@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { getFamilyId, getParentFamilyId } from '@/lib/session'
+import { getFamilyId, getParentFamilyId, getChildId } from '@/lib/session'
 import type { StoryPage } from '@/types'
 
 export async function GET() {
@@ -8,8 +8,12 @@ export async function GET() {
   if (familyId instanceof Response) return familyId
 
   const supabase = getSupabase()
+  const childId = await getChildId(familyId)
+  // le storie senza figlio sono per tutti; quelle con un figlio solo per lui
+  let storiesQuery = supabase.from('stories').select('*').eq('family_id', familyId)
+  if (childId) storiesQuery = storiesQuery.or(`child_id.is.null,child_id.eq.${childId}`)
   const [storiesRes, pagesRes] = await Promise.all([
-    supabase.from('stories').select('*').eq('family_id', familyId).order('sort_order'),
+    storiesQuery.order('sort_order'),
     supabase.from('story_pages').select('*').eq('family_id', familyId).order('sort_order'),
   ])
 
