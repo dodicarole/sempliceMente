@@ -283,6 +283,21 @@ export const it = {
     parentHint: 'Scegli come funziona "English time" per il tuo bambino. Le modifiche si salvano subito.',
   },
 
+  children: {
+    whoTitle: "Chi usa l'app?",
+    remember: 'Ricorda su questo dispositivo',
+    switch: 'Cambia bambino',
+    noName: 'Senza nome',
+    editing: 'Stai modificando i contenuti di:',
+    section: 'Figli',
+    hint: 'Ogni figlio ha il suo zaino, la sua routine, la sua agenda e le sue emozioni. Le storie sono per tutti.',
+    genderLabel: 'Bambino o bambina?',
+    avatar: 'Il suo amico',
+    add: '＋ Aggiungi un figlio',
+    remove: 'Elimina',
+    confirmRemove: (n: string): string => `Eliminare ${n} e tutti i suoi contenuti?`,
+  },
+
   daily: {
     groupDaily: 'Ogni giorno',
     groupLearn: 'Per imparare',

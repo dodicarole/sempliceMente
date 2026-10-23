@@ -285,6 +285,21 @@ export const fr: Dict = {
     parentHint: 'Choisissez comment fonctionne « English time » pour votre enfant. Les modifications sont enregistrées tout de suite.',
   },
 
+  children: {
+    whoTitle: `Qui utilise l’application${nb}?`,
+    remember: 'Se souvenir sur cet appareil',
+    switch: 'Changer d’enfant',
+    noName: 'Sans prénom',
+    editing: `Vous modifiez les contenus de${nb}:`,
+    section: 'Enfants',
+    hint: 'Chaque enfant a son cartable, sa routine, son agenda et ses émotions. Les histoires sont pour tous.',
+    genderLabel: `Garçon ou fille${nb}?`,
+    avatar: 'Son ami',
+    add: '＋ Ajouter un enfant',
+    remove: 'Supprimer',
+    confirmRemove: n => `Supprimer ${n} et tous ses contenus${nb}?`,
+  },
+
   daily: {
     groupDaily: 'Chaque jour',
     groupLearn: 'Pour apprendre',
