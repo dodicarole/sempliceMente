@@ -388,6 +388,7 @@ export const fr: Dict = {
     orologio: `Moi, je regarde toujours l’heure${nb}: comme ça, je sais quand le train passe${nb}!`,
     soldi: `Compter l’argent, c’est facile${nb}: on commence par les plus grands${nb}!`,
     sillabe: `Une syllabe à la fois${nb}: même les mots longs deviennent faciles${nb}!`,
+    doppie: `Écoute doucement${nb}: la lettre double s’entend deux fois${nb}!`,
   },
 
   tedo: {

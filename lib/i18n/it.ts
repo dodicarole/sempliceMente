@@ -385,6 +385,7 @@ export const it = {
     orologio: 'Io guardo sempre l\'orologio: così so quando passa il treno!',
     soldi: 'Contare i soldi è facile: si parte dai più grandi!',
     sillabe: 'Una sillaba alla volta: anche le parole lunghe diventano facili!',
+    doppie: 'Ascolta piano piano: la doppia si sente due volte, alla fine di una sillaba e all\'inizio di quella dopo!',
   },
 
   tedo: {
