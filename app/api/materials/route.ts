@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { getFamilyId, getParentFamilyId } from '@/lib/session'
+import { getFamilyId, getParentFamilyId, getChildId } from '@/lib/session'
 
 export async function GET() {
   const familyId = await getFamilyId()
   if (familyId instanceof Response) return familyId
 
   const supabase = getSupabase()
-  const { data, error } = await supabase
+  const childId = await getChildId(familyId)
+  let query = supabase
     .from('schedule_items')
     .select('*')
     .eq('family_id', familyId)
+  if (childId) query = query.eq('child_id', childId)
+  const { data, error } = await query
     .order('day_of_week')
     .order('sort_order')
 
@@ -23,11 +26,12 @@ export async function POST(req: NextRequest) {
   if (familyId instanceof Response) return familyId
 
   const supabase = getSupabase()
+  const childId = await getChildId(familyId)
   const { day_of_week, name, icon, sort_order } = await req.json()
 
   const { data, error } = await supabase
     .from('schedule_items')
-    .insert({ day_of_week, name, icon, sort_order, family_id: familyId })
+    .insert({ day_of_week, name, icon, sort_order, family_id: familyId, ...(childId ? { child_id: childId } : {}) })
     .select()
     .single()
 
