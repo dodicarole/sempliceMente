@@ -25,6 +25,7 @@ import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
 import ChildPicker, { ChildSwitch } from '@/components/ChildPicker'
 import { useChildren } from '@/lib/children'
+import { homeSections, type HomeCard } from '@/lib/homeSections'
 import { loadChildGender, type ChildGender } from '@/lib/praise'
 import ParentView from '@/components/ParentView'
 import PinScreen from '@/components/PinScreen'
@@ -82,29 +83,12 @@ export default function Home() {
 
   /** La home: le schede del bambino, divise in "Ogni giorno" e "Per imparare" */
   const renderHome = () => {
-    type Card = { id: ChildSection; e: string; c: string; title: string; sub: string; it?: boolean }
-    const daily: Card[] = [
-      { id: 'zaino', e: '🎒', c: '#6B7FE3', title: t.home.zainoTitle, sub: t.home.zainoSub },
-      { id: 'routine', e: '🌅', c: '#FF8C42', title: t.home.routineTitle, sub: t.home.routineSub(gender) },
-      { id: 'agenda', e: '📅', c: '#3EAB7A', title: t.home.agendaTitle, sub: t.home.agendaSub },
-      { id: 'primapoi', e: '🔄', c: '#F08C00', title: t.daily.firstThenTitle, sub: t.daily.firstThenSub },
-      { id: 'emotions', e: '💬', c: '#C2255C', title: t.daily.wordsTitle, sub: t.daily.wordsSub },
-      { id: 'calma', e: '🌬️', c: '#2F9E44', title: t.daily.calmTitle, sub: t.daily.calmSub },
-      { id: 'timer', e: '⏱️', c: '#0EA5B7', title: t.home.timerTitle, sub: t.home.timerSub },
-      { id: 'stelline', e: '⭐', c: '#E8A400', title: t.daily.starsTitle, sub: t.daily.starsSub },
-      { id: 'storie', e: '📖', c: '#8E6CE0', title: t.home.storiesTitle, sub: t.home.storiesSub },
-    ]
-    const learn: Card[] = [
-      { id: 'numeri', e: '🔢', c: '#F59F00', title: t.home.numbersTitle, sub: t.home.numbersSub },
-      { id: 'tabelline', e: '✖️', c: '#7048E8', title: t.home.tablesTitle, sub: t.home.tablesSub },
-      { id: 'scomponi', e: '🧱', c: '#2F9E44', title: t.split.title, sub: t.split.homeSub },
-      { id: 'orologio', e: '🕐', c: '#1C7ED6', title: t.daily.clockTitle, sub: t.daily.clockSub },
-      { id: 'soldi', e: '💶', c: '#2F9E44', title: t.daily.moneyTitle, sub: t.daily.moneySub },
-      { id: 'sillabe', e: '🔤', c: '#E03131', title: 'Le sillabe', sub: 'Unisci le sillabe per leggere', it: true },
-      { id: 'doppie', e: '✏️', c: '#F08C00', title: 'Le doppie', sub: 'Una lettera o due?', it: true },
-      { id: 'nomi', e: '📝', c: '#7048E8', title: 'Classifica i nomi', sub: 'Persona, animale o cosa?', it: true },
-      { id: 'english', e: '🇬🇧', c: '#1C3F94', title: t.english.title, sub: t.english.homeSub },
-    ]
+    type Card = HomeCard
+    const { daily: allDaily, learn: allLearn } = homeSections(t, gender)
+    // le sezioni che il genitore ha nascosto a questo figlio non compaiono
+    const hidden = authState === 'authenticated' ? (kids.active?.hidden ?? []) : []
+    const daily = allDaily.filter(x => !hidden.includes(x.id))
+    const learn = allLearn.filter(x => !hidden.includes(x.id))
     const card = (x: Card) => (x.it && lang !== 'it') ? null : (
       <button key={x.id} className={s.featureCard} style={{ '--accent': x.c } as React.CSSProperties} onClick={() => setChildSection(x.id)}>
         <span className={s.featureEmoji}>{x.e}</span>
@@ -114,10 +98,11 @@ export default function Home() {
     )
     return (
       <div className={s.homeGrid}>
-        <h2 className={s.homeGroup}>{t.daily.groupDaily}</h2>
+        {daily.length > 0 && <h2 className={s.homeGroup}>{t.daily.groupDaily}</h2>}
         {daily.map(card)}
-        <h2 className={s.homeGroup}>{t.daily.groupLearn}</h2>
+        {learn.some(x => !x.it || lang === 'it') && <h2 className={s.homeGroup}>{t.daily.groupLearn}</h2>}
         {learn.map(card)}
+        {!daily.length && !learn.some(x => !x.it || lang === 'it') && <p className={s.homeGroup} style={{ textTransform: 'none' }}>{t.children.allHidden}</p>}
       </div>
     )
   }
