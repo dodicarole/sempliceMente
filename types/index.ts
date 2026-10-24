@@ -95,26 +95,69 @@ export function pickRoutineIcon(name: string): string {
   return ''
 }
 
+// Parole (italiano e francese) → immagine dello zaino. Si confronta senza accenti e senza maiuscole,
+// e le parole più precise vengono prima ("crayons de couleur" prima di "crayon").
 const ZAINO_KEYWORDS: [string[], string][] = [
-  [['quaderno','diario','blocco'],          '📓'],
-  [['libro','testo','lettura'],             '📚'],
-  [['astuccio','matita','penna','biro'],    '🖊️'],
-  [['righello','riga'],                     '📏'],
-  [['forbici','forbice'],                   '✂️'],
-  [['colla'],                               '🖍️'],
-  [['colori','pennarelli','pastelli'],       '🎨'],
-  [['compasso','goniometro'],               '📐'],
-  [['merenda','panino','frutto','snack'],   '🥪'],
-  [['acqua','borraccia'],                   '💧'],
-  [['zaino','borsa','cartella'],            '🎒'],
-  [['calcolatrice'],                        '🧮'],
-  [['agenda','diario'],                     '📆'],
+  [['scarpe', 'scarpa', 'scarpette', 'chaussure', 'basket', 'tennis'], '👟'],
+  [['stivali', 'bottes'], '👢'],
+  [['ciabatte', 'pantofole', 'chausson'], '🩴'],
+  [['calze', 'calzini', 'chaussette'], '🧦'],
+  [['tuta', 'jogging', 'survetement'], '🎽'],
+  [['maglietta', 'maglia', 't shirt', 'tee shirt'], '👕'],
+  [['felpa', 'maglione', 'pull', 'sweat', 'giacca', 'giubbotto', 'giubbino', 'cappotto', 'giaccone', 'k way', 'manteau', 'veste', 'blouson'], '🧥'],
+  [['pantaloncini', 'pantaloni', 'pantalon', 'short'], '👖'],
+  [['grembiule', 'grembiulino', 'tablier', 'blouse'], '🥼'],
+  [['occhialini', 'lunettes de piscine'], '🥽'],
+  [['costume', 'maillot'], '🩱'],
+  [['asciugamano', 'accappatoio', 'serviette'], '🛁'],
+  [['cappello', 'cappellino', 'berretto', 'cuffia', 'casquette', 'bonnet', 'chapeau'], '🧢'],
+  [['sciarpa', 'echarpe'], '🧣'],
+  [['guanti', 'gants'], '🧤'],
+  [['ombrello', 'parapluie'], '☂️'],
+  [['flauto', 'flute'], '🪈'],
+  [['occhiali', 'lunettes'], '👓'],
+  [['chiavi', 'chiave', 'cles', 'clef'], '🔑'],
+  [['telefono', 'cellulare', 'tablet', 'telephone', 'portable', 'tablette'], '📱'],
+  [['fazzolett', 'mouchoir'], '🤧'],
+  [['spazzolino', 'dentifricio', 'brosse a dent', 'dentifrice'], '🪥'],
+  [['sapone', 'gel', 'disinfettante', 'savon'], '🧴'],
+  [['mascherina', 'masque'], '😷'],
+  [['astucc', 'trousse'], '✏️'],
+  [['gomma', 'gomme'], '✏️'],
+  [['temperino', 'temperamatite', 'taille crayon'], '✏️'],
+  [['colla', 'colle'], '🧴'],
+  [['pastell', 'colori', 'pennarell', 'crayons de couleur', 'crayon de couleur', 'feutre', 'cere'], '🖍️'],
+  [['matit', 'crayon'], '✏️'],
+  [['penna', 'biro', 'stylo'], '🖊️'],
+  [['pennell', 'pinceau', 'tempere', 'acquerell', 'peinture'], '🖌️'],
+  [['righell', 'riga', 'regle'], '📏'],
+  [['squadra', 'compasso', 'goniometro', 'equerre', 'compas', 'rapporteur'], '📐'],
+  [['forbic', 'ciseaux'], '✂️'],
+  [['calcolatrice', 'calculatrice'], '🧮'],
+  [['dizionario', 'dictionnaire'], '📕'],
+  [['cartellina', 'cartelletta', 'raccoglitore', 'classificatore', 'classeur', 'pochette', 'chemise'], '📁'],
+  [['quadern', 'cahier', 'diario', 'blocco', 'album'], '📓'],
+  [['agenda'], '📆'],
+  [['libr', 'testo', 'lettura', 'livre', 'manuel'], '📚'],
+  [['merenda', 'panino', 'snack', 'gouter', 'biscott', 'cracker', 'tramezzino'], '🥪'],
+  [['frutt', 'mela', 'banana', 'pomme', 'banane'], '🍎'],
+  [['succo', 'jus'], '🧃'],
+  [['acqua', 'borraccia', 'bottiglia', 'gourde', 'bouteille'], '💧'],
+  [['pallone', 'palla', 'ballon'], '⚽'],
+  [['zaino', 'borsa', 'cartella', 'sacca', 'cartable', 'sac'], '🎒'],
+  [['soldi', 'monete', 'portafoglio', 'argent', 'porte monnaie'], '💶'],
+  [['biglietto', 'abbonamento', 'tessera', 'ticket'], '🎫'],
 ]
 
+/** Il nome senza accenti, maiuscole, apostrofi e trattini, per riconoscerlo meglio */
+export function normalizeName(name: string): string {
+  return name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/['’\-]/g, ' ')
+}
+
 export function pickZainoIcon(name: string): string {
-  const lower = name.toLowerCase()
+  const n = normalizeName(name)
   for (const [keywords, icon] of ZAINO_KEYWORDS) {
-    if (keywords.some(k => lower.includes(k))) return icon
+    if (keywords.some(k => n.includes(k))) return icon
   }
   return ''
 }
