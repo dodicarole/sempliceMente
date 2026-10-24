@@ -302,6 +302,10 @@ export const fr: Dict = {
     add: '＋ Ajouter un enfant',
     remove: 'Supprimer',
     confirmRemove: n => `Supprimer ${n} et tous ses contenus${nb}?`,
+    removeAsk: n => `Supprimer ${n}${nb}?`,
+    removeDetail: 'Son cartable, sa routine, son agenda et ses émotions seront aussi supprimés. Impossible de revenir en arrière.',
+    duplicate: 'Il y a déjà un enfant avec ce prénom. Vérifiez de ne pas l’avoir ajouté deux fois.',
+    lastOne: 'Il doit rester au moins un enfant : c’est pourquoi le seul enfant ne peut pas être supprimé.',
   },
 
   daily: {

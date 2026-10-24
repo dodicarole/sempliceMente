@@ -300,6 +300,10 @@ export const it = {
     add: '＋ Aggiungi un figlio',
     remove: 'Elimina',
     confirmRemove: (n: string): string => `Eliminare ${n} e tutti i suoi contenuti?`,
+    removeAsk: (n: string): string => `Eliminare ${n}?`,
+    removeDetail: 'Verranno eliminati anche il suo zaino, la sua routine, la sua agenda e le sue emozioni. Non si potrà tornare indietro.',
+    duplicate: "C'è già un figlio con questo nome. Controlla di non averlo inserito due volte.",
+    lastOne: "Deve restare almeno un figlio: per questo, quando ce n'è uno solo, non si può eliminare.",
   },
 
   daily: {
