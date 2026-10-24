@@ -132,7 +132,7 @@ export default function Home() {
     if (!res.ok) return
     const { items }: { items: ScheduleItem[] } = await res.json()
     const byDay: ScheduleItem[][] = Array(5).fill(null).map(() => [])
-    items.forEach(item => { byDay[item.day_of_week].push(item) })
+    items.forEach(item => { byDay[item.day_of_week]?.push(item) })
     setSchedule(byDay)
   }, [])
 
