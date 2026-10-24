@@ -10,3 +10,15 @@
 .switch { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; border: 2px solid #D6DBF2; border-radius: 999px; background: var(--card); color: var(--text); padding: 4px 14px 4px 4px; font-size: 16px; font-weight: 800; font-family: inherit; cursor: pointer; }
 .switch .avatar { border-width: 2px; }
 .switchIcon { color: var(--text-soft); }
+
+/* Eliminare un figlio: il cestino e la finestra di conferma */
+.trash { flex: none; width: 56px; height: 56px; border-radius: 50%; border: 2px solid #F3C4C4; background: var(--card); font-size: 22px; cursor: pointer; }
+.overlay { position: fixed; inset: 0; background: rgba(31, 33, 71, .55); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 60; }
+.dialog { background: var(--card); color: var(--text); border-radius: 24px; padding: 24px 20px; width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.dialogTitle { font-size: 22px; font-weight: 900; }
+.dialogText { font-size: 15px; font-weight: 700; color: var(--text-soft); line-height: 1.45; }
+.dialogBtns { display: flex; gap: 10px; width: 100%; margin-top: 4px; }
+.dialogBtns button { flex: 1; min-height: 52px; border-radius: 14px; font-size: 17px; font-weight: 800; font-family: inherit; cursor: pointer; }
+.btnSoft { border: 2px solid #D6DBF2; background: var(--ground); color: var(--text); }
+.btnDanger { border: none; background: #E03131; color: #fff; }
+.dialogBtns button:disabled { opacity: .5; }

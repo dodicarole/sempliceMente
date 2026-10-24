@@ -29,7 +29,7 @@ export function ChildTabs() {
   )
 }
 
-function ChildForm({ start, onSave, onCancel, onRemove }: { start: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>; onSave: (v: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>) => void; onCancel?: () => void; onRemove?: () => void }) {
+function ChildForm({ start, others = [], onSave, onCancel, onRemove }: { start: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>; others?: string[]; onSave: (v: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>) => void; onCancel?: () => void; onRemove?: () => void }) {
   const { t } = useT()
   const [v, setV] = useState(start)
   const G: [ChildGender, string][] = [['m', t.child.boy], ['f', t.child.girl], ['n', t.child.unspecified]]
@@ -38,6 +38,9 @@ function ChildForm({ start, onSave, onCancel, onRemove }: { start: Pick<Child, '
       <div className={s.group}>
         <span className={s.label}>{t.child.nameLabel}</span>
         <input style={input} value={v.name} maxLength={40} placeholder={t.child.namePlaceholder} onChange={e => setV({ ...v, name: e.target.value })} />
+        {others.some(o => o.trim().toLowerCase() === v.name.trim().toLowerCase() && v.name.trim()) && (
+          <span className={s.label} style={{ color: '#C76B00', fontSize: 13 }}>⚠️ {t.children.duplicate}</span>
+        )}
       </div>
       <div className={s.group}>
         <span className={s.label}>{t.children.genderLabel}</span>
@@ -69,23 +72,48 @@ export default function ChildrenPanel() {
   const { children, update, add, remove } = useChildren()
   const [open, setOpen] = useState<string | null>(null)   // id del figlio aperto, o 'new'
   const [msg, setMsg] = useState('')
+  const [ask, setAsk] = useState<Child | null>(null)   // il figlio da eliminare, in attesa di conferma
+  const [busy, setBusy] = useState(false)
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div className={s.label}>{t.children.hint}</div>
       {children.map(k => (
         open === k.id
-          ? <ChildForm key={k.id} start={k} onCancel={() => setOpen(null)}
+          ? <ChildForm key={k.id} start={k} others={children.filter(x => x.id !== k.id).map(x => x.name)} onCancel={() => setOpen(null)}
               onSave={async v => { await update(k.id, v); setOpen(null) }}
-              onRemove={children.length > 1 ? async () => { if (!confirm(t.children.confirmRemove(k.name || t.children.noName))) return; const e = await remove(k.id); setMsg(e ?? ''); setOpen(null) } : undefined} />
-          : <button key={k.id} className={c.switch} style={{ alignSelf: 'stretch', padding: '6px 16px 6px 6px' }} onClick={() => setOpen(k.id)}>
-              <Image src={`/amici/${k.avatar}.png`} alt="" width={44} height={44} className={c.avatar} style={{ borderWidth: 2 }} />
-              <span style={{ flex: 1, textAlign: 'left' }}>{k.name || t.children.noName}</span><span>✏️</span>
-            </button>
+              onRemove={children.length > 1 ? () => setAsk(k) : undefined} />
+          : <div key={k.id} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button className={c.switch} style={{ flex: 1, padding: '6px 16px 6px 6px' }} onClick={() => setOpen(k.id)} aria-label={`✏️ ${k.name}`}>
+                <Image src={`/amici/${k.avatar}.png`} alt="" width={44} height={44} className={c.avatar} style={{ borderWidth: 2 }} />
+                <span style={{ flex: 1, textAlign: 'left' }}>{k.name || t.children.noName}</span><span>✏️</span>
+              </button>
+              {children.length > 1 && (
+                <button className={c.trash} onClick={() => setAsk(k)} aria-label={`${t.children.remove} ${k.name}`}>🗑️</button>
+              )}
+            </div>
       ))}
       {open === 'new'
-        ? <ChildForm start={{ name: '', gender: 'n', avatar: 'tedo', hidden: [] }} onCancel={() => setOpen(null)} onSave={async v => { const e = await add(v); setMsg(e ?? ''); setOpen(null) }} />
+        ? <ChildForm start={{ name: '', gender: 'n', avatar: 'tedo', hidden: [] }} others={children.map(x => x.name)} onCancel={() => setOpen(null)} onSave={async v => { const e = await add(v); setMsg(e ?? ''); setOpen(null) }} />
         : <button className={s.chip} onClick={() => setOpen('new')}>{t.children.add}</button>}
       {msg && <div className={s.label} style={{ color: '#C92A2A' }}>{msg}</div>}
+      {children.length === 1 && <div className={s.label} style={{ fontSize: 13 }}>{t.children.lastOne}</div>}
+
+      {ask && (
+        <div className={c.overlay} role="dialog" aria-modal="true" onClick={e => { if (e.target === e.currentTarget && !busy) setAsk(null) }}>
+          <div className={c.dialog}>
+            <Image src={`/amici/${ask.avatar}.png`} alt="" width={72} height={72} className={c.avatar} />
+            <div className={c.dialogTitle}>{t.children.removeAsk(ask.name || t.children.noName)}</div>
+            <div className={c.dialogText}>{t.children.removeDetail}</div>
+            <div className={c.dialogBtns}>
+              <button className={c.btnSoft} disabled={busy} onClick={() => setAsk(null)}>{t.common.cancel}</button>
+              <button className={c.btnDanger} disabled={busy} onClick={async () => {
+                setBusy(true); const e = await remove(ask.id); setBusy(false)
+                setMsg(e ?? ''); setAsk(null); setOpen(null)
+              }}>{t.children.remove}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -112,9 +140,12 @@ function SectionsPicker({ hidden, gender, onChange }: { hidden: SectionId[]; gen
     <div className={s.group}>
       <span className={s.label}>{t.children.sections}</span>
       <span className={s.label} style={{ fontWeight: 600, fontSize: 13 }}>{t.children.sectionsHint}</span>
+      {/* scorciatoia: riaccendere tutte le sezioni in un colpo */}
+      <div className={s.chips}>
+        <button className={s.chip} disabled={hidden.length === 0} onClick={() => onChange([])}>👁️ {t.children.showAll}</button>
+      </div>
       {group(t.daily.groupDaily, daily)}
       {group(t.daily.groupLearn, learn)}
-      {hidden.length > 0 && <div className={s.chips}><button className={s.chip} onClick={() => onChange([])}>{t.children.showAll}</button></div>}
     </div>
   )
 }
