@@ -7,7 +7,7 @@ import type { ChildGender } from '@/lib/praise'
 
 export const SECTION_IDS = [
   'zaino', 'routine', 'agenda', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
-  'numeri', 'tabelline', 'scomponi', 'orologio', 'soldi', 'sillabe', 'doppie', 'nomi', 'english',
+  'numeri', 'confronta', 'tabelline', 'scomponi', 'orologio', 'soldi', 'sillabe', 'doppie', 'nomi', 'english',
 ] as const
 export type SectionId = typeof SECTION_IDS[number]
 
@@ -28,6 +28,7 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
     ],
     learn: [
       { id: 'numeri', e: '🔢', c: '#F59F00', title: t.home.numbersTitle, sub: t.home.numbersSub },
+      { id: 'confronta', e: '🐸', c: '#2F9E44', title: t.compare.title, sub: t.compare.homeSub },
       { id: 'tabelline', e: '✖️', c: '#7048E8', title: t.home.tablesTitle, sub: t.home.tablesSub },
       { id: 'scomponi', e: '🧱', c: '#2F9E44', title: t.split.title, sub: t.split.homeSub },
       { id: 'orologio', e: '🕐', c: '#1C7ED6', title: t.daily.clockTitle, sub: t.daily.clockSub },
