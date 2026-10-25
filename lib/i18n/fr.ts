@@ -285,6 +285,28 @@ export const fr: Dict = {
     parentHint: 'Choisissez comment fonctionne « English time » pour votre enfant. Les modifications sont enregistrées tout de suite.',
   },
 
+  compare: {
+    title: 'Plus grand, plus petit, égal',
+    homeSub: 'Tedo mange le plus grand nombre',
+    sub: 'Tedo est gourmand : il ouvre la bouche vers le plus grand',
+    tabQ: `🍎 Qui en a le plus${nb}?`, tabT: '🐸 La bouche de Tedo', tabS: '✏️ Choisis le signe',
+    askQ: `Qui en a le plus${nb}?`, subQ: 'Touche le groupe le plus grand. Tu peux compter en touchant les objets.',
+    askT: `De quel côté Tedo ouvre-t-il la bouche${nb}?`, askS: `Quel signe faut-il${nb}?`,
+    equalBtn: `= C’est pareil`,
+    eatLeft: 'mange à gauche', same: 'égaux', eatRight: 'mange à droite',
+    less: 'plus petit', equal: 'égal', more: 'plus grand',
+    rel: { '<': 'est plus petit que', '>': 'est plus grand que', '=': 'est égal à' },
+    and: (a, b) => `${a} et ${b}`,
+    lineMore: n => `Les nombres grandissent vers la droite ➜. ${n} est plus à droite${nb}: c’est le plus grand.`,
+    lineSame: `Ils sont au même endroit${nb}: ils sont égaux.`,
+    lineVoiceMore: n => `Sur la ligne des nombres, ${n} est plus à droite${nb}: c’est le plus grand.`,
+    lineVoiceSame: `Ils sont au même endroit de la ligne${nb}: ils sont égaux.`,
+    done: `Tu as comparé 10 paires de nombres${nb}!`, again: '🔄 Encore',
+    setMax: 'Nombres jusqu’à', setLine: 'Ligne des nombres',
+    lineHelp: 'Après 2 erreurs', lineAlways: 'Toujours', lineNever: 'Jamais',
+    parentHint: 'Choisissez jusqu’à quel nombre aller et quand afficher la ligne des nombres comme aide.',
+  },
+
   children: {
     whoTitle: `Qui utilise l’application${nb}?`,
     remember: 'Se souvenir sur cet appareil',
@@ -412,6 +434,7 @@ export const fr: Dict = {
     soldi: `Compter l’argent, c’est facile${nb}: on commence par les plus grands${nb}!`,
     sillabe: `Une syllabe à la fois${nb}: même les mots longs deviennent faciles${nb}!`,
     doppie: `Écoute doucement${nb}: la lettre double s’entend deux fois${nb}!`,
+    confronta: `Le côté ouvert regarde le plus grand nombre, la pointe regarde le plus petit${nb}!`,
   },
 
   tedo: {

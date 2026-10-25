@@ -283,6 +283,28 @@ export const it = {
     parentHint: 'Scegli come funziona "English time" per il tuo bambino. Le modifiche si salvano subito.',
   },
 
+  compare: {
+    title: 'Maggiore, minore, uguale',
+    homeSub: 'Tedo mangia il numero più grande',
+    sub: 'Tedo è goloso: apre la bocca verso il più grande',
+    tabQ: '🍎 Chi ne ha di più?', tabT: '🐸 La bocca di Tedo', tabS: '✏️ Scegli il segno',
+    askQ: 'Chi ne ha di più?', subQ: 'Tocca il gruppo più grande. Puoi contare toccando gli oggetti.',
+    askT: 'Da che parte apre la bocca Tedo?', askS: 'Che segno ci va?',
+    equalBtn: '= Sono uguali',
+    eatLeft: 'mangia a sinistra', same: 'uguali', eatRight: 'mangia a destra',
+    less: 'minore', equal: 'uguale', more: 'maggiore',
+    rel: { '<': 'è minore di', '>': 'è maggiore di', '=': 'è uguale a' } as Record<string, string>,
+    and: (a: number, b: number): string => `${a} e ${b}`,
+    lineMore: (n: number): string => `I numeri crescono andando verso destra ➜. ${n} è più a destra: è il più grande.`,
+    lineSame: 'Stanno nello stesso punto: sono uguali.',
+    lineVoiceMore: (n: number): string => `Sulla linea dei numeri, ${n} è più a destra: è il più grande.`,
+    lineVoiceSame: 'Stanno nello stesso punto della linea: sono uguali.',
+    done: 'Hai confrontato 10 coppie di numeri!', again: '🔄 Ancora',
+    setMax: 'Numeri fino a', setLine: 'Linea dei numeri',
+    lineHelp: 'Dopo 2 errori', lineAlways: 'Sempre', lineNever: 'Mai',
+    parentHint: 'Scegli fino a che numero arrivare e quando mostrare la linea dei numeri come aiuto.',
+  },
+
   children: {
     whoTitle: "Chi usa l'app?",
     remember: 'Ricorda su questo dispositivo',
@@ -409,6 +431,7 @@ export const it = {
     soldi: 'Contare i soldi è facile: si parte dai più grandi!',
     sillabe: 'Una sillaba alla volta: anche le parole lunghe diventano facili!',
     doppie: 'Ascolta piano piano: la doppia si sente due volte, alla fine di una sillaba e all\'inizio di quella dopo!',
+    confronta: 'La parte aperta guarda il numero più grande, la punta guarda il più piccolo!',
   },
 
   tedo: {
