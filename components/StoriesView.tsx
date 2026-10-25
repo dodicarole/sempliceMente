@@ -8,6 +8,7 @@ import { loadReadingSettings } from '@/lib/readingSettings'
 import s from './StoriesView.module.css'
 import { useT } from '@/lib/i18n'
 import Buddy from './Buddy'
+import { prepareForSpeech, bestVoice } from '@/lib/speechText'
 
 interface Props {
   stories: Story[]
@@ -62,10 +63,12 @@ export default function StoriesView({ stories, onBack }: Props) {
     if (!canSpeak || !text.trim()) return
     const synth = window.speechSynthesis
     synth.cancel()
-    const utt = new SpeechSynthesisUtterance(text)
+    // il testo viene sistemato per la voce (maiuscole, emoji, a capo…); sullo schermo resta com'è
+    const { spoken, map } = prepareForSpeech(text, t.speechLang === 'fr' ? 'fr' : 'it')
+    const utt = new SpeechSynthesisUtterance(spoken)
     utt.lang = t.locale
     utt.rate = 0.9
-    const voice = synth.getVoices().find(v => v.lang.toLowerCase().startsWith(t.speechLang))
+    const voice = bestVoice(synth.getVoices(), t.locale)
     if (voice) utt.voice = voice
     clearTimers()
     stopped.current = false
@@ -78,7 +81,7 @@ export default function StoriesView({ stories, onBack }: Props) {
     utt.onboundary = e => {
       if (e.name !== 'word') return
       if (!gotWord) { gotWord = true; clearTimers() }
-      setWordAt(e.charIndex)
+      setWordAt(map[e.charIndex] ?? e.charIndex)   // dalla posizione nel testo letto a quella nel testo visibile
     }
 
     // 2) Altrimenti (succede con molte voci di Android) stima il tempo di ogni parola

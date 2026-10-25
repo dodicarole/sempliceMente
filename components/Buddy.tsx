@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useT } from '@/lib/i18n'
+import { bestVoice } from '@/lib/speechText'
 import { BUDDIES, BUDDY_FOR, type BuddySpot } from '@/lib/buddies'
 import s from './Buddy.module.css'
 
@@ -16,7 +17,7 @@ export default function Buddy({ spot }: { spot: BuddySpot }) {
       const synth = window.speechSynthesis
       const u = new SpeechSynthesisUtterance(`${b.name}: ${line}`)
       u.lang = t.locale; u.rate = 0.9
-      const v = synth.getVoices().find(v => v.lang.toLowerCase().startsWith(t.speechLang))
+      const v = bestVoice(synth.getVoices(), t.locale)
       if (v) u.voice = v
       synth.cancel(); setTimeout(() => synth.speak(u), 80)
     } catch (_) {}
