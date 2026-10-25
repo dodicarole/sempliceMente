@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useT } from '@/lib/i18n'
+import { prepareForSpeech, bestVoice } from '@/lib/speechText'
 
 /* Voce nella lingua dell'app: le frasi si mettono in fila e il gioco può aspettare che finiscano */
 const keep: SpeechSynthesisUtterance[] = []
@@ -15,9 +16,9 @@ export function useSpeech() {
     const fin = () => { if (!done) { done = true; resolve() } }
     try {
       const synth = window.speechSynthesis
-      const u = new SpeechSynthesisUtterance(text)
+      const u = new SpeechSynthesisUtterance(prepareForSpeech(text, t.speechLang === 'fr' ? 'fr' : 'it').spoken)
       u.lang = t.locale; u.rate = opts.rate ?? 0.88
-      const v = synth.getVoices().find(v => v.lang.toLowerCase().startsWith(t.speechLang))
+      const v = bestVoice(synth.getVoices(), t.locale)
       if (v) u.voice = v
       u.onend = fin; u.onerror = fin
       keep.push(u); if (keep.length > 20) keep.shift()
