@@ -21,6 +21,7 @@ import MoneyView from '@/components/MoneyView'
 import SyllablesView from '@/components/SyllablesView'
 import DoublesView from '@/components/DoublesView'
 import CompareView from '@/components/CompareView'
+import OppositesView from '@/components/OppositesView'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -36,7 +37,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -293,6 +294,8 @@ export default function Home() {
               <DoublesView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'confronta' ? (
               <CompareView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'contrari' ? (
+              <OppositesView allowSettings onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -401,6 +404,8 @@ export default function Home() {
               <DoublesView onBack={() => setChildSection('home')} />
             ) : childSection === 'confronta' ? (
               <CompareView onBack={() => setChildSection('home')} />
+            ) : childSection === 'contrari' ? (
+              <OppositesView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
