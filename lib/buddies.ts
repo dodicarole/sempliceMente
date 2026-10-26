@@ -4,7 +4,7 @@
  */
 export type BuddyId = 'meky' | 'zoe' | 'lila' | 'nico' | 'amina' | 'elio' | 'nour'
 export type BuddySpot = 'zaino' | 'routine' | 'agenda' | 'timer' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english'
-  | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta'
+  | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari'
 
 export const BUDDIES: Record<BuddyId, { name: string; color: string; img: string }> = {
   meky:  { name: 'Meky',  color: '#5F88CC', img: '/amici/meky.png' },   // costruisce torri altissime
@@ -23,5 +23,5 @@ export const BUDDY_FOR: Record<BuddySpot, BuddyId> = {
   storie: 'amina', nomi: 'amina',
   numeri: 'elio', tabelline: 'elio', scomponi: 'elio',
   english: 'nour',
-  primapoi: 'zoe', calma: 'nico', stelline: 'elio', orologio: 'nico', soldi: 'elio', sillabe: 'amina', doppie: 'amina', confronta: 'elio',
+  primapoi: 'zoe', calma: 'nico', stelline: 'elio', orologio: 'nico', soldi: 'elio', sillabe: 'amina', doppie: 'amina', confronta: 'elio', contrari: 'lila',
 }

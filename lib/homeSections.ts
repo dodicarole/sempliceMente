@@ -7,7 +7,7 @@ import type { ChildGender } from '@/lib/praise'
 
 export const SECTION_IDS = [
   'zaino', 'routine', 'agenda', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
-  'numeri', 'confronta', 'tabelline', 'scomponi', 'orologio', 'soldi', 'sillabe', 'doppie', 'nomi', 'english',
+  'numeri', 'confronta', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'sillabe', 'doppie', 'nomi', 'english',
 ] as const
 export type SectionId = typeof SECTION_IDS[number]
 
@@ -33,6 +33,7 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
       { id: 'scomponi', e: '🧱', c: '#2F9E44', title: t.split.title, sub: t.split.homeSub },
       { id: 'orologio', e: '🕐', c: '#1C7ED6', title: t.daily.clockTitle, sub: t.daily.clockSub },
       { id: 'soldi', e: '💶', c: '#2F9E44', title: t.daily.moneyTitle, sub: t.daily.moneySub },
+      { id: 'contrari', e: '↔️', c: '#C2255C', title: t.opposites.title, sub: t.opposites.homeSub },
       { id: 'sillabe', e: '🔤', c: '#E03131', title: 'Le sillabe', sub: 'Unisci le sillabe per leggere', it: true },
       { id: 'doppie', e: '✏️', c: '#F08C00', title: 'Le doppie', sub: 'Una lettera o due?', it: true },
       { id: 'nomi', e: '📝', c: '#7048E8', title: 'Classifica i nomi', sub: 'Persona, animale o cosa?', it: true },
