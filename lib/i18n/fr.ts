@@ -307,6 +307,19 @@ export const fr: Dict = {
     parentHint: 'Choisissez jusqu’à quel nombre aller et quand afficher la ligne des nombres comme aide.',
   },
 
+  opposites: {
+    title: 'Les contraires', homeSub: 'La même chose, mais tout le contraire',
+    tabs: ['👀 Découvre', '🔍 Trouve le contraire', '🃏 Le mémory', '💬 Complète la phrase'],
+    turn: 'Touche la carte pour la retourner', prev: '← Avant', next: 'Après →',
+    opp: (a, b) => `${a}… le contraire, c’est ${b}${nb}!`,
+    findAsk: `Quel est le contraire${nb}?`, memAsk: 'Trouve les paires de contraires',
+    memMatch: (a, b) => `${a} et ${b} sont contraires${nb}!`,
+    fillAsk: 'Complète la phrase', done: n => `Tu as trouvé ${n} contraires${nb}!`, again: '🔄 Encore',
+    setCats: 'Familles de contraires', setWords: 'Afficher les mots', setMem: 'Paires dans le mémory',
+    cats: { taille: '📏 Taille, forme, quantité', emo: '😊 Émotions', sens: '🌡️ Les sens', espace: '📦 L’espace', temps: '⏱️ Temps et mouvement' },
+    parentHint: 'Choisissez les familles de contraires, s’il faut afficher les mots écrits et combien de paires mettre dans le mémory.',
+  },
+
   children: {
     whoTitle: `Qui utilise l’application${nb}?`,
     remember: 'Se souvenir sur cet appareil',
@@ -435,6 +448,7 @@ export const fr: Dict = {
     sillabe: `Une syllabe à la fois${nb}: même les mots longs deviennent faciles${nb}!`,
     doppie: `Écoute doucement${nb}: la lettre double s’entend deux fois${nb}!`,
     confronta: `Le côté ouvert regarde le plus grand nombre, la pointe regarde le plus petit${nb}!`,
+    contrari: `Regarde bien${nb}: c’est la même chose, mais tout le contraire${nb}!`,
   },
 
   tedo: {

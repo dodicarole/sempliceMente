@@ -305,6 +305,19 @@ export const it = {
     parentHint: 'Scegli fino a che numero arrivare e quando mostrare la linea dei numeri come aiuto.',
   },
 
+  opposites: {
+    title: 'I contrari', homeSub: 'La stessa cosa, ma al contrario',
+    tabs: ['👀 Scopri', '🔍 Trova il contrario', '🃏 Il memory', '💬 Completa la frase'],
+    turn: 'Tocca la carta per girarla', prev: '← Prima', next: 'Dopo →',
+    opp: (a: string, b: string): string => `${a}… il contrario è ${b}!`,
+    findAsk: 'Qual è il contrario?', memAsk: 'Trova le coppie di contrari',
+    memMatch: (a: string, b: string): string => `${a} e ${b} sono contrari!`,
+    fillAsk: 'Completa la frase', done: (n: number): string => `Hai trovato ${n} contrari!`, again: '🔄 Ancora',
+    setCats: 'Famiglie di contrari', setWords: 'Mostra le parole', setMem: 'Coppie nel memory',
+    cats: { taille: '📏 Grandezza, forma, quantità', emo: '😊 Emozioni', sens: '🌡️ I sensi', espace: '📦 Lo spazio', temps: '⏱️ Tempo e movimento' } as Record<string, string>,
+    parentHint: 'Scegli le famiglie di contrari, se mostrare le parole scritte e quante coppie mettere nel memory.',
+  },
+
   children: {
     whoTitle: "Chi usa l'app?",
     remember: 'Ricorda su questo dispositivo',
@@ -432,6 +445,7 @@ export const it = {
     sillabe: 'Una sillaba alla volta: anche le parole lunghe diventano facili!',
     doppie: 'Ascolta piano piano: la doppia si sente due volte, alla fine di una sillaba e all\'inizio di quella dopo!',
     confronta: 'La parte aperta guarda il numero più grande, la punta guarda il più piccolo!',
+    contrari: 'Guarda bene: è la stessa cosa, ma al contrario!',
   },
 
   tedo: {
