@@ -318,6 +318,43 @@ export const it = {
     parentHint: 'Scegli le famiglie di contrari, se mostrare le parole scritte e quante coppie mettere nel memory.',
   },
 
+  prevNext: {
+    title: 'Precedente e successivo', homeSub: 'Il numero prima e quello dopo',
+    sub: 'Il numero che viene prima e quello che viene dopo',
+    tabs: ['🐸 Scopri sulla linea', '🚂 Completa il trenino', '⌨️ Scrivilo tu'],
+    lineSub: 'Tedo sta sul numero. Fallo saltare avanti o indietro di un passo.',
+    back: '◀ Un passo indietro', fwd: 'Un passo avanti ▶', another: '🎲 Un altro numero',
+    prevW: 'precedente', nextW: 'successivo', labNum: 'numero',
+    stepWord: (st: number): string => (st === 10 ? ' di dieci' : st === 100 ? ' di cento' : ''),
+    ask: (dir: 'prev' | 'next', st: number): string => `Qual è il ${dir === 'prev' ? 'precedente' : 'successivo'}${st === 10 ? ' di dieci' : st === 100 ? ' di cento' : ''}?`,
+    sentence: (dir: 'prev' | 'next', st: number, n: number, m: number): string => `Il ${dir === 'prev' ? 'precedente' : 'successivo'}${st === 10 ? ' di dieci' : st === 100 ? ' di cento' : ''} di ${n} è ${m}`,
+    trainDir: 'il treno va da questa parte ➜',
+    lineHint: (dir: 'prev' | 'next', n: number, r: number): string => `Il ${dir === 'prev' ? 'precedente sta subito a sinistra' : 'successivo sta subito a destra'} di ${n}: è ${r}.`,
+    carry: (dir: 'prev' | 'next', st: number, n: number, r: number, isCarry: boolean): string => {
+      const nm = st === 1 ? ['unità', 'la decina', 'alla decina successiva'] : st === 10 ? ['decine', 'il centinaio', 'al centinaio successivo'] : ['centinaia', 'il migliaio', 'al migliaio successivo']
+      if (isCarry && dir === 'next') return `Dopo 9 ${nm[0]} si passa ${nm[2]}: ${n} → ${r}.`
+      if (isCarry && dir === 'prev') return `Prima di 0 ${nm[0]} si torna a 9, e ${nm[1]} scende di uno: ${n} → ${r}.`
+      return dir === 'next' ? `Il successivo è il numero che viene subito dopo: ${n} → ${r}.` : `Il precedente è il numero che viene subito prima: ${n} → ${r}.`
+    },
+    fantastic: 'Fantastico!', done: 'Hai completato 10 trenini: Tedo fa il giro di festa!', toot: 'Ciuf ciuf! Fantastico!', again: '🔄 Ancora',
+    setRange: 'Numeri', setFrom: 'oppure da', setTo: 'a',
+    setAsk: 'Cosa chiedere', askPrev: 'Precedente', askNext: 'Successivo', askBoth: 'Tutti e due',
+    setStep: 'Il passo', steps: ['Di 1', 'Di 10', 'Di 100'],
+    setHard: 'Numeri difficili (39 → 40, 400 → 399…)', hardOn: 'Spesso', hardOff: 'Normale',
+    setLine: 'Linea dei numeri', lineHelp: 'Dopo 2 errori', lineAlways: 'Sempre', lineNever: 'Mai',
+    parentHint: 'Scegli i numeri (anche fino a 1000), cosa chiedere, il passo e quanto spesso proporre i cambi di decina.',
+  },
+
+  comics: {
+    heading: '💬 Fumetti',
+    panels: (n: number): string => `${n} vignette`,
+    one: 'Una vignetta alla volta', all: 'Tutta la pagina',
+    say: 'parla', think: 'pensa', tale: 'racconto',
+    thinks: (name: string): string => `${name} pensa`,
+    readAll: '🔊 Leggi tutto il fumetto', next: 'Avanti →', restart: '↺ Ricomincia',
+    note: 'Tocca una vignetta per sentirla leggere. Le nuvolette con il bordo a puntini sono i pensieri: nessuno li sente, ma ci dicono come si sente il personaggio.',
+  },
+
   children: {
     whoTitle: "Chi usa l'app?",
     remember: 'Ricorda su questo dispositivo',
@@ -446,6 +483,7 @@ export const it = {
     doppie: 'Ascolta piano piano: la doppia si sente due volte, alla fine di una sillaba e all\'inizio di quella dopo!',
     confronta: 'La parte aperta guarda il numero più grande, la punta guarda il più piccolo!',
     contrari: 'Guarda bene: è la stessa cosa, ma al contrario!',
+    precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },
 
   tedo: {

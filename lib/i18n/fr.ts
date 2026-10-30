@@ -320,6 +320,43 @@ export const fr: Dict = {
     parentHint: 'Choisissez les familles de contraires, s’il faut afficher les mots écrits et combien de paires mettre dans le mémory.',
   },
 
+  prevNext: {
+    title: 'Précédent et suivant', homeSub: 'Le nombre d’avant et celui d’après',
+    sub: 'Le nombre qui vient avant et celui qui vient après',
+    tabs: ['🐸 Découvre sur la ligne', '🚂 Complète le petit train', '⌨️ Écris-le toi'],
+    lineSub: 'Tedo est sur le nombre. Fais-le sauter d’un pas en avant ou en arrière.',
+    back: '◀ Un pas en arrière', fwd: 'Un pas en avant ▶', another: '🎲 Un autre nombre',
+    prevW: 'précédent', nextW: 'suivant', labNum: 'nombre',
+    stepWord: st => (st === 10 ? ' (de 10 en 10)' : st === 100 ? ' (de 100 en 100)' : ''),
+    ask: (dir, st) => `Quel est le ${dir === 'prev' ? 'précédent' : 'suivant'}${st === 10 ? ' (de 10 en 10)' : st === 100 ? ' (de 100 en 100)' : ''}${nb}?`,
+    sentence: (dir, st, n, m) => `Le ${dir === 'prev' ? 'précédent' : 'suivant'}${st === 10 ? ' de 10 en 10' : st === 100 ? ' de 100 en 100' : ''} de ${n}, c’est ${m}`,
+    trainDir: 'le train va dans ce sens ➜',
+    lineHint: (dir, n, r) => `Le ${dir === 'prev' ? 'précédent est juste à gauche' : 'suivant est juste à droite'} de ${n}${nb}: c’est ${r}.`,
+    carry: (dir, st, n, r, isCarry) => {
+      const nm = st === 1 ? ['unités', 'la dizaine', 'à la dizaine suivante'] : st === 10 ? ['dizaines', 'la centaine', 'à la centaine suivante'] : ['centaines', 'le millier', 'au millier suivant']
+      if (isCarry && dir === 'next') return `Après 9 ${nm[0]}, on passe ${nm[2]}${nb}: ${n} → ${r}.`
+      if (isCarry && dir === 'prev') return `Avant 0, on revient à 9 ${nm[0]} et ${nm[1]} baisse de un${nb}: ${n} → ${r}.`
+      return dir === 'next' ? `Le suivant, c’est le nombre qui vient juste après${nb}: ${n} → ${r}.` : `Le précédent, c’est le nombre qui vient juste avant${nb}: ${n} → ${r}.`
+    },
+    fantastic: `Fantastique${nb}!`, done: `Tu as complété 10 petits trains${nb}: Tedo fait le tour de la fête${nb}!`, toot: `Tchou tchou${nb}! Fantastique${nb}!`, again: '🔄 Encore',
+    setRange: 'Nombres', setFrom: 'ou de', setTo: 'à',
+    setAsk: 'Que demander', askPrev: 'Précédent', askNext: 'Suivant', askBoth: 'Les deux',
+    setStep: 'Le pas', steps: ['De 1', 'De 10', 'De 100'],
+    setHard: 'Nombres difficiles (39 → 40, 400 → 399…)', hardOn: 'Souvent', hardOff: 'Normal',
+    setLine: 'Ligne des nombres', lineHelp: 'Après 2 erreurs', lineAlways: 'Toujours', lineNever: 'Jamais',
+    parentHint: 'Choisissez les nombres (jusqu’à 1000), ce qu’il faut demander, le pas et la fréquence des changements de dizaine.',
+  },
+
+  comics: {
+    heading: '💬 Bandes dessinées',
+    panels: n => `${n} cases`,
+    one: 'Une case à la fois', all: 'Toute la page',
+    say: 'parle', think: 'pense', tale: 'récit',
+    thinks: name => `${name} pense`,
+    readAll: '🔊 Lire toute la BD', next: 'Suivant →', restart: '↺ Recommencer',
+    note: 'Touche une case pour l’écouter. Les bulles avec des pointillés sont les pensées : personne ne les entend, mais elles disent ce que ressent le personnage.',
+  },
+
   children: {
     whoTitle: `Qui utilise l’application${nb}?`,
     remember: 'Se souvenir sur cet appareil',
@@ -449,6 +486,7 @@ export const fr: Dict = {
     doppie: `Écoute doucement${nb}: la lettre double s’entend deux fois${nb}!`,
     confronta: `Le côté ouvert regarde le plus grand nombre, la pointe regarde le plus petit${nb}!`,
     contrari: `Regarde bien${nb}: c’est la même chose, mais tout le contraire${nb}!`,
+    precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },
 
   tedo: {
