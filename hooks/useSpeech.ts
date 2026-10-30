@@ -10,14 +10,14 @@ export const wait = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
 export function useSpeech() {
   const { t } = useT()
   useEffect(() => () => hush(), [])
-  const speak = useCallback((text: string, opts: { interrupt?: boolean; rate?: number } = {}) => new Promise<void>(resolve => {
+  const speak = useCallback((text: string, opts: { interrupt?: boolean; rate?: number; pitch?: number } = {}) => new Promise<void>(resolve => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return resolve()
     let done = false
     const fin = () => { if (!done) { done = true; resolve() } }
     try {
       const synth = window.speechSynthesis
       const u = new SpeechSynthesisUtterance(prepareForSpeech(text, t.speechLang === 'fr' ? 'fr' : 'it').spoken)
-      u.lang = t.locale; u.rate = opts.rate ?? 0.88
+      u.lang = t.locale; u.rate = opts.rate ?? 0.88; u.pitch = opts.pitch ?? 1
       const v = bestVoice(synth.getVoices(), t.locale)
       if (v) u.voice = v
       u.onend = fin; u.onerror = fin
