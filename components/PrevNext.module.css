@@ -1,0 +1,69 @@
+.card { --h: #2F9E44; --da: #E03131; --u: #1C7ED6; --train: #0C8599; background: var(--card); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.tabs { display: flex; gap: 8px; }
+.tab { flex: 1; min-height: 58px; border-radius: 14px; border: 2px solid #D6DBF2; background: var(--card); color: var(--text); font-size: 14px; font-weight: 800; padding: 0 4px; line-height: 1.2; font-family: inherit; cursor: pointer; }
+.tab[aria-current="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+.ask { font-size: 20px; font-weight: 900; }
+.sub { font-size: 15px; font-weight: 700; color: var(--text-soft); line-height: 1.4; }
+.dots { display: flex; gap: 6px; }
+.dots span { width: 9px; height: 9px; border-radius: 50%; background: #D6DBF2; }
+.dots .on { background: var(--blue); width: 20px; border-radius: 5px; }
+.dots .ok { background: var(--done); }
+.btn { min-height: 54px; padding: 0 18px; border-radius: var(--radius-sm); border: 2px solid #D6DBF2; background: var(--card); color: var(--text); font-size: 17px; font-weight: 800; font-family: inherit; cursor: pointer; }
+.main { background: var(--done); border-color: var(--done); color: #fff; }
+.row { display: flex; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; }
+.wrong { animation: wiggle .4s; }
+.sentence { font-size: 21px; font-weight: 900; min-height: 28px; }
+.big { font-size: 56px; }
+.num { font-weight: 900; letter-spacing: 1px; font-variant-numeric: tabular-nums; }
+.h { color: var(--h); } .da { color: var(--da); } .u { color: var(--u); }
+
+.train { display: flex; align-items: flex-end; justify-content: center; gap: 4px; width: 100%; padding-top: 14px; }
+.wagon { position: relative; flex: 1; max-width: 120px; min-width: 0; height: 96px; border-radius: 14px 14px 8px 8px; background: var(--card); border: 4px solid var(--train); display: flex; align-items: center; justify-content: center; font-size: clamp(24px, 7vw, 36px); }
+.wagon::before, .wagon::after { content: ''; position: absolute; bottom: -16px; width: 24px; height: 24px; border-radius: 50%; background: var(--text); border: 4px solid var(--card); }
+.wagon::before { left: 12%; } .wagon::after { right: 12%; }
+.mid { background: color-mix(in srgb, var(--train) 14%, var(--card)); }
+.hole { border-style: dashed; color: var(--text-soft); background: var(--ground); }
+.focus { box-shadow: 0 0 0 5px #FFC93C; }
+.wagonOk { background: var(--done-bg); border-color: var(--done); border-style: solid; }
+.lab { position: absolute; top: -24px; left: -6px; right: -6px; font-size: 10.5px; font-weight: 900; color: var(--text-soft); text-transform: uppercase; white-space: nowrap; text-align: center; }
+.engine { flex: none; width: 58px; height: 74px; }
+.coupler { flex: none; width: 6px; height: 8px; border-radius: 4px; background: var(--text); margin-bottom: 30px; }
+.rail { width: 100%; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--text) 30%, transparent); margin-top: 20px; }
+.dir { font-size: 14px; font-weight: 800; color: var(--text-soft); }
+
+.choices { display: flex; gap: 10px; justify-content: center; width: 100%; }
+.ch { flex: 1; max-width: 130px; min-height: 76px; border-radius: 20px; border: 3px solid #D6DBF2; background: var(--card); font-size: 30px; box-shadow: 0 5px 0 #D6DBF2; font-family: inherit; cursor: pointer; touch-action: manipulation; }
+.ch:active { transform: translateY(4px); box-shadow: 0 1px 0 #D6DBF2; }
+.chRight { background: var(--done); border-color: var(--done); box-shadow: 0 5px 0 #2F8A5A; }
+.chRight span { color: #fff; }
+.chHint { background: #FFC93C; border-color: #E0A800; box-shadow: 0 5px 0 #E0A800; animation: pulse 1.2s ease-in-out infinite; }
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 330px; }
+.pad button { min-height: 62px; border-radius: 16px; border: 2px solid #D6DBF2; background: var(--ground); color: var(--text); font-size: 28px; font-weight: 900; box-shadow: 0 4px 0 #D6DBF2; font-family: inherit; cursor: pointer; }
+.pad .ok { background: var(--done); border-color: var(--done); color: #fff; box-shadow: 0 4px 0 #2F8A5A; font-size: 22px; }
+.typed { min-width: 120px; min-height: 56px; border-radius: 14px; border: 3px dashed var(--train); display: flex; align-items: center; justify-content: center; font-size: 34px; padding: 0 12px; }
+
+.nl { width: 100%; background: var(--ground); border-radius: 16px; padding: 8px 4px 4px; }
+.nl svg { width: 100%; height: auto; display: block; overflow: visible; }
+.nl p { margin: 4px 8px; font-size: 15px; font-weight: 800; line-height: 1.4; }
+.frog { transition: transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+.tip { background: var(--ground); border-radius: 14px; padding: 12px 14px; font-size: 16px; font-weight: 800; line-height: 1.5; width: 100%; }
+
+/* La festa: Tedo sul trenino che attraversa lo schermo */
+.party { position: relative; width: 100%; height: 190px; overflow: hidden; border-radius: 18px; background: linear-gradient(var(--ground) 0 78%, color-mix(in srgb, var(--done) 30%, var(--ground)) 78%); }
+.track { position: absolute; left: 0; right: 0; bottom: 30px; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--text) 35%, transparent); }
+.ties { position: absolute; left: 0; right: 0; bottom: 26px; height: 14px; background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--text) 25%, transparent) 0 6px, transparent 6px 26px); }
+.ptrain { position: absolute; left: 0; bottom: 36px; width: 290px; height: 132px; animation: ride 5s cubic-bezier(.45, .05, .4, 1) infinite; }
+.bob { animation: bob .32s ease-in-out infinite alternate; overflow: visible; }
+.wheel { transform-box: fill-box; transform-origin: center; animation: spin .6s linear infinite; }
+.arm { transform-box: fill-box; transform-origin: 10% 90%; animation: wave .5s ease-in-out infinite alternate; }
+.puff { position: absolute; left: 256px; top: 0; width: 26px; height: 26px; border-radius: 50%; background: color-mix(in srgb, var(--text) 18%, var(--card)); opacity: 0; animation: puff 1.6s ease-out infinite; }
+.winTitle { font-size: 28px; font-weight: 900; }
+@keyframes ride { 0% { transform: translateX(-320px); } 38% { transform: translateX(calc(50vw - 180px)); } 62% { transform: translateX(calc(50vw - 180px)); } 100% { transform: translateX(560px); } }
+@media (min-width: 560px) { @keyframes ride { 0% { transform: translateX(-320px); } 38% { transform: translateX(93px); } 62% { transform: translateX(93px); } 100% { transform: translateX(560px); } } }
+@keyframes bob { to { transform: translateY(-3px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes wave { from { transform: rotate(-10deg); } to { transform: rotate(-55deg); } }
+@keyframes puff { 0% { opacity: .9; transform: translate(0, 0) scale(.5); } 100% { opacity: 0; transform: translate(-30px, -70px) scale(1.6); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes wiggle { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .ptrain, .bob, .wheel, .arm, .puff, .chHint, .wrong { animation: none; } .ptrain { transform: translateX(10px); } .frog { transition: none; } }

@@ -9,6 +9,8 @@ import s from './StoriesView.module.css'
 import { useT } from '@/lib/i18n'
 import Buddy from './Buddy'
 import { prepareForSpeech, bestVoice } from '@/lib/speechText'
+import ComicView from './ComicView'
+import { COMICS, type Comic } from '@/lib/comics'
 
 interface Props {
   stories: Story[]
@@ -16,8 +18,9 @@ interface Props {
 }
 
 export default function StoriesView({ stories, onBack }: Props) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [story, setStory]           = useState<Story | null>(null)
+  const [comic, setComic]           = useState<Comic | null>(null)   // il fumetto aperto
   const [pageIndex, setPageIndex]   = useState(0)
   const [showCelebr, setShowCelebr] = useState(false)
   const praise = usePraise(showCelebr)
@@ -174,6 +177,9 @@ export default function StoriesView({ stories, onBack }: Props) {
     }
   }, [pageIndex, check])
 
+  // ── Fumetto ───────────────────────────────────────────────────────────────
+  if (comic) return <ComicView comic={comic} onBack={() => setComic(null)} />
+
   // ── Lista storie ──────────────────────────────────────────────────────────
   if (!story) {
     return (
@@ -208,6 +214,21 @@ export default function StoriesView({ stories, onBack }: Props) {
             ))}
           </div>
         )}
+
+        {/* I fumetti già pronti */}
+        <div className={s.bannerTitle} style={{ fontSize: 18, marginTop: 6 }}>{t.comics.heading}</div>
+        <div className={s.list}>
+          {COMICS.map(c => (
+            <button key={c.id} className={s.storyCard} onClick={() => setComic(c)}>
+              <span className={s.storyIcon}>{c.icon}</span>
+              <span className={s.storyInfo}>
+                <span className={s.storyTitle}>{c.title[lang]}</span>
+                <span className={s.storyPages}>{t.comics.panels(c.panels.length)}</span>
+              </span>
+              <span className={s.storyArrow}>›</span>
+            </button>
+          ))}
+        </div>
       </>
     )
   }

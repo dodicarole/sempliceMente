@@ -14,13 +14,14 @@ import { StarsPanel } from './StarsView'
 import { DoublesSettingsPanel } from './DoublesView'
 import { CompareSettingsPanel } from './CompareView'
 import { OppositesSettingsPanel } from './OppositesView'
+import { PrevNextSettingsPanel } from './PrevNextView'
 import ReadingSettingsPanel from './ReadingSettingsPanel'
 import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from './LanguagePicker'
 
-type Section = 'figli' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'lettura'
+type Section = 'figli' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -247,13 +248,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       <ChildTabs />
 
       <div className={s.sectionToggle}>
-        {(['figli', 'zaino', 'routine', 'agenda', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'tabelline', 'scomponi', 'contrari', 'nomi', 'doppie', 'english', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie') || lang === 'it').map(sec => (
+        {(['figli', 'zaino', 'routine', 'agenda', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'nomi', 'doppie', 'english', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie') || lang === 'it').map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'figli' ? '👨‍👧' : '🔤'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'figli' ? '👨‍👧' : '🔤'}
           </button>
         ))}
       </div>
@@ -493,6 +494,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <>
           <div className={s.emotionsHint}>{t.opposites.parentHint}</div>
           <OppositesSettingsPanel />
+        </>
+      )}
+
+      {/* ── PRECEDENTE E SUCCESSIVO ── */}
+      {section === 'precsucc' && (
+        <>
+          <div className={s.emotionsHint}>{t.prevNext.parentHint}</div>
+          <PrevNextSettingsPanel />
         </>
       )}
 
