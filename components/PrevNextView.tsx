@@ -9,11 +9,23 @@ import p from './NumbersSettingsPanel.module.css'
 
 /* ── Impostazioni: i numeri (fino a 1000), cosa chiedere, il passo, i numeri difficili, la linea ── */
 type Dir = 'prev' | 'next'
-export interface PNSettings { min: number; max: number; ask: Dir | 'both'; step: 1 | 10 | 100; hard: boolean; line: 'help' | 'always' | 'never' }
-const DEFAULTS: PNSettings = { min: 0, max: 100, ask: 'both', step: 1, hard: true, line: 'help' }
+type HelpWhen = 'always' | 'help' | 'never'      // sempre, solo dopo 2 errori, mai
+export interface PNSettings { min: number; max: number; ask: Dir | 'both'; step: 1 | 10 | 100; hard: boolean; line: HelpWhen; blocks: HelpWhen }
+const DEFAULTS: PNSettings = { min: 0, max: 100, ask: 'both', step: 1, hard: true, line: 'always', blocks: 'help' }
 const KEY = 'precsucc_impostazioni'
-function loadSettings(): PNSettings { try { const r = localStorage.getItem(KEY); if (r) return { ...DEFAULTS, ...JSON.parse(r) } } catch (_) {} return DEFAULTS }
-function saveSettings(v: PNSettings) { try { localStorage.setItem(KEY, JSON.stringify(v)) } catch (_) {} }
+function loadSettings(): PNSettings {
+  try {
+    const r = localStorage.getItem(KEY)
+    if (r) {
+      const v = JSON.parse(r)
+      // la linea della decina è nuova: chi aveva le impostazioni di prima la trova accesa
+      if (!v.v || v.v < 2) { v.line = 'always'; v.v = 2; localStorage.setItem(KEY, JSON.stringify(v)) }
+      return { ...DEFAULTS, ...v }
+    }
+  } catch (_) {}
+  return DEFAULTS
+}
+function saveSettings(v: PNSettings) { try { localStorage.setItem(KEY, JSON.stringify({ ...v, v: 2 })) } catch (_) {} }
 
 const ROUNDS = 10
 const rnd = (n: number) => Math.floor(Math.random() * n)
@@ -72,6 +84,88 @@ function NumberLine({ n, step, marks, frogAt, caption }: { n: number; step: numb
         )}
       </svg>
       {caption && <p>{caption}</p>}
+    </div>
+  )
+}
+
+/**
+ * La linea della decina, sopra il trenino: contiene sempre sia il numero sia la risposta.
+ * 485 → da 480 a 490; precedente di 490 → da 480 a 490 (489 sta nella decina prima).
+ * Con il passo di 10 mostra il centinaio, con il passo di 100 il migliaio.
+ */
+function DecadeLine({ n, r, step, revealed }: { n: number; r: number; step: number; revealed: boolean }) {
+  const span = step * 10, lo = Math.floor(Math.min(n, r) / span) * span, hi = lo + span
+  const W = 340, x0 = 18, x1 = W - 18, X = (v: number) => x0 + ((v - lo) / (hi - lo)) * (x1 - x0)
+  const xn = X(n), xr = X(r), mid = (xn + xr) / 2, col = revealed ? 'var(--done)' : '#E0A800'
+  return (
+    <div className={s.nl}>
+      <svg viewBox={`0 0 ${W} 118`} role="img" aria-label={`${lo} – ${hi}`}>
+        <line x1={x0} y1="76" x2={x1} y2="76" stroke="var(--text)" strokeWidth="3" />
+        {Array.from({ length: 11 }, (_, i) => {
+          const v = lo + i * step, x = X(v), end = i === 0 || i === 10
+          return (
+            <g key={i}>
+              <line x1={x} y1={end ? 64 : 69} x2={x} y2={end ? 88 : 83} stroke={end ? 'var(--da)' : 'var(--text-soft)'} strokeWidth={end ? 4 : 2} />
+              <text x={x} y="106" textAnchor="middle" fontSize={end ? 13 : v > 999 ? 9 : 10.5} fontWeight={end ? 900 : 700} fill={end ? 'var(--da)' : 'var(--text-soft)'} fontFamily="system-ui,sans-serif">{v}</text>
+            </g>
+          )
+        })}
+        <path className={s.hop} d={`M${xn} 66 Q${mid} 30 ${xr} 66`} fill="none" stroke="var(--text-soft)" strokeWidth="3" />
+        <circle cx={xn} cy="76" r="9" fill="var(--train)" />
+        <rect x={xn - 24} y="4" width="48" height="26" rx="8" fill="var(--train)" />
+        <text x={xn} y="22" textAnchor="middle" fontSize="15" fontWeight="900" fill="#fff" fontFamily="system-ui,sans-serif">{n}</text>
+        <circle cx={xr} cy="76" r="9" fill={col} />
+        <rect x={xr - 24} y="36" width="48" height="24" rx="8" fill={col} />
+        <text x={xr} y="53" textAnchor="middle" fontSize="14" fontWeight="900" fill="#fff" fontFamily="system-ui,sans-serif">{revealed ? r : '?'}</text>
+      </svg>
+    </div>
+  )
+}
+
+/**
+ * L'aiuto con i blocchi: il bambino fa con le mani il cambio di decina.
+ * Successivo: aggiunge un cubetto (o una barretta con il passo di 10); se diventano dieci, li trasforma.
+ * Precedente: toglie un cubetto; se non ce ne sono, prima rompe una barretta (o una piastra).
+ * Le cifre seguono i blocchi, così alla fine il numero giusto si legge nella tabella.
+ */
+function BlocksHelp({ n, dir, step }: { n: number; dir: Dir; step: number }) {
+  const { t } = useT()
+  const { speak } = useSpeech()
+  const B = t.prevNext.blk
+  const pos = step === 1 ? 0 : 1
+  const [c, setC] = useState<number[]>([n % 10, Math.floor(n / 10) % 10, Math.floor(n / 100)])
+  const [acted, setActed] = useState(false)
+  const [broke, setBroke] = useState(false)
+  const [fresh, setFresh] = useState<{ p: number; k: number } | null>(null)
+  // la prossima mossa da fare, con il suo messaggio
+  let msg = B.done, btn = '', act: (() => void) | null = null
+  if (dir === 'next') {
+    if (!acted) { msg = B.addMsg(pos); btn = B.add(pos); act = () => { const x = [...c]; x[pos]++; setC(x); setActed(true); setFresh({ p: pos, k: 1 }) } }
+    else for (const q of [pos, pos + 1]) if (c[q] >= 10) { msg = B.tradeMsg(q); btn = B.trade(q); act = () => { const x = [...c]; x[q] -= 10; x[q + 1]++; setC(x); setFresh({ p: q + 1, k: 1 }) }; break }
+  } else if (!acted) {
+    if (c[pos] > 0) { msg = broke ? B.broken(pos) : B.removeMsg(pos); btn = B.remove(pos); act = () => { const x = [...c]; x[pos]--; setC(x); setActed(true); setFresh(null) } }
+    else if (c[pos + 1] > 0) { msg = B.breakMsg(pos); btn = B.breakBtn(pos); act = () => { const x = [...c]; x[pos + 1]--; x[pos] += 10; setC(x); setBroke(true); setFresh({ p: pos, k: 10 }) } }
+    else { msg = pos === 0 ? B.breakPlateMsg : B.breakMsg(pos + 1); btn = B.breakBtn(pos + 1); act = () => { const x = [...c]; x[pos + 2]--; x[pos + 1] += 10; setC(x); setFresh({ p: pos + 1, k: 10 }) } }
+  }
+  useEffect(() => { speak(msg) }, [msg]) // eslint-disable-line react-hooks/exhaustive-deps
+  const done = !act
+  return (
+    <div className={s.blk}>
+      <div className={s.pv}>
+        {[2, 1, 0].map(q => (
+          <div key={q} className={`${s.col} ${[s.cu, s.cda, s.ch3][q]}${!done && (q === pos || c[q] >= 10) ? ` ${s.colFocus}` : ''}`}>
+            <span className={s.colLab}>{B.cols[q]}</span>
+            <div className={`${s.digit}${done ? ` ${s.digitOk}` : ''}`}>{c[q] > 9 ? '?' : c[q]}</div>
+            <div className={`${s.blocks}${q === 0 ? ` ${s.blocksU}` : ''}`}>
+              {Array.from({ length: c[q] }, (_, i) => (
+                <span key={i} className={`${[s.cube, s.bar, s.plate][q]}${c[q] >= 10 ? ` ${s.glow}` : ''}${fresh && fresh.p === q && i >= c[q] - fresh.k ? ` ${s.fresh}` : ''}`} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className={s.blkMsg}>{msg}</div>
+      {act && <button className={`${s.btn} ${s.blkBtn}`} onClick={act}>{btn}</button>}
     </div>
   )
 }
@@ -182,6 +276,7 @@ function TrainGame({ S, pad, onAgain }: { S: PNSettings; pad: boolean; onAgain: 
     <>
       <div className={s.dots}>{qs.map((_, i) => <span key={i} className={i < qi ? s.ok : i === qi ? s.on : ''} />)}</div>
       <p className={s.ask}>{t.prevNext.ask(dir, S.step)}</p>
+      {(S.line === 'always' || (hint && S.line !== 'never')) && <DecadeLine n={q.n} r={right} step={S.step} revealed={done} />}
       <div style={{ width: '100%' }}>
         <div className={s.train}>
           {wagon('prev', t.prevNext.prevW)}<span className={s.coupler} />
@@ -192,6 +287,9 @@ function TrainGame({ S, pad, onAgain }: { S: PNSettings; pad: boolean; onAgain: 
         <div className={s.rail} />
       </div>
       <div className={s.dir}>{t.prevNext.trainDir}</div>
+      {(S.blocks === 'always' || (hint && S.blocks === 'help')) && S.step < 100 && Math.max(q.n, right) < 1000 && Math.min(q.n, right) >= 0 && (
+        <BlocksHelp key={`${qi}-${di}`} n={q.n} dir={dir} step={S.step} />
+      )}
       {!pad ? (
         <div className={s.choices}>
           {opts.map(o => <button key={o} className={`${s.ch}${done && o === right ? ` ${s.chRight}` : hint && o === right ? ` ${s.chHint}` : ''}`} onClick={e => { if (done) return; if (o === right) win(); else fail(e.currentTarget) }}><Num n={o} /></button>)}
@@ -203,10 +301,6 @@ function TrainGame({ S, pad, onAgain }: { S: PNSettings; pad: boolean; onAgain: 
         </>
       )}
       {hint && <div className={s.tip}>💡 {tipText}</div>}
-      {(S.line === 'always' || (hint && S.line !== 'never')) && (
-        <NumberLine n={q.n} step={S.step} marks={hint ? [[q.n, 'var(--train)'], [right, 'var(--done)']] : [[q.n, 'var(--train)']]}
-          caption={hint ? t.prevNext.lineHint(dir, q.n, right) : undefined} />
-      )}
     </>
   )
 }
@@ -297,9 +391,17 @@ export function PrevNextSettingsPanel({ onChange }: { onChange?: (v: PNSettings)
         <div className={p.chips}>{([[true, t.prevNext.hardOn], [false, t.prevNext.hardOff]] as [boolean, string][]).map(([v, l]) => <button key={l} className={p.chip} aria-pressed={st.hard === v} onClick={() => set({ ...st, hard: v })}>{l}</button>)}</div>
       </div>
       <div className={p.group}>
-        <span className={p.label}>{t.prevNext.setLine}</span>
-        <div className={p.chips}>{([['help', t.prevNext.lineHelp], ['always', t.prevNext.lineAlways], ['never', t.prevNext.lineNever]] as [PNSettings['line'], string][]).map(([v, l]) => <button key={v} className={p.chip} aria-pressed={st.line === v} onClick={() => set({ ...st, line: v })}>{l}</button>)}</div>
+        <span className={p.label} style={{ fontWeight: 900, color: 'var(--text)' }}>{t.prevNext.helps}</span>
+        <span className={p.label} style={{ fontSize: 13 }}>{t.prevNext.helpsHint}</span>
       </div>
+      {([['line', t.prevNext.setDecade], ['blocks', t.prevNext.setBlocks]] as ['line' | 'blocks', string][]).map(([k, label]) => (
+        <div key={k} className={p.group}>
+          <span className={p.label}>{label}</span>
+          <div className={p.chips}>{([['always', t.prevNext.lineAlways], ['help', t.prevNext.lineHelp], ['never', t.prevNext.helpNo]] as [HelpWhen, string][]).map(([v, l]) => (
+            <button key={v} className={p.chip} aria-pressed={st[k] === v} onClick={() => set({ ...st, [k]: v })}>{l}</button>
+          ))}</div>
+        </div>
+      ))}
       {saved && <div className={p.saved}>{t.common.saved}</div>}
     </div>
   )

@@ -69,7 +69,7 @@ function ChildForm({ start, others = [], onSave, onCancel, onRemove }: { start: 
 /** Area Genitore: i figli della famiglia (nome, bambino o bambina, il suo amico) */
 export default function ChildrenPanel() {
   const { t } = useT()
-  const { children, update, add, remove } = useChildren()
+  const { children, update, add, remove, active } = useChildren()
   const [open, setOpen] = useState<string | null>(null)   // id del figlio aperto, o 'new'
   const [msg, setMsg] = useState('')
   const [ask, setAsk] = useState<Child | null>(null)   // il figlio da eliminare, in attesa di conferma
@@ -98,6 +98,13 @@ export default function ChildrenPanel() {
       {msg && <div className={s.label} style={{ color: '#C92A2A' }}>{msg}</div>}
       {children.length === 1 && <div className={s.label} style={{ fontSize: 13 }}>{t.children.lastOne}</div>}
 
+      {/* Le sezioni che vede il figlio scelto in alto: si cambiano qui, e si salvano subito */}
+      {active && open === null && (
+        <div style={{ background: 'var(--card)', borderRadius: 18, padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <SectionsPicker title={`👁️ ${t.children.sectionsOf(active.name || t.children.noName)}`} hidden={active.hidden} gender={active.gender} onChange={hidden => update(active.id, { hidden })} />
+        </div>
+      )}
+
       {ask && (
         <div className={c.overlay} role="dialog" aria-modal="true" onClick={e => { if (e.target === e.currentTarget && !busy) setAsk(null) }}>
           <div className={c.dialog}>
@@ -119,7 +126,7 @@ export default function ChildrenPanel() {
 }
 
 /** Le sezioni che vede questo figlio: acceso = visibile nella sua home, spento = nascosto */
-function SectionsPicker({ hidden, gender, onChange }: { hidden: SectionId[]; gender: ChildGender; onChange: (h: SectionId[]) => void }) {
+function SectionsPicker({ hidden, gender, onChange, title }: { hidden: SectionId[]; gender: ChildGender; onChange: (h: SectionId[]) => void; title?: string }) {
   const { t, lang } = useT()
   const { daily, learn } = homeSections(t, gender)
   const toggle = (id: SectionId) => onChange(hidden.includes(id) ? hidden.filter(x => x !== id) : [...hidden, id])
@@ -138,7 +145,7 @@ function SectionsPicker({ hidden, gender, onChange }: { hidden: SectionId[]; gen
   )
   return (
     <div className={s.group}>
-      <span className={s.label}>{t.children.sections}</span>
+      <span className={s.label}>{title ?? t.children.sections}</span>
       <span className={s.label} style={{ fontWeight: 600, fontSize: 13 }}>{t.children.sectionsHint}</span>
       {/* scorciatoia: riaccendere tutte le sezioni in un colpo */}
       <div className={s.chips}>

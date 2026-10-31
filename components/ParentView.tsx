@@ -20,6 +20,7 @@ import ZainoPicture from './ZainoPicture'
 import s from './ParentView.module.css'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from './LanguagePicker'
+import { useChildren } from '@/lib/children'
 
 type Section = 'figli' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'lettura'
 
@@ -236,6 +237,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
     resetForm(); onStoriesRefresh()
   }
 
+  const kidsInParent = useChildren()
   const resetForm = () => { setNewName(''); setNewTime('08:00'); setNewPhoto(null); setNewPhotoFile(null); setShowForm(false); setSaving(false) }
 
   return (
@@ -258,6 +260,9 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
           </button>
         ))}
       </div>
+
+      {/* tutto quello che segue è del figlio scelto: cambiando figlio si ricarica con le sue impostazioni */}
+      <div key={kidsInParent.active?.id ?? 'nessuno'} style={{ display: 'contents' }}>
 
       {/* ── ZAINO ── */}
       {section === 'zaino' && (
@@ -589,6 +594,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
           {!showForm && <button className={s.addBtn} onClick={() => setShowForm(true)}>{t.parent.addPage}</button>}
         </>
       )}
+
+      </div>
 
       <LanguagePicker />
 
