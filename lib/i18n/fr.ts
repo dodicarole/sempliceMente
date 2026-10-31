@@ -382,7 +382,6 @@ export const fr: Dict = {
     section: 'Enfants',
     hint: 'Chaque enfant a son cartable, sa routine, son agenda et ses émotions. Les histoires sont pour tous.',
     genderLabel: `Garçon ou fille${nb}?`,
-    sectionsOf: n => `Les sections que voit ${n}`,
     sections: 'Les sections qu’il voit',
     sectionsHint: 'Touchez une section pour la cacher ou l’afficher. Celles qui sont éteintes n’apparaissent pas sur son accueil.',
     showAll: 'Tout afficher',

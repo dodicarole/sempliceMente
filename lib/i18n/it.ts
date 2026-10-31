@@ -381,7 +381,6 @@ export const it = {
     hint: 'Ogni figlio ha il suo zaino, la sua routine, la sua agenda e le sue emozioni. Le storie sono per tutti.',
     genderLabel: 'Bambino o bambina?',
     sections: 'Le sezioni che vede',
-    sectionsOf: (n: string): string => `Le sezioni che vede ${n}`,
     sectionsHint: 'Tocca una sezione per nasconderla o mostrarla. Quelle spente non compaiono nella sua home.',
     showAll: 'Mostra tutte',
     allHidden: 'Qui non ci sono ancora sezioni: le sceglie il genitore.',
