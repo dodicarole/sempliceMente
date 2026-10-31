@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { loadChildName, loadChildGender, saveChildName, saveChildGender, type ChildGender } from '@/lib/praise'
 import { hiddenOf, type SectionId } from '@/lib/homeSections'
+import { installChildStorage, seedFromServer } from '@/lib/childStore'
 
 /**
  * Più figli per famiglia.
@@ -21,6 +22,9 @@ const get = (k: string, session = false) => { try { return (session ? sessionSto
 const put = (k: string, v: string | null, session = false) => {
   try { const st = session ? sessionStorage : localStorage; if (v === null) st.removeItem(k); else st.setItem(k, v) } catch (_) {}
 }
+
+// Le impostazioni dei giochi diventano "per figlio" (vedi lib/childStore.ts)
+if (typeof window !== 'undefined') installChildStorage()
 
 // Aggiunge il figlio attivo a ogni richiesta verso /api di questa app
 if (typeof window !== 'undefined' && !(window as unknown as { __childFetch?: boolean }).__childFetch) {
@@ -68,7 +72,11 @@ export function ChildrenProvider({ children: kids }: { children: ReactNode }) {
     let data: Child[] = []
     try {
       const res = await fetch('/api/children')
-      if (res.ok) data = ((await res.json()).children ?? []).map(toChild)
+      if (res.ok) {
+        const raw = (await res.json()).children ?? []
+        seedFromServer(raw)                     // le impostazioni di ogni figlio, dal database a questo telefono
+        data = raw.map(toChild)
+      }
     } catch (_) {}
     // il primo figlio nasce senza nome: prende quello che il genitore aveva scritto su questo telefono
     if (data.length && !data[0].name && loadChildName()) {
