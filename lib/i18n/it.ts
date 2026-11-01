@@ -301,6 +301,18 @@ export const it = {
     lineVoiceSame: 'Stanno nello stesso punto della linea: sono uguali.',
     done: 'Hai confrontato 10 coppie di numeri!', again: '🔄 Ancora',
     setMax: 'Numeri fino a', setLine: 'Linea dei numeri',
+    setDigits: 'Colora le cifre da confrontare (prima le centinaia, poi le decine, poi le unità)',
+    setTowers: 'Mostra le torri sopra i numeri (per vedere la quantità)',
+    places: ['unità', 'decine', 'centinaia'],
+    dFirst: (pl: string): string => `Guardiamo prima le ${pl}`,
+    dSame: (same: string, pl: string): string => `${same.charAt(0).toUpperCase() + same.slice(1)} uguali → guardiamo le ${pl}`,
+    dLonger: (n: number): string => `${n} ha più cifre: è più grande`,
+    dEqual: 'Tutte le cifre sono uguali',
+    scanSame: (pl: string, x: number, y: number): string => `${pl}: ${x} e ${y} → uguali ✓`,
+    scanDiff: (pl: string, x: number, y: number): string => `${pl}: ${x} e ${y} → diversi! Si decide qui`,
+    scanSameV: (pl: string, x: number, y: number): string => `${pl}: ${x} e ${y}, uguali.`,
+    scanDiffV: (pl: string, x: number, y: number): string => `${pl}: ${x} e ${y}. Sono diversi: si decide qui!`,
+    replay: '↻ Rivedi il percorso',
     lineHelp: 'Dopo 2 errori', lineAlways: 'Sempre', lineNever: 'Mai',
     parentHint: 'Scegli fino a che numero arrivare e quando mostrare la linea dei numeri come aiuto.',
   },
@@ -327,6 +339,7 @@ export const it = {
     prevW: 'precedente', nextW: 'successivo', labNum: 'numero',
     stepWord: (st: number): string => (st === 10 ? ' di dieci' : st === 100 ? ' di cento' : ''),
     ask: (dir: 'prev' | 'next', st: number): string => `Qual è il ${dir === 'prev' ? 'precedente' : 'successivo'}${st === 10 ? ' di dieci' : st === 100 ? ' di cento' : ''}?`,
+    askN: (dir: 'prev' | 'next', st: number, n: number): string => `Qual è il ${dir === 'prev' ? 'precedente' : 'successivo'} di ${n}${st === 10 ? ', contando di dieci in dieci' : st === 100 ? ', contando di cento in cento' : ''}?`,
     sentence: (dir: 'prev' | 'next', st: number, n: number, m: number): string => `Il ${dir === 'prev' ? 'precedente' : 'successivo'}${st === 10 ? ' di dieci' : st === 100 ? ' di cento' : ''} di ${n} è ${m}`,
     trainDir: 'il treno va da questa parte ➜',
     lineHint: (dir: 'prev' | 'next', n: number, r: number): string => `Il ${dir === 'prev' ? 'precedente sta subito a sinistra' : 'successivo sta subito a destra'} di ${n}: è ${r}.`,
@@ -369,6 +382,27 @@ export const it = {
     thinks: (name: string): string => `${name} pensa`,
     readAll: '🔊 Leggi tutto il fumetto', next: 'Avanti →', restart: '↺ Ricomincia',
     note: 'Tocca una vignetta per sentirla leggere. Le nuvolette con il bordo a puntini sono i pensieri: nessuno li sente, ma ci dicono come si sente il personaggio.',
+  },
+
+  coach: {
+    games: { confronta: 'Maggiore, minore, uguale', precsucc: 'Precedente e successivo' } as Record<string, string>,
+    what: {
+      towersOff: 'togliere le torri', digitsOff: 'togliere il percorso con le cifre colorate',
+      blocksHelp: 'mostrare i blocchi solo dopo 2 errori', blocksOff: 'togliere i blocchi',
+      lineHelp: 'mostrare la linea della decina solo dopo 2 errori', lineOff: 'togliere la linea della decina',
+    } as Record<string, string>,
+    back: {
+      towersOff: 'le torri', digitsOff: 'il percorso con le cifre colorate', blocksHelp: 'i blocchi sempre visibili',
+      blocksOff: 'i blocchi', lineHelp: 'la linea della decina sempre visibile', lineOff: 'la linea della decina',
+    } as Record<string, string>,
+    ready: (name: string, g: string): string => `🎉 ${name} è ${g === 'f' ? 'pronta' : g === 'm' ? 'pronto' : 'pronto/a'}!`,
+    readyText: (game: string, wrong: number, fast: number, days: number, what: string): string =>
+      `Nelle ultime 20 risposte di ${game} ${wrong === 0 ? 'non ha mai sbagliato' : `ha sbagliato solo ${wrong} ${wrong === 1 ? 'volta' : 'volte'}`}, e ${fast} volte ha risposto subito, senza aiuto, in ${days} giorni diversi. Vuoi ${what}?`,
+    backTitle: (what: string): string => `Rimettiamo ${what} ancora per un po’?`,
+    backText: (name: string, game: string, errors: number): string =>
+      `In ${game}, dopo il cambio, ${name} ha sbagliato ${errors} volte nelle ultime 10 risposte. Non è un passo indietro: è solo un po’ più di tempo.`,
+    yes: 'Sì', later: 'Non ancora', backYes: 'Sì, rimettiamolo', backNo: 'No, continuiamo così',
+    done: 'Fatto! Le impostazioni sono cambiate.',
   },
 
   children: {

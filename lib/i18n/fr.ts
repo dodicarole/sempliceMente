@@ -303,6 +303,18 @@ export const fr: Dict = {
     lineVoiceSame: `Ils sont au même endroit de la ligne${nb}: ils sont égaux.`,
     done: `Tu as comparé 10 paires de nombres${nb}!`, again: '🔄 Encore',
     setMax: 'Nombres jusqu’à', setLine: 'Ligne des nombres',
+    setDigits: 'Colorer les chiffres à comparer (d’abord les centaines, puis les dizaines, puis les unités)',
+    setTowers: 'Afficher les tours au-dessus des nombres (pour voir la quantité)',
+    places: ['unités', 'dizaines', 'centaines'],
+    dFirst: pl => `On regarde d’abord les ${pl}`,
+    dSame: (same, pl) => `${same.charAt(0).toUpperCase() + same.slice(1)} égales → on regarde les ${pl}`,
+    dLonger: n => `${n} a plus de chiffres${nb}: il est plus grand`,
+    dEqual: 'Tous les chiffres sont égaux',
+    scanSame: (pl, x, y) => `${pl}${nb}: ${x} et ${y} → égales ✓`,
+    scanDiff: (pl, x, y) => `${pl}${nb}: ${x} et ${y} → différentes${nb}! C’est ici qu’on décide`,
+    scanSameV: (pl, x, y) => `${pl}${nb}: ${x} et ${y}, égales.`,
+    scanDiffV: (pl, x, y) => `${pl}${nb}: ${x} et ${y}. Elles sont différentes${nb}: c’est ici qu’on décide${nb}!`,
+    replay: '↻ Revoir le parcours',
     lineHelp: 'Après 2 erreurs', lineAlways: 'Toujours', lineNever: 'Jamais',
     parentHint: 'Choisissez jusqu’à quel nombre aller et quand afficher la ligne des nombres comme aide.',
   },
@@ -329,6 +341,7 @@ export const fr: Dict = {
     prevW: 'précédent', nextW: 'suivant', labNum: 'nombre',
     stepWord: st => (st === 10 ? ' (de 10 en 10)' : st === 100 ? ' (de 100 en 100)' : ''),
     ask: (dir, st) => `Quel est le ${dir === 'prev' ? 'précédent' : 'suivant'}${st === 10 ? ' (de 10 en 10)' : st === 100 ? ' (de 100 en 100)' : ''}${nb}?`,
+    askN: (dir, st, n) => `Quel est le ${dir === 'prev' ? 'précédent' : 'suivant'} de ${n}${st === 10 ? ', en comptant de 10 en 10' : st === 100 ? ', en comptant de 100 en 100' : ''}${nb}?`,
     sentence: (dir, st, n, m) => `Le ${dir === 'prev' ? 'précédent' : 'suivant'}${st === 10 ? ' de 10 en 10' : st === 100 ? ' de 100 en 100' : ''} de ${n}, c’est ${m}`,
     trainDir: 'le train va dans ce sens ➜',
     lineHint: (dir, n, r) => `Le ${dir === 'prev' ? 'précédent est juste à gauche' : 'suivant est juste à droite'} de ${n}${nb}: c’est ${r}.`,
@@ -371,6 +384,27 @@ export const fr: Dict = {
     thinks: name => `${name} pense`,
     readAll: '🔊 Lire toute la BD', next: 'Suivant →', restart: '↺ Recommencer',
     note: 'Touche une case pour l’écouter. Les bulles avec des pointillés sont les pensées : personne ne les entend, mais elles disent ce que ressent le personnage.',
+  },
+
+  coach: {
+    games: { confronta: 'Plus grand, plus petit, égal', precsucc: 'Précédent et suivant' },
+    what: {
+      towersOff: 'enlever les tours', digitsOff: 'enlever le parcours avec les chiffres en couleur',
+      blocksHelp: 'montrer les blocs seulement après 2 erreurs', blocksOff: 'enlever les blocs',
+      lineHelp: 'montrer la ligne de la dizaine seulement après 2 erreurs', lineOff: 'enlever la ligne de la dizaine',
+    },
+    back: {
+      towersOff: 'les tours', digitsOff: 'le parcours avec les chiffres en couleur', blocksHelp: 'les blocs toujours visibles',
+      blocksOff: 'les blocs', lineHelp: 'la ligne de la dizaine toujours visible', lineOff: 'la ligne de la dizaine',
+    },
+    ready: (name, g) => `🎉 ${name} est ${g === 'f' ? 'prête' : g === 'm' ? 'prêt' : 'prêt(e)'}${nb}!`,
+    readyText: (game, wrong, fast, days, what) =>
+      `Sur les 20 dernières réponses de ${game}, ${wrong === 0 ? 'aucune erreur' : `seulement ${wrong} erreur${wrong === 1 ? '' : 's'}`}, et ${fast} fois une réponse donnée tout de suite, sans aide, sur ${days} jours différents. Voulez-vous ${what}${nb}?`,
+    backTitle: what => `On remet ${what} encore un peu${nb}?`,
+    backText: (name, game, errors) =>
+      `Dans ${game}, depuis le changement, ${name} s’est trompé·e ${errors} fois sur les 10 dernières réponses. Ce n’est pas un retour en arrière${nb}: juste un peu plus de temps.`,
+    yes: 'Oui', later: 'Pas encore', backYes: 'Oui, on le remet', backNo: 'Non, on continue',
+    done: `C’est fait${nb}! Les réglages ont changé.`,
   },
 
   children: {
