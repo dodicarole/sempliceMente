@@ -12,7 +12,7 @@ export const SYNCED_KEYS = [
   'numeri_impostazioni', 'tabelline_impostazioni', 'tabelline_progressi', 'scomposizione_impostazioni',
   'nomi_impostazioni', 'english_impostazioni', 'doppie_impostazioni', 'contrari_impostazioni',
   'confronto_impostazioni', 'precsucc_impostazioni', 'lettura_impostazioni', 'tono_divertente',
-  'voce_velocita', 'stelline', 'prima_poi',
+  'voce_velocita', 'stelline', 'prima_poi', 'aiuti_progressi',
 ]
 /** Le spunte del giorno (zaino e routine): per figlio, ma solo su questo telefono */
 const DAILY = /^(zaino|routine)_\d{4}-\d{2}-\d{2}$/
