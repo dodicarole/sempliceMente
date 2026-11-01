@@ -7,10 +7,11 @@ import SectionTitle from './SectionTitle'
 import Tedo from './Tedo'
 import s from './Compare.module.css'
 import p from './NumbersSettingsPanel.module.css'
+import { recordAnswer } from '@/lib/helpCoach'
 
 /* ── Impostazioni: fino a che numero, e quando mostrare la linea dei numeri ── */
-export interface CompareSettings { max: number; line: 'help' | 'always' | 'never' }
-const DEFAULTS: CompareSettings = { max: 10, line: 'help' }
+export interface CompareSettings { max: number; line: 'help' | 'always' | 'never'; digits: boolean; towers: boolean }
+const DEFAULTS: CompareSettings = { max: 10, line: 'help', digits: false, towers: false }
 const KEY = 'confronto_impostazioni'
 function loadSettings(): CompareSettings { try { const r = localStorage.getItem(KEY); if (r) return { ...DEFAULTS, ...JSON.parse(r) } } catch (_) {} return DEFAULTS }
 function saveSettings(v: CompareSettings) { try { localStorage.setItem(KEY, JSON.stringify(v)) } catch (_) {} }
@@ -54,6 +55,40 @@ function TedoFace({ dir, size = 84 }: { dir: Rel | '?'; size?: number }) {
     </svg>
   )
 }
+
+/**
+ * La posizione (0 unità, 1 decine, 2 centinaia, 3 migliaia) dove i due numeri cominciano a essere diversi,
+ * guardando da sinistra: prima le centinaia, poi le decine, poi le unità. -1 se sono uguali.
+ */
+function diffPlace(a: number, b: number): number {
+  for (let p = 3; p >= 0; p--) { const da = Math.floor(a / 10 ** p) % 10, db = Math.floor(b / 10 ** p) % 10; if (da !== db) return p }
+  return -1
+}
+/**
+ * Un numero con le cifre colorate per il confronto (se il genitore lo ha attivato):
+ * solo la cifra che decide prende il colore del suo posto (centinaia verdi, decine rosse,
+ * unità blu, come in Scomponi); tutte le altre restano nere, per non confondere il bambino.
+ * Con le torri, c'è una torre di blocchetti solo sopra la cifra che decide (colorata se le cifre colorate sono accese).
+ */
+function Digits({ n, other, lit, colored, towers, towerOn }: { n: number; other: number; lit: number | null; colored: boolean; towers: boolean; towerOn: boolean }) {
+  const str = String(n), d = diffPlace(n, other), col = [s.dU, s.dDa, s.dH, s.dH]
+  const cls = (place: number) => (!colored ? '' : lit === place ? `${s.dOn} ${col[place]}` : s.dSame)   // colorata solo la cifra che si sta guardando
+  if (!towers) return <>{str.split('').map((ch, i) => <span key={i} className={cls(str.length - 1 - i)}>{ch}</span>)}</>
+  // con le torri: una torre di blocchetti sopra la cifra che decide, solo quando il percorso ci arriva
+  return (
+    <>{str.split('').map((ch, i) => {
+      const place = str.length - 1 - i, dec = towerOn && d >= 0 && place === d, hl = colored && dec
+      return (
+        <span key={i} className={`${s.dcol}${hl ? ` ${s.dcolOn} ${col[place]}` : ''}`}>
+          <span className={`${s.dtower}${dec ? '' : ` ${s.dtowerEmpty}`}`} aria-hidden="true">{dec && Array.from({ length: +ch }, (_, k) => <i key={k} />)}</span>
+          <span className={cls(place)}>{ch}</span>
+        </span>
+      )
+    })}</>
+  )
+}
+const digitAt = (n: number, place: number) => Math.floor(n / 10 ** place) % 10
+const cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1)
 
 /** La linea dei numeri: i due numeri segnati; quello più a destra è il più grande */
 function NumberLine({ a, b, max }: { a: number; b: number; max: number }) {
@@ -139,8 +174,45 @@ function Game({ tab, st, onAgain }: { tab: Tab; st: CompareSettings; onAgain: ()
   const [counted, setCounted] = useState<[number[], number[]]>([[], []])
   const [celeb, setCeleb] = useState<Celebration | null>(null)
   const misses = useRef(0), alive = useRef(true)
-  useEffect(() => () => { alive.current = false }, [])
+  useEffect(() => () => { alive.current = false; scanRun.current++ }, [])
   const q = rounds[qi]
+  /* Il percorso del confronto: si illuminano le centinaia, poi le decine, poi le unità, fino alla cifra che decide */
+  const [lit, setLit] = useState<number | null>(null)
+  const [towerOn, setTowerOn] = useState(false)
+  const [steps, setSteps] = useState<{ text: string; dec: boolean }[]>([])
+  const [replay, setReplay] = useState(0)
+  const decided = useRef(false), askedAt = useRef(Date.now()), scanRun = useRef(0)
+  useEffect(() => {
+    const my = ++scanRun.current
+    setLit(null); setSteps([]); decided.current = false; askedAt.current = Date.now()
+    const qq = rounds[qi]
+    if (!qq) return
+    if (tab === 'q' || !st.digits) { decided.current = true; setTowerOn(true); return }
+    setTowerOn(false)
+    const [x, y] = qq, P = t.compare.places
+    ;(async () => {
+      await wait(1200); if (my !== scanRun.current) return
+      const lx = String(x).length, ly = String(y).length
+      if (lx !== ly) { setSteps([{ text: t.compare.dLonger(lx > ly ? x : y), dec: true }]); decided.current = true; return }
+      const d = diffPlace(x, y)
+      for (let pl = lx - 1; pl >= Math.max(d, 0); pl--) {
+        if (my !== scanRun.current) return
+        setLit(pl)
+        const dx = digitAt(x, pl), dy = digitAt(y, pl), name = P[pl] ?? P[2]
+        if (pl === d) {
+          setSteps(v => [...v, { text: t.compare.scanDiff(cap(name), dx, dy), dec: true }])
+          decided.current = true; setTowerOn(true)
+          speak(t.compare.scanDiffV(name, dx, dy), { interrupt: false })
+          return
+        }
+        setSteps(v => [...v, { text: t.compare.scanSame(cap(name), dx, dy), dec: false }])
+        await Promise.all([speak(t.compare.scanSameV(name, dx, dy), { interrupt: false }), wait(1300)])
+        if (my !== scanRun.current) return
+        setLit(null)
+      }
+      if (d < 0) { setSteps(v => [...v, { text: t.compare.dEqual, dec: true }]); decided.current = true }
+    })()
+  }, [qi, replay]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (q) speak(tab === 'q' ? t.compare.askQ : t.compare.and(q[0], q[1])) }, [qi]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (celeb || !q) return (
@@ -154,6 +226,9 @@ function Game({ tab, st, onAgain }: { tab: Tab; st: CompareSettings; onAgain: ()
 
   const [a, b] = q, r = rel(a, b)
   const win = async () => {
+    // per le proposte al genitore: giusta al primo colpo? data subito, prima che il percorso arrivasse alla risposta?
+    if (tab !== 'q') recordAnswer('confronta', misses.current === 0, st.digits ? !decided.current : Date.now() - askedAt.current < 6000)
+    scanRun.current++
     setDone(true); setHint(false)
     await say(`${a} ${t.compare.rel[r]} ${b}`, 1200); await wait(400)
     if (!alive.current) return
@@ -183,12 +258,14 @@ function Game({ tab, st, onAgain }: { tab: Tab; st: CompareSettings; onAgain: ()
     const big = (which === 'A' && r === '>') || (which === 'B' && r === '<')
     return `${s.side} ${s[which]}${done && big ? ` ${s.eat}` : ''}${hint && tab === 'q' && big ? ` ${s.sideHint}` : ''}`
   }
+  // le torri si vedono solo se i due numeri hanno lo stesso numero di cifre (con 98 e 105 confonderebbero)
+  const towers = st.towers && String(a).length === String(b).length
   const A = tab === 'q'
     ? <button className={sideCls('A')} onClick={e => { if (!done) { if (r === '>') win(); else fail(e.currentTarget) } }}>{objs(a, 0)}</button>
-    : <div className={sideCls('A')}><span className={s.n}>{a}</span>{tab === 't' && pallini(a)}</div>
+    : <div className={sideCls('A')}><span className={`${s.n}${towers ? ` ${s.tw}` : ''}`}><Digits n={a} other={b} lit={lit} colored={st.digits} towers={towers} towerOn={towerOn} /></span>{tab === 't' && !towers && pallini(a)}</div>
   const B = tab === 'q'
     ? <button className={sideCls('B')} onClick={e => { if (!done) { if (r === '<') win(); else fail(e.currentTarget) } }}>{objs(b, 1)}</button>
-    : <div className={sideCls('B')}><span className={s.n}>{b}</span>{tab === 't' && pallini(b)}</div>
+    : <div className={sideCls('B')}><span className={`${s.n}${towers ? ` ${s.tw}` : ''}`}><Digits n={b} other={a} lit={lit} colored={st.digits} towers={towers} towerOn={towerOn} /></span>{tab === 't' && !towers && pallini(b)}</div>
 
   const opts: [Rel, React.ReactNode, string][] = tab === 't'
     ? [['>', <TedoFace key="l" dir=">" size={56} />, t.compare.eatLeft], ['=', <TedoFace key="e" dir="=" size={56} />, t.compare.same], ['<', <TedoFace key="r" dir="<" size={56} />, t.compare.eatRight]]
@@ -204,6 +281,12 @@ function Game({ tab, st, onAgain }: { tab: Tab; st: CompareSettings; onAgain: ()
         <div className={s.mid}><TedoFace dir={done ? r : '?'} /><div className={s.sign}>{done ? r : ''}</div></div>
         {B}
       </div>
+      {tab !== 'q' && st.digits && (
+        <>
+          <div className={s.steps}>{steps.map((x, i) => <div key={i} className={`${s.step} ${x.dec ? s.stepDec : s.stepSame}`}>{x.text}</div>)}</div>
+          <button className={s.replay} onClick={() => setReplay(r => r + 1)}>{t.compare.replay}</button>
+        </>
+      )}
       {tab === 'q'
         ? <button className={`${s.eqbtn}${hint && r === '=' ? ` ${s.sideHint}` : ''}`} onClick={e => { if (!done) { if (r === '=') win(); else fail(e.currentTarget) } }}>{t.compare.equalBtn}</button>
         : (
@@ -241,6 +324,18 @@ export function CompareSettingsPanel({ onChange }: { onChange?: (v: CompareSetti
             <button key={v} className={p.chip} aria-pressed={st.line === v} onClick={() => set({ ...st, line: v })}>{l}</button>
           ))}
         </div>
+      </div>
+      <div className={p.group}>
+        <span className={p.label}>{t.compare.setTowers}</span>
+        <div className={p.chips}>{([[true, t.reading.yes], [false, t.reading.no]] as [boolean, string][]).map(([v, l]) => (
+          <button key={l} className={p.chip} aria-pressed={st.towers === v} onClick={() => set({ ...st, towers: v })}>{l}</button>
+        ))}</div>
+      </div>
+      <div className={p.group}>
+        <span className={p.label}>{t.compare.setDigits}</span>
+        <div className={p.chips}>{([[true, t.reading.yes], [false, t.reading.no]] as [boolean, string][]).map(([v, l]) => (
+          <button key={l} className={p.chip} aria-pressed={st.digits === v} onClick={() => set({ ...st, digits: v })}>{l}</button>
+        ))}</div>
       </div>
       {saved && <div className={p.saved}>{t.common.saved}</div>}
     </div>

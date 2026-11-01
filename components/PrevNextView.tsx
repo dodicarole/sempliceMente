@@ -6,6 +6,7 @@ import { useSpeech, hush, wait, softTone } from '@/hooks/useSpeech'
 import SectionTitle from './SectionTitle'
 import s from './PrevNext.module.css'
 import p from './NumbersSettingsPanel.module.css'
+import { recordAnswer } from '@/lib/helpCoach'
 
 /* ── Impostazioni: i numeri (fino a 1000), cosa chiedere, il passo, i numeri difficili, la linea ── */
 type Dir = 'prev' | 'next'
@@ -239,17 +240,19 @@ function TrainGame({ S, pad, onAgain }: { S: PNSettings; pad: boolean; onAgain: 
   const [hint, setHint] = useState(false)
   const [typed, setTyped] = useState('')
   const [party, setParty] = useState(false)
-  const misses = useRef(0), alive = useRef(true)
+  const misses = useRef(0), alive = useRef(true), askedAt = useRef(Date.now())
   useEffect(() => () => { alive.current = false }, [])
   const q = qs[qi]
   const dir = q?.dirs[di]
   const right = q && dir ? (dir === 'next' ? q.n + S.step : q.n - S.step) : 0
   const opts = useMemo(() => (q && dir ? shuffle([right, ...distractors(q.n, right, dir, S.step)]) : []), [qi, di]) // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { if (q && dir) speak(`${t.prevNext.ask(dir, S.step).replace('?', '')} ${q.n}?`) }, [qi, di]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { askedAt.current = Date.now(); if (q && dir) speak(t.prevNext.askN(dir, S.step, q.n)) }, [qi, di]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (party || !q || !dir) return <Party onAgain={onAgain} />
 
   const win = async () => {
+    // per le proposte al genitore: giusta al primo colpo? data subito (in meno di 8 secondi)?
+    recordAnswer('precsucc', misses.current === 0, Date.now() - askedAt.current < 8000)
     setDone(true); setHint(false); setFilled(f => ({ ...f, [dir]: right }))
     await say(t.prevNext.sentence(dir, S.step, q.n, right), 1000); await wait(300)
     if (!alive.current) return

@@ -1,0 +1,10 @@
+.card { width: 100%; background: linear-gradient(135deg, #FFF6D6, #FDEBD0); border: 3px solid #FFC93C; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; color: #3D2E00; animation: pop .4s ease-out; }
+.back { background: linear-gradient(135deg, #E3F0FC, #E6E9FB); border-color: #6B7FE3; color: #1F2147; }
+.title { font-size: 19px; font-weight: 900; }
+.text { font-size: 15px; font-weight: 700; line-height: 1.45; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { min-height: 50px; padding: 0 18px; border-radius: 14px; border: 2px solid #D6DBF2; background: #FFFFFF; color: #1F2147; font-size: 16px; font-weight: 800; font-family: inherit; cursor: pointer; }
+.yes { background: var(--done); border-color: var(--done); color: #fff; }
+.toast { font-size: 15px; font-weight: 800; color: var(--done); text-align: center; }
+@keyframes pop { 0% { transform: scale(.9); opacity: .3; } 100% { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .card { animation: none; } }

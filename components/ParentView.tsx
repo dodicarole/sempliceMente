@@ -5,6 +5,7 @@ import { DAY_COLORS, pickZainoIcon, pickRoutineIcon, pickAgendaIcon, pickStoryIc
 import NumbersSettingsPanel from './NumbersSettingsPanel'
 import TablesSettingsPanel from './TablesSettingsPanel'
 import ChildrenPanel, { ChildTabs } from './ChildrenPanel'
+import HelpSuggestions from './HelpSuggestions'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
@@ -238,6 +239,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
   }
 
   const kidsInParent = useChildren()
+  const [helpVersion, setHelpVersion] = useState(0)     // cambia quando il genitore accetta una proposta: le impostazioni si ricaricano
   const resetForm = () => { setNewName(''); setNewTime('08:00'); setNewPhoto(null); setNewPhotoFile(null); setShowForm(false); setSaving(false) }
 
   return (
@@ -248,6 +250,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       </div>
 
       <ChildTabs />
+      <HelpSuggestions key={kidsInParent.active?.id ?? 'nessuno'} onChange={() => setHelpVersion(v => v + 1)} />
 
       <div className={s.sectionToggle}>
         {(['figli', 'zaino', 'routine', 'agenda', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'nomi', 'doppie', 'english', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie') || lang === 'it').map(sec => (
@@ -262,7 +265,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       </div>
 
       {/* tutto quello che segue è del figlio scelto: cambiando figlio si ricarica con le sue impostazioni */}
-      <div key={kidsInParent.active?.id ?? 'nessuno'} style={{ display: 'contents' }}>
+      <div key={`${kidsInParent.active?.id ?? 'nessuno'}-${helpVersion}`} style={{ display: 'contents' }}>
 
       {/* ── ZAINO ── */}
       {section === 'zaino' && (
