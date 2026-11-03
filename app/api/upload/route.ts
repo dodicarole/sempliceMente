@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { getParentFamilyId } from '@/lib/session'
+import { diaryAccess } from '@/lib/diaryServer'
 
 // Tabelle che possono avere una foto, con la cartella in cui salvarla.
 // Qualsiasi altro valore di "table" viene rifiutato.
@@ -10,6 +11,7 @@ const ALLOWED_TABLES: Record<string, string> = {
   agenda_items:   'agenda/',
   emotion_items:  'emotions/',
   story_pages:    'stories/',
+  school_diary:   'diario/',
 }
 
 // Solo immagini, con l'estensione ricavata dal tipo reale del file
@@ -26,13 +28,18 @@ const ALLOWED_TYPES: Record<string, string> = {
 const MAX_SIZE = 4.5 * 1024 * 1024
 
 export async function POST(req: NextRequest) {
-  const familyId = await getParentFamilyId()
-  if (familyId instanceof Response) return familyId
-
   const form   = await req.formData()
   const file   = form.get('file')   as File | null
   const itemId = form.get('itemId') as string | null
   const table  = (form.get('table') as string | null) ?? 'schedule_items'
+
+  // le foto del diario le può caricare anche il bambino, se il genitore ha scelto "Anche il bambino"
+  let familyId: string | Response
+  if (table === 'school_diary') {
+    const a = await diaryAccess()
+    familyId = a instanceof Response ? a : a.canEdit ? a.familyId : new Response(JSON.stringify({ error: 'Non autorizzato' }), { status: 403, headers: { 'Content-Type': 'application/json' } })
+  } else familyId = await getParentFamilyId()
+  if (familyId instanceof Response) return familyId
 
   if (!file || !itemId) {
     return NextResponse.json({ error: 'Dati mancanti' }, { status: 400 })
