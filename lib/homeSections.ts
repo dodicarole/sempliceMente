@@ -6,7 +6,7 @@ import type { Dict } from '@/lib/i18n/it'
 import type { ChildGender } from '@/lib/praise'
 
 export const SECTION_IDS = [
-  'zaino', 'routine', 'agenda', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
+  'zaino', 'routine', 'agenda', 'diario', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
   'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'sillabe', 'doppie', 'nomi', 'english',
 ] as const
 export type SectionId = typeof SECTION_IDS[number]
@@ -19,6 +19,7 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
       { id: 'zaino', e: '🎒', c: '#6B7FE3', title: t.home.zainoTitle, sub: t.home.zainoSub },
       { id: 'routine', e: '🌅', c: '#FF8C42', title: t.home.routineTitle, sub: t.home.routineSub(gender) },
       { id: 'agenda', e: '📅', c: '#3EAB7A', title: t.home.agendaTitle, sub: t.home.agendaSub },
+      { id: 'diario', e: '📚', c: '#5F3DC4', title: t.diary.title, sub: t.diary.homeSub },
       { id: 'primapoi', e: '🔄', c: '#F08C00', title: t.daily.firstThenTitle, sub: t.daily.firstThenSub },
       { id: 'emotions', e: '💬', c: '#C2255C', title: t.daily.wordsTitle, sub: t.daily.wordsSub },
       { id: 'calma', e: '🌬️', c: '#2F9E44', title: t.daily.calmTitle, sub: t.daily.calmSub },
