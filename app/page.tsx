@@ -23,6 +23,7 @@ import DoublesView from '@/components/DoublesView'
 import CompareView from '@/components/CompareView'
 import OppositesView from '@/components/OppositesView'
 import PrevNextView from '@/components/PrevNextView'
+import DiaryView from '@/components/DiaryView'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -38,7 +39,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -260,7 +261,7 @@ export default function Home() {
             {childSection === 'home' ? (
               renderHome()
             ) : childSection === 'zaino' ? (
-              <ChildView items={demoZaino} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
+              <ChildView items={demoZaino} dayIndex={demoDayIndex} dateLabel={dateLabel} week={demoSchedule} demo onBack={() => setChildSection('home')} />
             ) : childSection === 'routine' ? (
               <RoutineView items={DEMO_ROUTINE} onBack={() => setChildSection('home')} />
             ) : childSection === 'timer' ? (
@@ -299,6 +300,8 @@ export default function Home() {
               <OppositesView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'precsucc' ? (
               <PrevNextView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'diario' ? (
+              <DiaryView demo onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -372,7 +375,7 @@ export default function Home() {
             ) : childSection === 'home' ? (
               <><ChildSwitch />{renderHome()}</>
             ) : childSection === 'zaino' ? (
-              <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
+              <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} week={schedule} onBack={() => setChildSection('home')} />
             ) : childSection === 'routine' ? (
               <RoutineView items={routineItems} onBack={() => setChildSection('home')} />
             ) : childSection === 'timer' ? (
@@ -411,6 +414,8 @@ export default function Home() {
               <OppositesView onBack={() => setChildSection('home')} />
             ) : childSection === 'precsucc' ? (
               <PrevNextView onBack={() => setChildSection('home')} />
+            ) : childSection === 'diario' ? (
+              <DiaryView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
