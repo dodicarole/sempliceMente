@@ -97,6 +97,10 @@ export const it = {
     instruction: 'Metti nello zaino!',
     inside: 'Dentro!',
     ready: 'Lo zaino è pronto.',
+    today: 'Oggi', tomorrow: 'Domani',
+    prepFor: (day: string): string => `Prepariamo lo zaino per ${day}!`,
+    readyFor: (day: string): string => `Lo zaino per ${day} è pronto.`,
+    tomorrowWord: 'domani', fromDiary: 'Dal diario',
   },
 
   routine: {
@@ -405,6 +409,35 @@ export const it = {
     done: 'Fatto! Le impostazioni sono cambiate.',
   },
 
+  diary: {
+    title: 'Il mio diario di scuola', homeSub: 'L’orario, i compiti e le verifiche',
+    tabs: ['📝 Diario', '🗓️ Orario', '📅 Mese'],
+    days: ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'],
+    daysShort: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'], daysLetter: ['L', 'M', 'M', 'G', 'V', 'S', 'D'],
+    months: ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'],
+    subjects: { lingua: ['Italiano', 'Ita'], mat: ['Matematica', 'Mate'], ing: ['Inglese', 'Ingl'], sto: ['Storia', 'Storia'], geo: ['Geografia', 'Geo'], sci: ['Scienze', 'Scienze'], art: ['Arte', 'Arte'], mus: ['Musica', 'Musica'], gin: ['Ginnastica', 'Ginn'], tec: ['Tecnologia', 'Tecn'] } as Record<string, [string, string]>,
+    types: { compiti: 'Compiti', verifica: 'Verifica', portare: 'Da portare', gita: 'Gita o festa', vacanza: 'Niente scuola' } as Record<string, string>,
+    tomorrow: 'Domani', nextDay: 'Il prossimo giorno di scuola',
+    youHave: 'Hai', testOf: (s: string): string => `Verifica di ${s}`, bring: 'Porta', onlyLessons: 'Nessun impegno: solo le lezioni!',
+    voice: (when: string, day: string, subjects: string[], tests: string[], bring: string[]): string =>
+      `${when}, ${day}. ${subjects.length ? `Hai ${subjects.join(', ')}. ` : ''}${tests.map(x => `Hai la verifica di ${x}. `).join('')}${bring.length ? `Ricordati di portare ${bring.join(', ')}.` : ''}`,
+    today: 'oggi', hours: (n: number): string => `${n} ore`, nothing: 'Niente da segnare', add: '＋ Aggiungi',
+    what: 'Che cosa?', whichSubject: 'Quale materia?', firstOf: (d: string): string => ` (prima quelle di ${d})`,
+    noteBring: 'Che cosa devi portare?', noteHoliday: 'Perché? (non serve)', noteOther: 'Una parola o una frase (non serve)',
+    placeholders: { compiti: 'Per esempio: pagina 24', verifica: 'Per esempio: gli Egizi', portare: 'Per esempio: il flauto', gita: 'Per esempio: gita al museo', vacanza: 'Per esempio: ponte' } as Record<string, string>,
+    dictate: '🎤 Detta', listening: '🎤 Ti ascolto…', photo: '📷 Foto', save: 'Salva', saved: 'Segnato!',
+    doneBtn: '✅ Fatto!', undone: '↩️ Non ancora fatto', remove: '🗑️ Togli', close: 'Chiudi', bravo: 'Bravo! Compiti fatti.',
+    myTimetable: 'Il mio orario', edit: '✏️ Modifica', editDone: '✓ Fatto',
+    ttHintEdit: 'Tocca ＋ per aggiungere una materia; ↑ ↓ per cambiare l’ordine, ✕ per toglierla.', ttHint: 'Tocca un giorno per sentire le materie.',
+    todayIs: (d: string): string => `Oggi, ${d}`, pickSubject: (d: string): string => `Che materia c’è il ${d}?`, noSubjects: 'nessuna materia',
+    emptyTimetable: 'L’orario è ancora vuoto.', readOnly: 'Il diario e l’orario li prepara il genitore.',
+    legendHoliday: 'Niente scuola',
+    setWho: 'Chi compila il diario e l’orario?', whoParent: 'Solo il genitore', whoChild: 'Anche il bambino',
+    whoHint: 'All’inizio li prepara il genitore; quando il bambino è autonomo, potete lasciarli compilare a lui. Segnare i compiti come fatti è sempre permesso.',
+    mySubjects: 'Materie in più', addSubject: '＋ Aggiungi', subjectName: 'Nome della materia (per esempio: Francese)',
+    parentHint: 'Qui prepari l’orario e il diario del figlio scelto in alto.',
+  },
+
   children: {
     whoTitle: "Chi usa l'app?",
     remember: 'Ricorda su questo dispositivo',
@@ -533,6 +566,7 @@ export const it = {
     doppie: 'Ascolta piano piano: la doppia si sente due volte, alla fine di una sillaba e all\'inizio di quella dopo!',
     confronta: 'La parte aperta guarda il numero più grande, la punta guarda il più piccolo!',
     contrari: 'Guarda bene: è la stessa cosa, ma al contrario!',
+    diario: 'Segniamo tutto qui: così domani non ci dimentichiamo niente!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },
 

@@ -99,6 +99,10 @@ export const fr: Dict = {
     instruction: `Mets dans ton cartable${nb}!`,
     inside: `Dedans${nb}!`,
     ready: 'Ton cartable est prêt.',
+    today: 'Aujourd’hui', tomorrow: 'Demain',
+    prepFor: day => `Préparons le cartable pour ${day}${nb}!`,
+    readyFor: day => `Le cartable pour ${day} est prêt.`,
+    tomorrowWord: 'demain', fromDiary: 'Du cahier',
   },
 
   routine: {
@@ -407,6 +411,35 @@ export const fr: Dict = {
     done: `C’est fait${nb}! Les réglages ont changé.`,
   },
 
+  diary: {
+    title: 'Mon cahier de textes', homeSub: 'L’emploi du temps, les devoirs et les contrôles',
+    tabs: ['📝 Cahier', '🗓️ Emploi du temps', '📅 Mois'],
+    days: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+    daysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'], daysLetter: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
+    months: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+    subjects: { lingua: ['Français', 'Fr'], mat: ['Maths', 'Maths'], ing: ['Anglais', 'Angl'], sto: ['Histoire', 'Hist'], geo: ['Géographie', 'Géo'], sci: ['Sciences', 'Sciences'], art: ['Arts', 'Arts'], mus: ['Musique', 'Musique'], gin: ['Sport', 'Sport'], tec: ['Technologie', 'Techno'] },
+    types: { compiti: 'Devoirs', verifica: 'Contrôle', portare: 'À apporter', gita: 'Sortie ou fête', vacanza: 'Pas d’école' },
+    tomorrow: 'Demain', nextDay: 'Le prochain jour d’école',
+    youHave: 'Tu as', testOf: s => `Contrôle de ${s}`, bring: 'Apporte', onlyLessons: `Rien de spécial${nb}: juste les cours${nb}!`,
+    voice: (when, day, subjects, tests, bring) =>
+      `${when}, ${day}. ${subjects.length ? `Tu as ${subjects.join(', ')}. ` : ''}${tests.map(x => `Tu as un contrôle de ${x}. `).join('')}${bring.length ? `N’oublie pas d’apporter ${bring.join(', ')}.` : ''}`,
+    today: 'aujourd’hui', hours: n => `${n} heures`, nothing: 'Rien à noter', add: '＋ Ajouter',
+    what: `Quoi${nb}?`, whichSubject: `Quelle matière${nb}?`, firstOf: d => ` (d’abord celles du ${d})`,
+    noteBring: `Qu’est-ce que tu dois apporter${nb}?`, noteHoliday: `Pourquoi${nb}? (pas obligatoire)`, noteOther: 'Un mot ou une phrase (pas obligatoire)',
+    placeholders: { compiti: 'Par exemple : page 24', verifica: 'Par exemple : les Égyptiens', portare: 'Par exemple : la flûte', gita: 'Par exemple : sortie au musée', vacanza: 'Par exemple : pont' },
+    dictate: '🎤 Dicte', listening: '🎤 Je t’écoute…', photo: '📷 Photo', save: 'Enregistrer', saved: `C’est noté${nb}!`,
+    doneBtn: `✅ Fait${nb}!`, undone: '↩️ Pas encore fait', remove: '🗑️ Enlever', close: 'Fermer', bravo: `Bravo${nb}! Devoirs faits.`,
+    myTimetable: 'Mon emploi du temps', edit: '✏️ Modifier', editDone: '✓ Terminé',
+    ttHintEdit: 'Touche ＋ pour ajouter une matière ; ↑ ↓ pour changer l’ordre, ✕ pour l’enlever.', ttHint: 'Touche un jour pour entendre les matières.',
+    todayIs: d => `Aujourd’hui, ${d}`, pickSubject: d => `Quelle matière le ${d}${nb}?`, noSubjects: 'aucune matière',
+    emptyTimetable: 'L’emploi du temps est encore vide.', readOnly: 'C’est le parent qui prépare le cahier et l’emploi du temps.',
+    legendHoliday: 'Pas d’école',
+    setWho: `Qui remplit le cahier et l’emploi du temps${nb}?`, whoParent: 'Seulement le parent', whoChild: 'L’enfant aussi',
+    whoHint: 'Au début, c’est le parent qui les prépare ; quand l’enfant est autonome, vous pouvez le laisser faire. Cocher les devoirs faits est toujours permis.',
+    mySubjects: 'Matières en plus', addSubject: '＋ Ajouter', subjectName: 'Nom de la matière (par exemple : Italien)',
+    parentHint: 'Ici, vous préparez l’emploi du temps et le cahier de l’enfant choisi en haut.',
+  },
+
   children: {
     whoTitle: `Qui utilise l’application${nb}?`,
     remember: 'Se souvenir sur cet appareil',
@@ -536,6 +569,7 @@ export const fr: Dict = {
     doppie: `Écoute doucement${nb}: la lettre double s’entend deux fois${nb}!`,
     confronta: `Le côté ouvert regarde le plus grand nombre, la pointe regarde le plus petit${nb}!`,
     contrari: `Regarde bien${nb}: c’est la même chose, mais tout le contraire${nb}!`,
+    diario: `On note tout ici${nb}: comme ça, demain, on n’oublie rien${nb}!`,
     precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },
 
