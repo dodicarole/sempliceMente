@@ -7,9 +7,23 @@
  * `map[i]` dice a quale carattere del testo originale corrisponde il carattere i del testo letto:
  * serve per illuminare la parola giusta mentre la voce legge.
  */
+/**
+ * Parole che la voce del telefono pronuncia con l'accento sbagliato: per leggerle si aggiunge l'accento
+ * (stessa lunghezza, così la parola illuminata resta giusta). Sullo schermo resta la parola normale.
+ */
+const PRONOUNCE: Record<'it' | 'fr', [RegExp, string][]> = {
+  it: [[/\bbugia\b/giu, 'bugìa'], [/\bbugie\b/giu, 'bugìe']],   // bu-GÌ-a, non BÙ-gia
+  fr: [],
+}
+function fixPronunciation(text: string, lang: 'it' | 'fr'): string {
+  let out = text
+  for (const [re, word] of PRONOUNCE[lang]) out = out.replace(re, m => (m[0] === m[0].toUpperCase() ? word.charAt(0).toUpperCase() + word.slice(1) : word))
+  return out
+}
+
 export function prepareForSpeech(text: string, lang: 'it' | 'fr' = 'it'): { spoken: string; map: number[] } {
   // 1) le parole tutte in maiuscolo (almeno 2 lettere) diventano minuscole: stessa lunghezza, posizioni uguali
-  let src = text.replace(/\p{L}{2,}/gu, w => (w === w.toUpperCase() && w !== w.toLowerCase() ? w.toLowerCase() : w))
+  let src = fixPronunciation(text, lang).replace(/\p{L}{2,}/gu, w => (w === w.toUpperCase() && w !== w.toLowerCase() ? w.toLowerCase() : w))
   // se quasi tutto il testo era maiuscolo, anche le singole lettere (A, E, Ì…) tornano minuscole
   const letters = text.match(/\p{L}/gu) ?? []
   const upper = letters.filter(c => c === c.toUpperCase() && c !== c.toLowerCase()).length
