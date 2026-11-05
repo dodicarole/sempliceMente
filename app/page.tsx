@@ -24,6 +24,7 @@ import CompareView from '@/components/CompareView'
 import OppositesView from '@/components/OppositesView'
 import PrevNextView from '@/components/PrevNextView'
 import DiaryView from '@/components/DiaryView'
+import ReadUnderstandView from '@/components/ReadUnderstandView'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -39,7 +40,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -302,6 +303,8 @@ export default function Home() {
               <PrevNextView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'diario' ? (
               <DiaryView demo onBack={() => setChildSection('home')} />
+            ) : childSection === 'capisco' ? (
+              <ReadUnderstandView allowSettings onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -416,6 +419,8 @@ export default function Home() {
               <PrevNextView onBack={() => setChildSection('home')} />
             ) : childSection === 'diario' ? (
               <DiaryView onBack={() => setChildSection('home')} />
+            ) : childSection === 'capisco' ? (
+              <ReadUnderstandView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
