@@ -440,6 +440,22 @@ export const fr: Dict = {
     parentHint: 'Ici, vous préparez l’emploi du temps et le cahier de l’enfant choisi en haut.',
   },
 
+  readUnd: {
+    title: 'Je lis et je comprends', homeSub: 'Des histoires en petits morceaux, avec des questions',
+    parts: n => `${n} morceaux · questions qui, quoi, où, pourquoi`,
+    guessMore: 'Réfléchis un instant, puis découvrons-le !', discover: 'Découvrons-le ! →',
+    newWords: 'Les mots nouveaux', newWordsSub: 'Avant de lire, découvrons ces mots. Touche-les pour les entendre.', understood: 'J’ai compris, on lit ! →',
+    listen: '🔊 Écouter', next: 'Suivant →', right: `Bravo${nb}!`,
+    qt: { chi: `Qui${nb}?`, cosa: `Quoi${nb}?`, quanti: `Combien${nb}?`, dove: `Où${nb}?`, quando: `Quand${nb}?`, perche: `Pourquoi${nb}?` },
+    hintText: `🔎 La réponse est écrite dans le texte${nb}: relis la partie jaune${nb}!`, hintWhy: '💭 Réfléchissons ensemble : relis la phrase jaune et demande-toi pourquoi.',
+    hintTextV: 'La réponse est dans le texte : relis la partie jaune.', hintWhyV: 'Réfléchissons ensemble : relis cette phrase.',
+    orderTitle: `Qu’est-ce qui s’est passé d’abord${nb}?`, orderSub: 'Touche les images dans le bon ordre : 1, 2, 3, 4.', orderDone: `Bravo${nb}! Racontons-la →`,
+    retellTitle: `Maintenant, raconte-la${nb}!`, retellSub: 'Regarde les images et raconte l’histoire avec les mots guides. Touche 🔊 pour l’entendre.',
+    lead: ['D’abord', 'Puis', 'Ensuite', 'À la fin'], retellListen: '🔊 Écouter le récit', another: '📚 Une autre histoire',
+    setWords: 'Mots nouveaux avant de lire', setChoices: 'Nombre de réponses au choix', setWhy: 'Questions « pourquoi » (il faut réfléchir)', setAuto: 'La voix lit seule chaque morceau',
+    parentHint: 'Choisissez l’aide à donner : les mots nouveaux, le nombre de réponses, les questions « pourquoi » et la lecture automatique.',
+  },
+
   children: {
     whoTitle: `Qui utilise l’application${nb}?`,
     remember: 'Se souvenir sur cet appareil',
@@ -570,6 +586,7 @@ export const fr: Dict = {
     confronta: `Le côté ouvert regarde le plus grand nombre, la pointe regarde le plus petit${nb}!`,
     contrari: `Regarde bien${nb}: c’est la même chose, mais tout le contraire${nb}!`,
     diario: `On note tout ici${nb}: comme ça, demain, on n’oublie rien${nb}!`,
+    capisco: `On lit un petit morceau à la fois. Si tu ne connais pas une réponse, on la cherche ensemble dans le texte${nb}!`,
     precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },
 

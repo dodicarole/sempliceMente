@@ -438,6 +438,22 @@ export const it = {
     parentHint: 'Qui prepari l’orario e il diario del figlio scelto in alto.',
   },
 
+  readUnd: {
+    title: 'Leggo e capisco', homeSub: 'Storie a pezzetti, con le domande',
+    parts: (n: number): string => `${n} pezzetti · domande chi, cosa, dove, perché`,
+    guessMore: 'Pensaci un attimo, poi scopriamolo!', discover: 'Scopriamolo! →',
+    newWords: 'Le parole nuove', newWordsSub: 'Prima di leggere, scopriamo queste parole. Toccale per sentirle.', understood: 'Ho capito, leggiamo! →',
+    listen: '🔊 Ascolta', next: 'Avanti →', right: 'Giusto!',
+    qt: { chi: 'Chi?', cosa: 'Cosa?', quanti: 'Quanti?', dove: 'Dove?', quando: 'Quando?', perche: 'Perché?' } as Record<string, string>,
+    hintText: '🔎 La risposta è scritta nel testo: rileggi la parte gialla!', hintWhy: '💭 Pensiamo insieme: rileggi la frase gialla e chiediti perché.',
+    hintTextV: 'La risposta è nel testo: rileggi la parte gialla.', hintWhyV: 'Pensiamo insieme: rileggi questa frase.',
+    orderTitle: 'Cosa è successo prima?', orderSub: 'Tocca le immagini nell’ordine giusto: 1, 2, 3, 4.', orderDone: 'Bravo! Raccontiamola →',
+    retellTitle: 'Ora raccontala tu!', retellSub: 'Guarda le immagini e racconta la storia con le parole guida. Tocca 🔊 per sentirla.',
+    lead: ['Prima', 'Poi', 'Dopo', 'Alla fine'], retellListen: '🔊 Ascolta il racconto', another: '📚 Un’altra storia',
+    setWords: 'Parole nuove prima di leggere', setChoices: 'Quante risposte tra cui scegliere', setWhy: 'Domande “perché” (bisogna ragionare)', setAuto: 'La voce legge da sola ogni pezzetto',
+    parentHint: 'Scegli quanto aiuto dare: le parole nuove, quante risposte, le domande “perché” e la lettura automatica.',
+  },
+
   children: {
     whoTitle: "Chi usa l'app?",
     remember: 'Ricorda su questo dispositivo',
@@ -567,6 +583,7 @@ export const it = {
     confronta: 'La parte aperta guarda il numero più grande, la punta guarda il più piccolo!',
     contrari: 'Guarda bene: è la stessa cosa, ma al contrario!',
     diario: 'Segniamo tutto qui: così domani non ci dimentichiamo niente!',
+    capisco: 'Leggiamo un pezzetto alla volta. Se una risposta non la sai, la cerchiamo insieme nel testo!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },
 
