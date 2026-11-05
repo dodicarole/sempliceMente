@@ -5,7 +5,8 @@
  */
 export type QType = 'chi' | 'cosa' | 'quanti' | 'dove' | 'quando' | 'perche'
 export interface RSOption { e: string; text: string; ok?: boolean }
-export interface RSPart { scene: string; text: string[]; q: { t: QType; text: string; ans: number; opts: RSOption[] } }
+/** q è null quando il genitore non ha messo una domanda; scene è vuota nei testi del genitore */
+export interface RSPart { scene: string; text: string[]; q: { t: QType; text: string; ans: number; opts: RSOption[] } | null }
 export interface RStory { id: string; cover: string; title: string; guess: string; words: [string, string, string][]; parts: RSPart[]; seq: [string, string][] }
 
 const IT: RStory[] = [
