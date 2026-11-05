@@ -7,6 +7,7 @@ import TablesSettingsPanel from './TablesSettingsPanel'
 import ChildrenPanel, { ChildTabs } from './ChildrenPanel'
 import HelpSuggestions from './HelpSuggestions'
 import DiaryView from './DiaryView'
+import { ReadUnderstandSettingsPanel } from './ReadUnderstandView'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
@@ -24,7 +25,7 @@ import { useT } from '@/lib/i18n'
 import LanguagePicker from './LanguagePicker'
 import { useChildren } from '@/lib/children'
 
-type Section = 'figli' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'lettura'
+type Section = 'figli' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -254,13 +255,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       <HelpSuggestions key={kidsInParent.active?.id ?? 'nessuno'} onChange={() => setHelpVersion(v => v + 1)} />
 
       <div className={s.sectionToggle}>
-        {(['figli', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'nomi', 'doppie', 'english', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie') || lang === 'it').map(sec => (
+        {(['figli', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'capisco', 'nomi', 'doppie', 'english', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie') || lang === 'it').map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'figli' ? '👨‍👧' : '🔤'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'capisco' ? '🔎' : sec === 'figli' ? '👨‍👧' : '🔤'}
           </button>
         ))}
       </div>
@@ -511,6 +512,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <>
           <div className={s.emotionsHint}>{t.prevNext.parentHint}</div>
           <PrevNextSettingsPanel />
+        </>
+      )}
+
+      {/* ── LEGGO E CAPISCO ── */}
+      {section === 'capisco' && (
+        <>
+          <div className={s.emotionsHint}>{t.readUnd.parentHint}</div>
+          <ReadUnderstandSettingsPanel />
         </>
       )}
 
