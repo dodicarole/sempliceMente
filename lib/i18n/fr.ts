@@ -454,6 +454,21 @@ export const fr: Dict = {
     lead: ['D’abord', 'Puis', 'Ensuite', 'À la fin'], retellListen: '🔊 Écouter le récit', another: '📚 Une autre histoire',
     setWords: 'Mots nouveaux avant de lire', setChoices: 'Nombre de réponses au choix', setWhy: 'Questions « pourquoi » (il faut réfléchir)', setAuto: 'La voix lit seule chaque morceau',
     parentHint: 'Choisissez l’aide à donner : les mots nouveaux, le nombre de réponses, les questions « pourquoi » et la lecture automatique.',
+    schoolTexts: '📝 Les textes de l’école', friendsStories: '📚 Les histoires des amis', noQuestion: 'Ce morceau n’a pas de question : lis-le tranquillement.',
+    ed: {
+      title: 'Les textes de l’école', hint: 'Collez un texte de l’école : l’app le découpe en petits morceaux, et vous ajoutez les questions. Le texte est pour l’enfant choisi en haut.',
+      add: '＋ Nouveau texte', edit: '✏️', remove: '🗑️', confirmRemove: n => `Enlever « ${n} »${nb}?`, empty: 'Encore aucun texte.',
+      nameLab: 'Titre', namePh: 'Par exemple : Le hérisson et le renard', coverLab: 'Icône',
+      textLab: 'Le texte', textPh: 'Collez ou écrivez ici le texte. Chaque paragraphe devient un ou plusieurs morceaux.', split: '✂️ Découper en morceaux',
+      partsLab: 'Les morceaux', partN: n => `Morceau ${n}`, partPh: 'Le texte de ce morceau',
+      addQ: '＋ Ajouter une question', removeQ: 'Enlever la question', qTypeLab: `Quel type de question${nb}?`, qText: 'La question', qTextPh: 'Par exemple : Qui trouve le hérisson ?',
+      right: '✅ La bonne réponse', wrong: '❌ Une mauvaise réponse', wrong2: '❌ Une autre mauvaise réponse (facultative)',
+      ansLab: 'Touchez la phrase où se trouve la réponse : après une erreur, elle s’allume.',
+      wordsLab: 'Mots nouveaux (facultatifs)', wordPh: 'Mot', defPh: 'Explication simple', addWord: '＋ Mot',
+      seqLab: 'Les moments de l’histoire, dans l’ordre (facultatifs : pour remettre en ordre et raconter)', seqPh: n => `Moment ${n}`,
+      save: 'Enregistrer le texte', cancel: 'Annuler', saved: `Texte enregistré${nb}!`, needs: 'Il faut un titre et le texte découpé en morceaux.',
+      incomplete: n => `Morceau ${n} : pour la question, il faut le texte, la bonne réponse et au moins une mauvaise.`,
+    },
   },
 
   children: {

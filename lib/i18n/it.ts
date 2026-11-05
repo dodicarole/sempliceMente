@@ -452,6 +452,21 @@ export const it = {
     lead: ['Prima', 'Poi', 'Dopo', 'Alla fine'], retellListen: '🔊 Ascolta il racconto', another: '📚 Un’altra storia',
     setWords: 'Parole nuove prima di leggere', setChoices: 'Quante risposte tra cui scegliere', setWhy: 'Domande “perché” (bisogna ragionare)', setAuto: 'La voce legge da sola ogni pezzetto',
     parentHint: 'Scegli quanto aiuto dare: le parole nuove, quante risposte, le domande “perché” e la lettura automatica.',
+    schoolTexts: '📝 I testi di scuola', friendsStories: '📚 Le storie degli amici', noQuestion: 'Questo pezzetto non ha domande: leggilo con calma.',
+    ed: {
+      title: 'I testi di scuola', hint: 'Incolla un testo della scuola: l’app lo divide in pezzetti, e tu aggiungi le domande. Il testo è per il figlio scelto in alto.',
+      add: '＋ Nuovo testo', edit: '✏️', remove: '🗑️', confirmRemove: (n: string): string => `Togliere “${n}”?`, empty: 'Ancora nessun testo.',
+      nameLab: 'Titolo', namePh: 'Per esempio: Il riccio e la volpe', coverLab: 'Icona',
+      textLab: 'Il testo', textPh: 'Incolla o scrivi qui il testo. Ogni capoverso diventa uno o più pezzetti.', split: '✂️ Dividi in pezzetti',
+      partsLab: 'I pezzetti', partN: (n: number): string => `Pezzetto ${n}`, partPh: 'Il testo di questo pezzetto',
+      addQ: '＋ Aggiungi una domanda', removeQ: 'Togli la domanda', qTypeLab: 'Che tipo di domanda?', qText: 'La domanda', qTextPh: 'Per esempio: Chi trova il riccio?',
+      right: '✅ La risposta giusta', wrong: '❌ Una risposta sbagliata', wrong2: '❌ Un’altra risposta sbagliata (facoltativa)',
+      ansLab: 'Tocca la frase dove c’è la risposta: dopo un errore si illumina.',
+      wordsLab: 'Parole nuove (facoltative)', wordPh: 'Parola', defPh: 'Spiegazione semplice', addWord: '＋ Parola',
+      seqLab: 'I momenti della storia, in ordine (facoltativi: servono per riordinare e raccontare)', seqPh: (n: number): string => `Momento ${n}`,
+      save: 'Salva il testo', cancel: 'Annulla', saved: 'Testo salvato!', needs: 'Servono un titolo e il testo diviso in pezzetti.',
+      incomplete: (n: number): string => `Pezzetto ${n}: per la domanda servono il testo, la risposta giusta e almeno una sbagliata.`,
+    },
   },
 
   children: {
