@@ -5,6 +5,7 @@ import { autoStar } from '@/lib/stars'
 import { pickCelebration, type Celebration } from '@/lib/fun'
 import { useSpeech, hush, wait } from '@/hooks/useSpeech'
 import { READ_STORIES, READ_DEFAULTS, loadReadSettings, saveReadSettings, type RStory, type ReadSettings } from '@/lib/readStories'
+import { toStory, type ReadTextRow } from '@/lib/readTexts'
 import SectionTitle from './SectionTitle'
 import Tedo from './Tedo'
 import s from './ReadUnderstand.module.css'
@@ -24,13 +25,27 @@ export default function ReadUnderstandView({ onBack, allowSettings = false }: { 
   const stories = READ_STORIES[lang === 'fr' ? 'fr' : 'it']
   const [st, setSt] = useState<ReadSettings>(READ_DEFAULTS)
   const [story, setStory] = useState<RStory | null>(null)
+  const [school, setSchool] = useState<RStory[]>([])
   useEffect(() => { setSt(loadReadSettings()) }, [])
   useEffect(() => () => hush(), [])
+  // i testi di scuola inseriti dal genitore (non nella demo)
+  useEffect(() => {
+    if (allowSettings) return
+    fetch('/api/read-texts').then(r => (r.ok ? r.json() : { items: [] })).then(j => setSchool((j.items as ReadTextRow[] ?? []).map(toStory))).catch(() => {})
+  }, [allowSettings])
   return (
     <>
       <SectionTitle emoji="🔎" title={T.title} sub={T.homeSub} onBack={() => { hush(); story ? setStory(null) : onBack() }} spot="capisco" />
       {story ? <Story key={story.id} story={story} st={st} onEnd={() => setStory(null)} /> : (
         <>
+          {school.length > 0 && <div className={s.h2} style={{ fontSize: 18 }}>{T.schoolTexts}</div>}
+          {school.map(x => (
+            <button key={x.id} className={s.story} onClick={() => setStory(x)}>
+              <span className={s.cover}>{x.cover}</span>
+              <span><span className={s.storyTitle}>{x.title}</span><span className={s.storyInfo}>{T.parts(x.parts.length)}</span></span>
+            </button>
+          ))}
+          {school.length > 0 && <div className={s.h2} style={{ fontSize: 18 }}>{T.friendsStories}</div>}
           {stories.map(x => (
             <button key={x.id} className={s.story} onClick={() => setStory(x)}>
               <span className={s.cover}>{x.cover}</span>
@@ -48,12 +63,12 @@ function Story({ story, st, onEnd }: { story: RStory; st: ReadSettings; onEnd: (
   const { t } = useT()
   const { speak } = useSpeech()
   const T = t.readUnd
-  const steps = useMemo(() => ['prima', ...(st.words ? ['parole'] : []), ...story.parts.map((_, i) => `pz${i}`), 'ordine', 'racconto'], [story, st.words])
+  const steps = useMemo(() => ['prima', ...(st.words && story.words.length ? ['parole'] : []), ...story.parts.map((_, i) => `pz${i}`), ...(story.seq.length >= 2 ? ['ordine'] : []), 'racconto'], [story, st.words])
   const [si, setSi] = useState(0)
   const step = steps[si]
   const next = () => { hush(); setSi(i => i + 1) }
   useEffect(() => {
-    if (step === 'prima') speak(`${story.title}. ${story.guess}`)
+    if (step === 'prima') speak(story.guess ? `${story.title}. ${story.guess}` : story.title)
     if (step === 'ordine') speak(T.orderTitle)
   }, [step]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
@@ -64,7 +79,7 @@ function Story({ story, st, onEnd }: { story: RStory; st: ReadSettings; onEnd: (
           <>
             <div className={s.scene}>{story.cover}❓</div>
             <div className={s.h2}>{story.title}</div>
-            <div className={s.sub}>{story.guess} {T.guessMore}</div>
+            {story.guess && <div className={s.sub}>{story.guess} {T.guessMore}</div>}
             <button className={`${s.btn} ${s.main}`} onClick={next}>{T.discover}</button>
           </>
         )}
@@ -92,13 +107,13 @@ function Part({ story, index, st, onNext }: { story: RStory; index: number; st: 
   const { speak } = useSpeech()
   const T = t.readUnd
   const part = story.parts[index], q = part.q
-  const isWhy = q.t === 'perche'
-  const ask = !isWhy || st.why
+  const isWhy = q?.t === 'perche'
+  const ask = !!q && (!isWhy || st.why)
   const [reading, setReading] = useState<number | null>(null)
   const [answer, setAnswer] = useState(false)
   const [done, setDone] = useState(false)
   const run = useRef(0)
-  const opts = useMemo(() => { const ok = q.opts.find(o => o.ok)!; return shuffle([ok, ...shuffle(q.opts.filter(o => !o.ok)).slice(0, st.choices - 1)]) }, [q, st.choices])
+  const opts = useMemo(() => { if (!q) return []; const ok = q.opts.find(o => o.ok)!; return shuffle([ok, ...shuffle(q.opts.filter(o => !o.ok)).slice(0, st.choices - 1)]) }, [q, st.choices])
   const words = story.words.map(w => w[1].toLowerCase())
 
   // la voce legge le frasi una dopo l'altra, illuminando quella che legge
@@ -108,9 +123,9 @@ function Part({ story, index, st, onNext }: { story: RStory; index: number; st: 
       if (my !== run.current) break
       setReading(i); await speak(part.text[i], { interrupt: false }); await wait(150)
     }
-    if (my === run.current) { setReading(null); if (ask && !done) speak(q.text, { interrupt: false }) }
+    if (my === run.current) { setReading(null); if (q && ask && !done) speak(q.text, { interrupt: false }) }
   }
-  useEffect(() => { if (st.auto) { const h = setTimeout(read, 300); return () => clearTimeout(h) } else if (ask) speak(q.text) }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (st.auto) { const h = setTimeout(read, 300); return () => clearTimeout(h) } else if (q && ask) speak(q.text) }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => { run.current++ }, [])
 
   // una frase con le parole nuove sottolineate
@@ -123,32 +138,32 @@ function Part({ story, index, st, onNext }: { story: RStory; index: number; st: 
     return out
   }
   const choose = async (ok: boolean, el: HTMLElement) => {
-    if (done) return
+    if (done || !q) return
     run.current++; setReading(null)
     if (ok) { setDone(true); setAnswer(true); await speak(`${T.right} ${part.text[q.ans]}`) }
     else { el.classList.remove(s.wrong); void el.offsetWidth; el.classList.add(s.wrong); setAnswer(true); speak(isWhy ? T.hintWhyV : T.hintTextV) }
   }
   return (
     <>
-      <div className={s.scene}>{part.scene}</div>
+      {part.scene && <div className={s.scene}>{part.scene}</div>}
       <div className={s.text}>
         {part.text.map((x, i) => (
-          <span key={i}><span className={`${s.s}${reading === i ? ` ${s.reading}` : ''}${answer && i === q.ans ? ` ${s.answer}` : ''}`} onClick={() => speak(x)}>{sentence(x)}</span>{' '}</span>
+          <span key={i}><span className={`${s.s}${reading === i ? ` ${s.reading}` : ''}${answer && q && i === q.ans ? ` ${s.answer}` : ''}`} onClick={() => speak(x)}>{sentence(x)}</span>{' '}</span>
         ))}
       </div>
       <button className={`${s.btn} ${s.blue}`} onClick={read}>{T.listen}</button>
-      {ask ? (
+      {ask && q ? (
         <div className={s.q}>
           <span className={s.qtag} style={{ background: QCOLOR[q.t][1] }}>{QCOLOR[q.t][0]} {T.qt[q.t]}</span>
           <div className={s.qtext}>{q.text}</div>
           <div className={s.opts}>
             {opts.map(o => (
-              <button key={o.text} className={`${s.opt}${done && o.ok ? ` ${s.right}` : ''}`} onClick={e => choose(!!o.ok, e.currentTarget)}><span className={s.optE}>{o.e}</span>{o.text}</button>
+              <button key={o.text} className={`${s.opt}${done && o.ok ? ` ${s.right}` : ''}`} onClick={e => choose(!!o.ok, e.currentTarget)}>{o.e && <span className={s.optE}>{o.e}</span>}{o.text}</button>
             ))}
           </div>
           {answer && !done && <div className={s.hint}>{isWhy ? T.hintWhy : T.hintText}</div>}
         </div>
-      ) : null}
+      ) : <div className={s.sub}>{T.noQuestion}</div>}
       {(done || !ask) && <button className={`${s.btn} ${s.main}`} onClick={onNext}>{T.next}</button>}
     </>
   )
@@ -191,12 +206,15 @@ function Retell({ story, onEnd }: { story: RStory; onEnd: () => void }) {
   return (
     <>
       <Tedo gag={celeb?.gag ?? null} />
+      {story.seq.length < 2 && <div className={s.h2} style={{ textAlign: 'center' }}>{celeb?.phrase}</div>}
+      {story.seq.length >= 2 && <>
       <div className={s.h2}>{T.retellTitle}</div>
       <div className={s.sub}>{T.retellSub}</div>
       <div className={s.retell}>{story.seq.map(([e, l], i) => (
         <div key={i} className={s.rt}><span className={s.rtE}>{e}</span><span><span className={s.rtB}>{T.lead[i]}…</span><span className={s.rtT}>{l}</span></span></div>
       ))}</div>
       <button className={`${s.btn} ${s.blue}`} onClick={() => speak(story.seq.map(([, l], i) => `${T.lead[i]}, ${l}`).join('. ') + '.')}>{T.retellListen}</button>
+      </>}
       <button className={`${s.btn} ${s.main}`} onClick={onEnd}>{T.another}</button>
     </>
   )

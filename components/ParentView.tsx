@@ -8,6 +8,7 @@ import ChildrenPanel, { ChildTabs } from './ChildrenPanel'
 import HelpSuggestions from './HelpSuggestions'
 import DiaryView from './DiaryView'
 import { ReadUnderstandSettingsPanel } from './ReadUnderstandView'
+import ReadTextsEditor from './ReadTextsEditor'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
@@ -520,6 +521,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <>
           <div className={s.emotionsHint}>{t.readUnd.parentHint}</div>
           <ReadUnderstandSettingsPanel />
+          <ReadTextsEditor />
         </>
       )}
 
