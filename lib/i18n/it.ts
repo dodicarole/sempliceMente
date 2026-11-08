@@ -438,6 +438,8 @@ export const it = {
     parentHint: 'Qui prepari l’orario e il diario del figlio scelto in alto.',
   },
 
+  games: { title: 'Giochi', homeSub: 'Piccoli giochi per allenare la testa', parentHint: 'Le impostazioni dei giochi di questo figlio.' },
+
   readUnd: {
     title: 'Leggo e capisco', homeSub: 'Storie a pezzetti, con le domande',
     parts: (n: number): string => `${n} pezzetti · domande chi, cosa, dove, perché`,
@@ -598,6 +600,7 @@ export const it = {
     confronta: 'La parte aperta guarda il numero più grande, la punta guarda il più piccolo!',
     contrari: 'Guarda bene: è la stessa cosa, ma al contrario!',
     diario: 'Segniamo tutto qui: così domani non ci dimentichiamo niente!',
+    giochi: 'Scegli un gioco: alleniamo la testa divertendoci!',
     capisco: 'Leggiamo un pezzetto alla volta. Se una risposta non la sai, la cerchiamo insieme nel testo!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },

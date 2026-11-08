@@ -440,6 +440,8 @@ export const fr: Dict = {
     parentHint: 'Ici, vous préparez l’emploi du temps et le cahier de l’enfant choisi en haut.',
   },
 
+  games: { title: 'Jeux', homeSub: 'Des petits jeux pour entraîner sa tête', parentHint: 'Les réglages des jeux de cet enfant.' },
+
   readUnd: {
     title: 'Je lis et je comprends', homeSub: 'Des histoires en petits morceaux, avec des questions',
     parts: n => `${n} morceaux · questions qui, quoi, où, pourquoi`,
@@ -601,6 +603,7 @@ export const fr: Dict = {
     confronta: `Le côté ouvert regarde le plus grand nombre, la pointe regarde le plus petit${nb}!`,
     contrari: `Regarde bien${nb}: c’est la même chose, mais tout le contraire${nb}!`,
     diario: `On note tout ici${nb}: comme ça, demain, on n’oublie rien${nb}!`,
+    giochi: `Choisis un jeu${nb}: on s’entraîne en s’amusant${nb}!`,
     capisco: `On lit un petit morceau à la fois. Si tu ne connais pas une réponse, on la cherche ensemble dans le texte${nb}!`,
     precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },
