@@ -10,6 +10,7 @@ import Tedo from './Tedo'
 import type { Gag } from '@/lib/fun'
 import s from './EnglishView.module.css'
 import Buddy from './Buddy'
+import EnglishCan from './EnglishCan'
 
 interface Props {
   onBack: () => void
@@ -17,7 +18,7 @@ interface Props {
   allowSettings?: boolean
 }
 
-type Tab = 'learn' | 'find' | 'phrase'
+type Tab = 'learn' | 'find' | 'phrase' | 'can'
 const ROUNDS = 8
 const wait = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
 function shuffle<T>(arr: T[]): T[] {
@@ -244,7 +245,7 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
       <Buddy spot="english" />
       {allowSettings && showPanel && <EnglishSettingsPanel onChange={next => { setSettings(next); restart() }} />}
 
-      {tab !== 'phrase' && (
+      {tab !== 'phrase' && tab !== 'can' && (
         <nav className={s.topics}>
           {TOPICS.map(tp => (
             <button key={tp.id} className={s.pill} aria-current={tp.id === topic} onClick={() => { setTopic(tp.id); restart() }}>
@@ -254,13 +255,14 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
         </nav>
       )}
       <nav className={s.tabs}>
-        {(['learn', 'find', 'phrase'] as Tab[]).map(k => (
+        {(['learn', 'find', 'phrase', 'can'] as Tab[]).map(k => (
           <button key={k} className={s.tab} aria-current={tab === k} onClick={() => { setTab(k); restart() }}>
-            {k === 'learn' ? t.english.tabLearn : k === 'find' ? t.english.tabFind : t.english.tabPhrase}
+            {k === 'learn' ? t.english.tabLearn : k === 'find' ? t.english.tabFind : k === 'phrase' ? t.english.tabPhrase : '🇬🇧 Can / can’t'}
           </button>
         ))}
       </nav>
 
+      {tab === 'can' && ready ? <EnglishCan settings={settings} /> : (
       <section className={s.card} aria-live="polite">
         {!ready ? null : celeb ? (
           <>
@@ -277,6 +279,7 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
           <Phrase key={run} settings={settings} speak={speak} />
         )}
       </section>
+      )}
     </>
   )
 }
