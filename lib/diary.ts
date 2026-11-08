@@ -16,7 +16,7 @@ export const BASE_SUBJECTS: Subject[] = [
   { key: 'lingua', e: '📖', c: '#E03131' }, { key: 'mat', e: '➗', c: '#1C7ED6' }, { key: 'ing', e: '🇬🇧', c: '#7048E8' },
   { key: 'sto', e: '🏛️', c: '#9C6B30' }, { key: 'geo', e: '🌍', c: '#2F9E44' }, { key: 'sci', e: '🔬', c: '#0CA678' },
   { key: 'art', e: '🎨', c: '#F08C00' }, { key: 'mus', e: '🎵', c: '#E64980' }, { key: 'gin', e: '⚽', c: '#E8A400' },
-  { key: 'tec', e: '💻', c: '#495057' },
+  { key: 'tec', e: '💻', c: '#495057' }, { key: 'rel', e: '🕊️', c: '#5C7CFA' },
 ]
 /** Colori e icone tra cui il genitore sceglie per una materia nuova */
 export const CUSTOM_COLORS = ['#C2255C', '#5F3DC4', '#0B7285', '#5C940D', '#D9480F', '#364FC7']
