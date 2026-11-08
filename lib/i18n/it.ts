@@ -603,6 +603,7 @@ export const it = {
     contrari: 'Guarda bene: è la stessa cosa, ma al contrario!',
     diario: 'Segniamo tutto qui: così domani non ci dimentichiamo niente!',
     giochi: 'Scegli un gioco: alleniamo la testa divertendoci!',
+    poesia: 'Un verso alla volta, e piano piano la poesia entra nella testa!',
     capisco: 'Leggiamo un pezzetto alla volta. Se una risposta non la sai, la cerchiamo insieme nel testo!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },

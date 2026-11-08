@@ -606,6 +606,7 @@ export const fr: Dict = {
     contrari: `Regarde bien${nb}: c’est la même chose, mais tout le contraire${nb}!`,
     diario: `On note tout ici${nb}: comme ça, demain, on n’oublie rien${nb}!`,
     giochi: `Choisis un jeu${nb}: on s’entraîne en s’amusant${nb}!`,
+    poesia: `Un vers à la fois, et petit à petit la poésie entre dans la tête${nb}!`,
     capisco: `On lit un petit morceau à la fois. Si tu ne connais pas une réponse, on la cherche ensemble dans le texte${nb}!`,
     precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },
