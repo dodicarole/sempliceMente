@@ -65,11 +65,16 @@ export default function DiaryView({ onBack, parent = false, demo = false }: { on
     const r = await fetch('/api/diary', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(e) })
     if (!r.ok) { flash((await r.json().catch(() => ({}))).error ?? '!'); return }
     const { item } = await r.json()
-    if (photo && item?.id) {
-      const f = new FormData(); f.append('file', new File([photo.blob], 'foto.jpg', { type: 'image/jpeg' })); f.append('itemId', item.id); f.append('table', 'school_diary')
-      await fetch('/api/upload', { method: 'POST', body: f }).catch(() => {})
-    }
+    if (photo && item?.id && !(await uploadPhoto(item.id, photo, true))) return
     flash(T.saved); speak(T.saved); reload()
+  }
+  /** carica la foto di una voce; se non riesce lo dice, con il motivo */
+  async function uploadPhoto(id: string, photo: { blob: Blob; url: string }, afterSave = false): Promise<boolean> {
+    const f = new FormData(); f.append('file', new File([photo.blob], 'foto.jpg', { type: 'image/jpeg' })); f.append('itemId', id); f.append('table', 'school_diary')
+    const up = await fetch('/api/upload', { method: 'POST', body: f }).catch(() => null)
+    if (!up || !up.ok) { const err = up ? (await up.json().catch(() => ({}))).error : ''; flash(`${afterSave ? T.photoFailed : T.photoFailedOnly}${err ? ` (${err})` : ''}`); reload(); return false }
+    if (!afterSave) { flash(T.saved); reload() }
+    return true
   }
   async function setDone(e: DiaryEntry, done: boolean) {
     if (done) { autoStar(); speak(T.bravo) }
@@ -103,7 +108,7 @@ export default function DiaryView({ onBack, parent = false, demo = false }: { on
       )}
       {tab === 1 && <TimetableCard />}
       {tab === 2 && <Month />}
-      {adding && <AddSheet day={adding} onClose={() => setAdding(null)} />}
+      {adding && <AddSheet day={adding} onClose={() => setAdding(null)} tt={tt} subjects={subjects} onSave={addEntry} />}
       {open && <EntrySheet e={open} onClose={() => setOpen(null)} />}
     </>
   )
@@ -181,57 +186,13 @@ export default function DiaryView({ onBack, parent = false, demo = false }: { on
           <div className={s.row}>
             {e.type === 'compiti' && <button className={`${s.btn} ${s.main}`} onClick={() => { setDone(e, !e.done); onClose() }}>{e.done ? T.undone : T.doneBtn}</button>}
             {canEdit && <button className={s.btn} onClick={() => { removeEntry(e); onClose() }}>{T.remove}</button>}
+            {/* una foto anche dopo: per esempio se la prima volta non si era salvata */}
+            {canEdit && !demo && !e.photo_url && (
+              <label className={s.btn}>{T.photoAdd}
+                <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; if (!f) return; const ph = await shrinkPhoto(f).catch(() => null); if (ph) { onClose(); await uploadPhoto(e.id, ph) } }} />
+              </label>
+            )}
             <button className={s.btn} onClick={onClose}>{T.close}</button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  /* ── ＋ Aggiungere: che cosa → materia (prima quelle dell'orario di quel giorno) → una parola, la voce o una foto ── */
-  function AddSheet({ day, onClose }: { day: string; onClose: () => void }) {
-    const d = fromIso(day)
-    const [type, setType] = useState<DiaryType>('compiti')
-    const [sj, setSj] = useState('')
-    const [note, setNote] = useState('')
-    const [photo, setPhoto] = useState<{ blob: Blob; url: string } | null>(null)
-    const [listening, setListening] = useState(false)
-    const needSubject = type === 'compiti' || type === 'verifica'
-    const todays = [...new Set(tt[d.getDay()] ?? [])], rest = subjects.map(x => x.key).filter(k => !todays.includes(k))
-    const SR = typeof window !== 'undefined' ? ((window as unknown as { SpeechRecognition?: new () => SpeechRec; webkitSpeechRecognition?: new () => SpeechRec }).SpeechRecognition ?? (window as unknown as { webkitSpeechRecognition?: new () => SpeechRec }).webkitSpeechRecognition) : undefined
-    const dictate = () => {
-      if (!SR) return
-      try { const r = new SR(); r.lang = t.locale; r.onresult = ev => { setNote(n => (n ? `${n} ` : '') + ev.results[0][0].transcript); setListening(false) }; r.onend = () => setListening(false); r.start(); setListening(true) } catch (_) { setListening(false) }
-    }
-    return (
-      <div className={s.sheet} onClick={ev => { if (ev.target === ev.currentTarget) onClose() }} role="dialog" aria-modal="true">
-        <div className={s.panel}>
-          <div className={s.h2}>＋ {cap(dayLabel(d))}</div>
-          <div className={s.lab}>{T.what}</div>
-          <div className={s.types}>
-            {DIARY_TYPES.map(x => <button key={x.id} className={s.type} aria-pressed={type === x.id} onClick={() => { setType(x.id); speak(T.types[x.id]) }}><span>{x.e}</span>{T.types[x.id]}</button>)}
-          </div>
-          {type !== 'gita' && type !== 'vacanza' && (
-            <>
-              <div className={s.lab}>{T.whichSubject}{todays.length ? T.firstOf(T.days[d.getDay()]) : ''}</div>
-              <div className={s.subjs}>
-                {[...todays, ...rest].map(k => { const x = subj(k); if (!x) return null
-                  return <button key={k} className={s.subj} style={{ background: x.c }} aria-pressed={sj === k} onClick={() => { setSj(k); speak(x.name ?? '') }}>{x.e} {x.name}</button> })}
-              </div>
-            </>
-          )}
-          <div className={s.lab}>{type === 'portare' ? T.noteBring : type === 'vacanza' ? T.noteHoliday : T.noteOther}</div>
-          <textarea className={s.text} value={note} placeholder={T.placeholders[type]} maxLength={300} onChange={ev => setNote(ev.target.value)} />
-          <div className={s.row}>
-            {SR && <button className={s.btn} onClick={dictate}>{listening ? T.listening : T.dictate}</button>}
-            <label className={s.btn}>{T.photo}
-              <input type="file" accept="image/*" capture="environment" hidden onChange={async ev => { const f = ev.target.files?.[0]; if (f) setPhoto(await shrinkPhoto(f).catch(() => null)) }} />
-            </label>
-          </div>
-          {photo && <img className={s.photo} src={photo.url} alt="" />}
-          <div className={s.row}>
-            <button className={`${s.btn} ${s.main}`} disabled={needSubject && !sj} onClick={() => { addEntry({ day, type, subject: type === 'gita' || type === 'vacanza' ? '' : sj, note: note.trim() }, photo); onClose() }}>{T.save}</button>
-            <button className={s.btn} onClick={onClose}>{t.common.cancel}</button>
           </div>
         </div>
       </div>
@@ -323,6 +284,62 @@ export default function DiaryView({ onBack, parent = false, demo = false }: { on
       </>
     )
   }
+}
+
+/* ── ＋ Aggiungere: che cosa → materia (prima quelle dell'orario di quel giorno) → una parola, la voce o una foto ── */
+function AddSheet({ day, onClose, tt, subjects, onSave }: { day: string; onClose: () => void; tt: Timetable; subjects: Subject[]; onSave: (e: Omit<DiaryEntry, 'id' | 'done' | 'photo_url'>, photo: { blob: Blob; url: string } | null) => void }) {
+  const { t } = useT()
+  const { speak } = useSpeech()
+  const T = t.diary
+  const subj = (k: string) => subjects.find(x => x.key === k)
+  const d = fromIso(day)
+  const cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1)
+  const dayLabel = (x: Date) => `${T.days[x.getDay()]} ${x.getDate()}`
+  const [type, setType] = useState<DiaryType>('compiti')
+  const [sj, setSj] = useState('')
+  const [note, setNote] = useState('')
+  const [photo, setPhoto] = useState<{ blob: Blob; url: string } | null>(null)
+  const [listening, setListening] = useState(false)
+  const needSubject = type === 'compiti' || type === 'verifica'
+  const todays = [...new Set(tt[d.getDay()] ?? [])], rest = subjects.map(x => x.key).filter(k => !todays.includes(k))
+  const SR = typeof window !== 'undefined' ? ((window as unknown as { SpeechRecognition?: new () => SpeechRec; webkitSpeechRecognition?: new () => SpeechRec }).SpeechRecognition ?? (window as unknown as { webkitSpeechRecognition?: new () => SpeechRec }).webkitSpeechRecognition) : undefined
+  const dictate = () => {
+    if (!SR) return
+    try { const r = new SR(); r.lang = t.locale; r.onresult = ev => { setNote(n => (n ? `${n} ` : '') + ev.results[0][0].transcript); setListening(false) }; r.onend = () => setListening(false); r.start(); setListening(true) } catch (_) { setListening(false) }
+  }
+  return (
+    <div className={s.sheet} onClick={ev => { if (ev.target === ev.currentTarget) onClose() }} role="dialog" aria-modal="true">
+      <div className={s.panel}>
+        <div className={s.h2}>＋ {cap(dayLabel(d))}</div>
+        <div className={s.lab}>{T.what}</div>
+        <div className={s.types}>
+          {DIARY_TYPES.map(x => <button key={x.id} className={s.type} aria-pressed={type === x.id} onClick={() => { setType(x.id); speak(T.types[x.id]) }}><span>{x.e}</span>{T.types[x.id]}</button>)}
+        </div>
+        {type !== 'gita' && type !== 'vacanza' && (
+          <>
+            <div className={s.lab}>{T.whichSubject}{todays.length ? T.firstOf(T.days[d.getDay()]) : ''}</div>
+            <div className={s.subjs}>
+              {[...todays, ...rest].map(k => { const x = subj(k); if (!x) return null
+                return <button key={k} className={s.subj} style={{ background: x.c }} aria-pressed={sj === k} onClick={() => { setSj(k); speak(x.name ?? '') }}>{x.e} {x.name}</button> })}
+            </div>
+          </>
+        )}
+        <div className={s.lab}>{type === 'portare' ? T.noteBring : type === 'vacanza' ? T.noteHoliday : T.noteOther}</div>
+        <textarea className={s.text} value={note} placeholder={T.placeholders[type]} maxLength={300} onChange={ev => setNote(ev.target.value)} />
+        <div className={s.row}>
+          {SR && <button className={s.btn} onClick={dictate}>{listening ? T.listening : T.dictate}</button>}
+          <label className={s.btn}>{T.photo}
+            <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; if (f) setPhoto(await shrinkPhoto(f).catch(() => null)) }} />
+          </label>
+        </div>
+        {photo && <img className={s.photo} src={photo.url} alt="" />}
+        <div className={s.row}>
+          <button className={`${s.btn} ${s.main}`} disabled={needSubject && !sj} onClick={() => { onSave({ day, type, subject: type === 'gita' || type === 'vacanza' ? '' : sj, note: note.trim() }, photo); onClose() }}>{T.save}</button>
+          <button className={s.btn} onClick={onClose}>{t.common.cancel}</button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 /* il riconoscimento della voce del browser (per dettare) */
