@@ -11,6 +11,7 @@ import { ReadUnderstandSettingsPanel } from './ReadUnderstandView'
 import ReadTextsEditor from './ReadTextsEditor'
 import { GamesSettingsPanel } from './GamesView'
 import { PoemEditorPanel } from './PoemView'
+import PlanEditor from './PlanEditor'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
@@ -28,7 +29,7 @@ import { useT } from '@/lib/i18n'
 import LanguagePicker from './LanguagePicker'
 import { useChildren } from '@/lib/children'
 
-type Section = 'figli' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'lettura'
+type Section = 'figli' | 'piano' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -258,13 +259,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       <HelpSuggestions key={kidsInParent.active?.id ?? 'nessuno'} onChange={() => setHelpVersion(v => v + 1)} />
 
       <div className={s.sectionToggle}>
-        {(['figli', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'capisco', 'nomi', 'doppie', 'english', 'giochi', 'poesia', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie' && sec !== 'giochi' && sec !== 'poesia') || lang === 'it').map(sec => (
+        {(['figli', 'piano', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'capisco', 'nomi', 'doppie', 'english', 'giochi', 'poesia', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie' && sec !== 'giochi' && sec !== 'poesia') || lang === 'it').map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'capisco' ? '🔎' : sec === 'giochi' ? '🎲' : sec === 'poesia' ? '🎭' : sec === 'figli' ? '👨‍👧' : '🔤'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'capisco' ? '🔎' : sec === 'giochi' ? '🎲' : sec === 'piano' ? '📋' : sec === 'poesia' ? '🎭' : sec === 'figli' ? '👨‍👧' : '🔤'}
           </button>
         ))}
       </div>
@@ -517,6 +518,9 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
           <PrevNextSettingsPanel />
         </>
       )}
+
+      {/* ── IL PIANO DI LAVORO del figlio scelto, giorno per giorno ── */}
+      {section === 'piano' && <PlanEditor />}
 
       {/* ── IMPARO LA POESIA: le poesie del figlio scelto ── */}
       {section === 'poesia' && <PoemEditorPanel />}
