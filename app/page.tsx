@@ -27,6 +27,8 @@ import DiaryView from '@/components/DiaryView'
 import ReadUnderstandView from '@/components/ReadUnderstandView'
 import GamesView from '@/components/GamesView'
 import PoemView from '@/components/PoemView'
+import PlanToday from '@/components/PlanToday'
+import PlanTracker from '@/components/PlanTracker'
 import { builtinStories } from '@/lib/builtinStories'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -382,7 +384,7 @@ export default function Home() {
             ) : kids.needsChoice ? (
               <ChildPicker />
             ) : childSection === 'home' ? (
-              <><ChildSwitch />{renderHome()}</>
+              <><ChildSwitch /><PlanToday onOpen={sec => setChildSection(sec)} />{renderHome()}</>
             ) : childSection === 'zaino' ? (
               <ChildView items={zainoItems} dayIndex={dayIndex} dateLabel={dateLabel} week={schedule} onBack={() => setChildSection('home')} />
             ) : childSection === 'routine' ? (
@@ -437,6 +439,10 @@ export default function Home() {
           </div>
         )}
 
+        {/* il piano di lavoro: l'app conta il tempo passato nella sezione di una tappa di oggi */}
+        {view === 'child' && authState === 'authenticated' && childSection !== 'home' && (
+          <PlanTracker key={childSection} sec={childSection} onGo={sec => setChildSection(sec)} />
+        )}
         {view === 'child' && childSection === 'home' && (
           <Link href="/sostieni" className={s.aboutLink}>{t.demo.about}</Link>
         )}
