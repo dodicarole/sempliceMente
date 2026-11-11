@@ -12,7 +12,7 @@ export const SYNCED_KEYS = [
   'numeri_impostazioni', 'tabelline_impostazioni', 'tabelline_progressi', 'scomposizione_impostazioni',
   'nomi_impostazioni', 'english_impostazioni', 'doppie_impostazioni', 'contrari_impostazioni',
   'confronto_impostazioni', 'precsucc_impostazioni', 'lettura_impostazioni', 'tono_divertente',
-  'voce_velocita', 'stelline', 'prima_poi', 'aiuti_progressi', 'diario_orario', 'diario_impostazioni', 'capisco_impostazioni', 'giochi_impostazioni', 'poesie',
+  'voce_velocita', 'stelline', 'prima_poi', 'aiuti_progressi', 'diario_orario', 'diario_impostazioni', 'capisco_impostazioni', 'giochi_impostazioni', 'poesie', 'piani',
 ]
 /** Le spunte del giorno (zaino e routine): per figlio, ma solo su questo telefono */
 const DAILY = /^(zaino|routine)_\d{4}-\d{2}-\d{2}$/
@@ -89,4 +89,14 @@ export function seedFromServer(children: { id: string; sort_order?: number; sett
       }
     }
   }
+}
+
+/**
+ * Leggere e scrivere un'impostazione di un ALTRO figlio (non quello attivo), per esempio
+ * per copiare un piano di lavoro a più bambini insieme. Si salva anche nel database.
+ */
+export function getForChild(childId: string, key: string): string | null { return rawGet(`${key}@${childId}`) }
+export function setForChild(childId: string, key: string, value: string) {
+  rawSet(`${key}@${childId}`, value)
+  if (isSynced(key)) upload(childId, key, value)
 }
