@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { getSupabase } from '@/lib/supabase'
-import { getParentFamilyId } from '@/lib/session'
+import { getOwnParentFamilyId } from '@/lib/session'
 
 export async function POST(req: NextRequest) {
-  const familyId = await getParentFamilyId()
+  const familyId = await getOwnParentFamilyId()
   if (familyId instanceof Response) return familyId
 
   const { pin } = await req.json()
