@@ -10,9 +10,10 @@ import { installChildStorage, seedFromServer } from '@/lib/childStore'
  * richiesta a /api (intestazione x-child-id): così zaino, routine, agenda ed emozioni
  * arrivano già quelli giusti, senza cambiare tutte le chiamate dell'app.
  */
-export interface Child { id: string; name: string; gender: ChildGender; avatar: string; sort_order: number; hidden: SectionId[] }
+/** shared: un bambino di un'altra famiglia, condiviso con questo account con un codice di invito */
+export interface Child { id: string; name: string; gender: ChildGender; avatar: string; sort_order: number; hidden: SectionId[]; shared?: boolean }
 type RawChild = Omit<Child, 'hidden'> & { settings?: unknown }
-const toChild = (c: RawChild): Child => ({ id: c.id, name: c.name, gender: c.gender, avatar: c.avatar, sort_order: c.sort_order, hidden: hiddenOf(c.settings) })
+const toChild = (c: RawChild): Child => ({ id: c.id, name: c.name, gender: c.gender, avatar: c.avatar, sort_order: c.sort_order, hidden: hiddenOf(c.settings), shared: !!c.shared })
 export const AVATARS = ['tedo', 'meky', 'zoe', 'lila', 'nico', 'amina', 'elio', 'nour'] as const
 
 const ACTIVE = 'figlio_attivo'        // il figlio scelto su questo dispositivo
@@ -55,6 +56,8 @@ interface Ctx {
   add: (c: { name: string; gender: ChildGender; avatar: string; hidden?: SectionId[] }) => Promise<string | null>
   update: (id: string, patch: Partial<Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>>) => Promise<void>
   remove: (id: string) => Promise<string | null>
+  /** seguire il bambino di un'altra famiglia con il suo codice di invito: il suo nome, oppure l'errore */
+  join: (code: string) => Promise<{ name: string } | { error: string }>
 }
 const ChildrenContext = createContext<Ctx | null>(null)
 
@@ -121,6 +124,12 @@ export function ChildrenProvider({ children: kids }: { children: ReactNode }) {
     if (get(ACTIVE) === id) put(ACTIVE, null)
     await reload(); return null
   }
+  const join: Ctx['join'] = async code => {
+    const res = await fetch('/api/children/join', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) })
+    const j = await res.json().catch(() => ({}))
+    if (!res.ok) return { error: j.error ?? 'Errore' }
+    await reload(); return { name: j.child?.name ?? '' }
+  }
 
   const value = useMemo<Ctx>(() => ({
     children: list,
@@ -128,7 +137,7 @@ export function ChildrenProvider({ children: kids }: { children: ReactNode }) {
     version,
     needsChoice: list.length > 1 && !fixedId && !chosen,
     fixed: !!fixedId,
-    choose, askAgain, reload, add, update, remove,
+    choose, askAgain, reload, add, update, remove, join,
   }), [list, activeId, version, fixedId, chosen, choose, askAgain, reload]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return <ChildrenContext.Provider value={value}>{kids}</ChildrenContext.Provider>

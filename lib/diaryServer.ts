@@ -1,5 +1,5 @@
 import { getSupabase } from '@/lib/supabase'
-import { getSession, getChildId } from '@/lib/session'
+import { getSession, getFamilyId, getChildId } from '@/lib/session'
 
 /**
  * Chi può scrivere nel diario di un figlio.
@@ -9,8 +9,8 @@ import { getSession, getChildId } from '@/lib/session'
  */
 export async function diaryAccess(): Promise<{ familyId: string; childId: string | null; canEdit: boolean } | Response> {
   const session = await getSession()
-  if (!session.familyId) return new Response(JSON.stringify({ error: 'Non autenticato' }), { status: 401, headers: { 'Content-Type': 'application/json' } })
-  const familyId = session.familyId
+  const familyId = await getFamilyId()
+  if (familyId instanceof Response) return familyId
   const childId = await getChildId(familyId)
   if (session.isParent) return { familyId, childId, canEdit: true }
   let canEdit = false
