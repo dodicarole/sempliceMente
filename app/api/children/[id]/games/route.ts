@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { getFamilyId } from '@/lib/session'
+import { getOwnFamilyId, familyOfChild } from '@/lib/session'
 import { SYNCED_KEYS } from '@/lib/childStore'
 
 /**
@@ -8,9 +8,12 @@ import { SYNCED_KEYS } from '@/lib/childStore'
  * children.settings.games[key] = value. Le altre impostazioni restano com'erano.
  */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const familyId = await getFamilyId()
-  if (familyId instanceof Response) return familyId
+  const own = await getOwnFamilyId()
+  if (own instanceof Response) return own
   const { id } = await params
+  const access = await familyOfChild(id, own)
+  if (!access) return NextResponse.json({ error: 'Figlio non trovato' }, { status: 404 })
+  const familyId = access.familyId
   const body = await req.json().catch(() => ({}))
   const key = String(body.key ?? '')
   if (!SYNCED_KEYS.includes(key)) return NextResponse.json({ error: 'Impostazione sconosciuta' }, { status: 400 })
