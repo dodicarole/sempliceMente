@@ -5,6 +5,7 @@ import { useT } from '@/lib/i18n'
 import { useChildren, AVATARS, type Child } from '@/lib/children'
 import type { ChildGender } from '@/lib/praise'
 import { homeSections, type SectionId } from '@/lib/homeSections'
+import { ShareChild, JoinChild } from './ShareChild'
 import s from './NumbersSettingsPanel.module.css'
 import c from './ChildPicker.module.css'
 
@@ -29,12 +30,15 @@ export function ChildTabs() {
   )
 }
 
-function ChildForm({ start, others = [], onSave, onCancel, onRemove }: { start: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>; others?: string[]; onSave: (v: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>) => void; onCancel?: () => void; onRemove?: () => void }) {
+function ChildForm({ start, others = [], onSave, onCancel, onRemove, child }: { start: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>; others?: string[]; onSave: (v: Pick<Child, 'name' | 'gender' | 'avatar' | 'hidden'>) => void; onCancel?: () => void; onRemove?: () => void; child?: Child }) {
   const { t } = useT()
   const [v, setV] = useState(start)
   const G: [ChildGender, string][] = [['m', t.child.boy], ['f', t.child.girl], ['n', t.child.unspecified]]
+  const shared = !!child?.shared
   return (
     <div className={s.panel}>
+      {shared && <div className={s.label} style={{ fontSize: 13 }}>🔗 {t.children.sharedHint}</div>}
+      {!shared && <>
       <div className={s.group}>
         <span className={s.label}>{t.child.nameLabel}</span>
         <input style={input} value={v.name} maxLength={40} placeholder={t.child.namePlaceholder} onChange={e => setV({ ...v, name: e.target.value })} />
@@ -56,11 +60,13 @@ function ChildForm({ start, others = [], onSave, onCancel, onRemove }: { start: 
           ))}
         </div>
       </div>
+      </>}
       <SectionsPicker hidden={v.hidden} gender={v.gender} onChange={hidden => setV({ ...v, hidden })} />
+      {child && !shared && <ShareChild child={child} />}
       <div className={s.chips}>
         <button className={s.chip} aria-pressed={true} disabled={!v.name.trim()} onClick={() => onSave({ ...v, name: v.name.trim() })}>{t.common.save}</button>
         {onCancel && <button className={s.chip} onClick={onCancel}>{t.common.cancel}</button>}
-        {onRemove && <button className={s.chip} onClick={onRemove} style={{ color: '#C92A2A' }}>{t.children.remove}</button>}
+        {onRemove && <button className={s.chip} onClick={onRemove} style={{ color: '#C92A2A' }}>{shared ? t.children.leave : t.children.remove}</button>}
       </div>
     </div>
   )
@@ -79,15 +85,15 @@ export default function ChildrenPanel() {
       <div className={s.label}>{t.children.hint}</div>
       {children.map(k => (
         open === k.id
-          ? <ChildForm key={k.id} start={k} others={children.filter(x => x.id !== k.id).map(x => x.name)} onCancel={() => setOpen(null)}
+          ? <ChildForm key={k.id} child={k} start={k} others={children.filter(x => x.id !== k.id).map(x => x.name)} onCancel={() => setOpen(null)}
               onSave={async v => { await update(k.id, v); setOpen(null) }}
-              onRemove={children.length > 1 ? () => setAsk(k) : undefined} />
+              onRemove={children.length > 1 || k.shared ? () => setAsk(k) : undefined} />
           : <div key={k.id} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <button className={c.switch} style={{ flex: 1, padding: '6px 16px 6px 6px' }} onClick={() => setOpen(k.id)} aria-label={`✏️ ${k.name}`}>
                 <Image src={`/amici/${k.avatar}.png`} alt="" width={44} height={44} className={c.avatar} style={{ borderWidth: 2 }} />
-                <span style={{ flex: 1, textAlign: 'left' }}>{k.name || t.children.noName}</span><span>✏️</span>
+                <span style={{ flex: 1, textAlign: 'left' }}>{k.name || t.children.noName}{k.shared && <span style={{ display: 'block', fontSize: 12, fontWeight: 800, color: 'var(--text-soft)' }}>{t.children.sharedBadge}</span>}</span><span>✏️</span>
               </button>
-              {children.length > 1 && (
+              {(children.length > 1 || k.shared) && (
                 <button className={c.trash} onClick={() => setAsk(k)} aria-label={`${t.children.remove} ${k.name}`}>🗑️</button>
               )}
             </div>
@@ -97,19 +103,20 @@ export default function ChildrenPanel() {
         : <button className={s.chip} onClick={() => setOpen('new')}>{t.children.add}</button>}
       {msg && <div className={s.label} style={{ color: '#C92A2A' }}>{msg}</div>}
       {children.length === 1 && <div className={s.label} style={{ fontSize: 13 }}>{t.children.lastOne}</div>}
+      <JoinChild />
 
       {ask && (
         <div className={c.overlay} role="dialog" aria-modal="true" onClick={e => { if (e.target === e.currentTarget && !busy) setAsk(null) }}>
           <div className={c.dialog}>
             <Image src={`/amici/${ask.avatar}.png`} alt="" width={72} height={72} className={c.avatar} />
-            <div className={c.dialogTitle}>{t.children.removeAsk(ask.name || t.children.noName)}</div>
-            <div className={c.dialogText}>{t.children.removeDetail}</div>
+            <div className={c.dialogTitle}>{ask.shared ? t.children.leaveAsk(ask.name || t.children.noName) : t.children.removeAsk(ask.name || t.children.noName)}</div>
+            <div className={c.dialogText}>{ask.shared ? t.children.leaveDetail : t.children.removeDetail}</div>
             <div className={c.dialogBtns}>
               <button className={c.btnSoft} disabled={busy} onClick={() => setAsk(null)}>{t.common.cancel}</button>
               <button className={c.btnDanger} disabled={busy} onClick={async () => {
                 setBusy(true); const e = await remove(ask.id); setBusy(false)
                 setMsg(e ?? ''); setAsk(null); setOpen(null)
-              }}>{t.children.remove}</button>
+              }}>{ask.shared ? t.children.leave : t.children.remove}</button>
             </div>
           </div>
         </div>
