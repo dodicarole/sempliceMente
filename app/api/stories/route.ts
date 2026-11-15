@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { getFamilyId, getParentFamilyId, getChildId } from '@/lib/session'
 import type { StoryPage } from '@/types'
+import { signPhotos, signPhoto } from '@/lib/photos'
 
 export async function GET() {
   const familyId = await getFamilyId()
@@ -20,9 +21,10 @@ export async function GET() {
   if (storiesRes.error) return NextResponse.json({ error: storiesRes.error.message }, { status: 500 })
   if (pagesRes.error)   return NextResponse.json({ error: pagesRes.error.message },   { status: 500 })
 
-  const stories = storiesRes.data.map(story => ({
+  const pages = await signPhotos(pagesRes.data as StoryPage[])
+  const stories = (await signPhotos(storiesRes.data)).map(story => ({
     ...story,
-    pages: (pagesRes.data as StoryPage[]).filter(p => p.story_id === story.id),
+    pages: pages.filter(p => p.story_id === story.id),
   }))
 
   return NextResponse.json({ stories })
@@ -43,5 +45,5 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ story: data }, { status: 201 })
+  return NextResponse.json({ story: await signPhoto(data) }, { status: 201 })
 }
