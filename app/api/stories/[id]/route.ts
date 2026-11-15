@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { getParentFamilyId } from '@/lib/session'
+import { signPhotos, signPhoto } from '@/lib/photos'
 
 function storagePathFromUrl(photoUrl: string): string | null {
   const parts = photoUrl.split('/object/public/')
@@ -50,5 +51,5 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  return NextResponse.json(await signPhoto(data))
 }
