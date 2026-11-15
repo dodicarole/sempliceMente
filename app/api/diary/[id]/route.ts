@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { diaryAccess, forbidden } from '@/lib/diaryServer'
+import { signPhotos, signPhoto } from '@/lib/photos'
 
 /** Segnare un compito come fatto (tutti) o cambiare una voce (chi può compilare il diario) */
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -16,7 +17,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   } else if (Object.keys(body).some(k => k !== 'done')) return forbidden()
   const { data, error } = await getSupabase().from('school_diary').update(changes).eq('id', id).eq('family_id', a.familyId).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ item: data })
+  return NextResponse.json({ item: await signPhoto(data) })
 }
 
 /** Togliere una voce (e la sua foto) */
