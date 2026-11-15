@@ -189,9 +189,7 @@ export default function DiaryView({ onBack, parent = false, demo = false }: { on
             {canEdit && <button className={s.btn} onClick={() => { removeEntry(e); onClose() }}>{T.remove}</button>}
             {/* una foto anche dopo: per esempio se la prima volta non si era salvata */}
             {canEdit && !demo && !e.photo_url && (
-              <label className={s.btn}>{T.photoAdd}
-                <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; ev.target.value = ''; if (!f) return; const ph = await shrinkPhoto(f).catch(() => null); onClose(); if (ph) await uploadPhoto(e.id, ph); else flash(T.photoUnreadable) }} />
-              </label>
+              <PhotoPick onFile={async f => { const ph = await shrinkPhoto(f).catch(() => null); onClose(); if (ph) await uploadPhoto(e.id, ph); else flash(T.photoUnreadable) }} />
             )}
             <button className={s.btn} onClick={onClose}>{T.close}</button>
           </div>
@@ -330,9 +328,7 @@ function AddSheet({ day, onClose, tt, subjects, onSave }: { day: string; onClose
         <textarea className={s.text} value={note} placeholder={T.placeholders[type]} maxLength={300} onChange={ev => setNote(ev.target.value)} />
         <div className={s.row}>
           {SR && <button className={s.btn} onClick={dictate}>{listening ? T.listening : T.dictate}</button>}
-          <label className={s.btn}>{T.photo}
-            <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; ev.target.value = ''; if (!f) return; setPhotoErr(false); const ph = await shrinkPhoto(f).catch(() => null); setPhoto(ph); setPhotoErr(!ph) }} />
-          </label>
+          <PhotoPick onFile={async f => { setPhotoErr(false); const ph = await shrinkPhoto(f).catch(() => null); setPhoto(ph); setPhotoErr(!ph) }} />
         </div>
         {photo && <img className={s.photo} src={photo.url} alt="" />}
         {photo && <div className={s.sub} style={{ color: 'var(--done)' }}>✅ {T.photoReady}</div>}
@@ -343,6 +339,22 @@ function AddSheet({ day, onClose, tt, subjects, onSave }: { day: string; onClose
         </div>
       </div>
     </div>
+  )
+}
+
+/**
+ * Due modi per la foto: 📷 Scatta (apre direttamente la fotocamera) e 🖼️ Galleria (una foto già fatta).
+ * Su alcuni telefoni, senza "capture", si apre solo la galleria: per questo ci sono due bottoni.
+ */
+function PhotoPick({ onFile }: { onFile: (f: File) => void }) {
+  const { t } = useT()
+  const T = t.diary
+  const pick = (ev: React.ChangeEvent<HTMLInputElement>) => { const f = ev.target.files?.[0]; ev.target.value = ''; if (f) onFile(f) }
+  return (
+    <>
+      <label className={s.btn}>{T.takePhoto}<input type="file" accept="image/*" capture="environment" hidden onChange={pick} /></label>
+      <label className={s.btn}>{T.fromGallery}<input type="file" accept="image/*" hidden onChange={pick} /></label>
+    </>
   )
 }
 

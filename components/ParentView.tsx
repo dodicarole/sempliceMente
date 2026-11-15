@@ -28,6 +28,7 @@ import s from './ParentView.module.css'
 import { useT } from '@/lib/i18n'
 import LanguagePicker from './LanguagePicker'
 import { useChildren } from '@/lib/children'
+import { shrinkPhoto } from '@/lib/diary'
 
 type Section = 'figli' | 'piano' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'lettura'
 
@@ -140,14 +141,22 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
     onRefresh()
   }
 
-  const handleNewPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+    e.target.value = ''
     if (!file) return
+    // rimpicciolita come nel diario: le foto della fotocamera possono superare il limite di 4 MB
+    const ph = await shrinkPhoto(file).catch(() => null)
+    if (ph) {
+      const type = ph.blob.type || 'image/jpeg'
+      setNewPhotoFile(new File([ph.blob], `foto.${type.split('/')[1]?.replace('jpeg', 'jpg') || 'jpg'}`, { type }))
+      setNewPhoto(ph.url)
+      return
+    }
     setNewPhotoFile(file)
     const reader = new FileReader()
     reader.onload = ev => setNewPhoto(ev.target?.result as string)
     reader.readAsDataURL(file)
-    e.target.value = ''
   }
 
   const handleSaveZaino = async () => {
@@ -309,9 +318,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
                     ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} />
                     : newName.trim()
                       ? <><ZainoPicture name={newName} icon={pickZainoIcon(newName.trim())} size={30} /><span className={s.photoHint}>{t.common.proposed}</span></>
-                      : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
+                      : <>🖼️<span className={s.photoHint}>{t.common.gallery}</span></>}
                 </label>
                 <input id="new-photo-zaino" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                {!newPhoto && (
+                  <label className={s.photoLabel} title={t.common.takePhoto}>📸<span className={s.photoHint}>{t.common.takePhoto}</span>
+                    <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                  </label>
+                )}
                 <input className={s.nameInput} type="text" placeholder={t.parent.zainoPlaceholder} value={newName}
                   onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSaveZaino()} autoFocus />
               </div>
@@ -349,9 +363,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             <div className={s.addFormCard}>
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-routine">
-                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
+                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>🖼️<span className={s.photoHint}>{t.common.gallery}</span></>}
                 </label>
                 <input id="new-photo-routine" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                {!newPhoto && (
+                  <label className={s.photoLabel} title={t.common.takePhoto}>📸<span className={s.photoHint}>{t.common.takePhoto}</span>
+                    <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                  </label>
+                )}
                 <input className={s.nameInput} type="text" placeholder={t.parent.routinePlaceholder} value={newName}
                   onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSaveRoutine()} autoFocus />
               </div>
@@ -394,9 +413,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             <div className={s.addFormCard}>
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-agenda">
-                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
+                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>🖼️<span className={s.photoHint}>{t.common.gallery}</span></>}
                 </label>
                 <input id="new-photo-agenda" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                {!newPhoto && (
+                  <label className={s.photoLabel} title={t.common.takePhoto}>📸<span className={s.photoHint}>{t.common.takePhoto}</span>
+                    <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                  </label>
+                )}
                 <div className={s.agendaInputs}>
                   <input className={s.timeInput} type="time" value={newTime} onChange={e => setNewTime(e.target.value)} />
                   <input className={s.nameInput} type="text" placeholder={t.parent.agendaPlaceholder} value={newName}
@@ -614,9 +638,14 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
             <div className={s.addFormCard}>
               <div className={s.addFormRow}>
                 <label className={s.photoLabel} htmlFor="new-photo-story">
-                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>📷<span className={s.photoHint}>{t.common.photo}</span></>}
+                  {newPhoto ? <Image src={newPhoto} alt={t.common.preview} width={52} height={52} style={{ objectFit: 'cover' }} /> : <>🖼️<span className={s.photoHint}>{t.common.gallery}</span></>}
                 </label>
                 <input id="new-photo-story" ref={newPhotoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                {!newPhoto && (
+                  <label className={s.photoLabel} title={t.common.takePhoto}>📸<span className={s.photoHint}>{t.common.takePhoto}</span>
+                    <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleNewPhoto} />
+                  </label>
+                )}
                 <textarea className={s.textArea} placeholder={t.parent.pagePlaceholder} value={newName}
                   onChange={e => setNewName(e.target.value)} rows={3} autoFocus />
               </div>
