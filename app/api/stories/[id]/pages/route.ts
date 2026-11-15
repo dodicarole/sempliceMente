@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { getParentFamilyId } from '@/lib/session'
+import { signPhotos, signPhoto } from '@/lib/photos'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const familyId = await getParentFamilyId()
@@ -26,5 +27,5 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ item: data }, { status: 201 })
+  return NextResponse.json({ item: await signPhoto(data) }, { status: 201 })
 }
