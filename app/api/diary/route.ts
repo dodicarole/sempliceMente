@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { diaryAccess, DIARY_TYPES, forbidden } from '@/lib/diaryServer'
+import { signPhotos, signPhoto } from '@/lib/photos'
 
 /** Le voci del diario del figlio, da una data a un'altra (?from=2026-11-01&to=2026-11-30) */
 export async function GET(req: NextRequest) {
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
   if (to) q = q.lte('day', to)
   const { data, error } = await q.order('day').order('created_at')
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ items: data, canEdit: a.canEdit })
+  return NextResponse.json({ items: await signPhotos(data ?? []), canEdit: a.canEdit })
 }
 
 /** Una voce nuova */
@@ -28,5 +29,5 @@ export async function POST(req: NextRequest) {
     day, type, subject: String(subject ?? '').slice(0, 40), note: String(note ?? '').slice(0, 300),
   }).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ item: data }, { status: 201 })
+  return NextResponse.json({ item: await signPhoto(data) }, { status: 201 })
 }
