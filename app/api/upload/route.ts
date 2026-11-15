@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { getParentFamilyId } from '@/lib/session'
 import { diaryAccess } from '@/lib/diaryServer'
+import { signPhotos, signPhoto } from '@/lib/photos'
 
 // Tabelle che possono avere una foto, con la cartella in cui salvarla.
 // Qualsiasi altro valore di "table" viene rifiutato.
@@ -100,5 +101,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Salvataggio non riuscito' }, { status: 500 })
   }
 
-  return NextResponse.json({ photo_url: publicUrl })
+  // all'app si manda un link firmato: lo spazio delle foto è privato
+  return NextResponse.json({ photo_url: (await signPhoto({ photo_url: publicUrl })).photo_url })
 }
