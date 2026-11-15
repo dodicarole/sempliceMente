@@ -57,19 +57,30 @@ export const entriesOn = (entries: DiaryEntry[], ds: string) =>
   entries.filter(e => e.day === ds).sort((a, b) => (a.type === 'verifica' ? -1 : 0) - (b.type === 'verifica' ? -1 : 0))
 
 /** Le foto vengono rimpicciolite prima di salvarle, così il diario resta leggero */
-export function shrinkPhoto(file: File): Promise<{ blob: Blob; url: string }> {
-  return new Promise((res, rej) => {
-    const r = new FileReader()
-    r.onload = () => {
-      const im = new Image()
-      im.onload = () => {
-        const k = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement('canvas')
-        c.width = im.width * k; c.height = im.height * k; c.getContext('2d')!.drawImage(im, 0, 0, c.width, c.height)
-        const url = c.toDataURL('image/jpeg', 0.75)
-        c.toBlob(b => (b ? res({ blob: b, url }) : rej(new Error('foto'))), 'image/jpeg', 0.75)
-      }
-      im.onerror = rej; im.src = String(r.result)
-    }
-    r.onerror = rej; r.readAsDataURL(file)
+export async function shrinkPhoto(file: File): Promise<{ blob: Blob; url: string }> {
+  const MAX = 1024
+  const toJpeg = (src: CanvasImageSource, w: number, h: number) => new Promise<{ blob: Blob; url: string }>((res, rej) => {
+    const k = Math.min(1, MAX / Math.max(w, h)), c = document.createElement('canvas')
+    c.width = Math.round(w * k); c.height = Math.round(h * k)
+    const ctx = c.getContext('2d'); if (!ctx) { rej(new Error('canvas')); return }
+    ctx.drawImage(src, 0, 0, c.width, c.height)
+    c.toBlob(b => (b ? res({ blob: b, url: URL.createObjectURL(b) }) : rej(new Error('foto'))), 'image/jpeg', 0.75)
   })
+  const withTimeout = <T,>(p: Promise<T>) => Promise.race([p, new Promise<T>((_, rej) => setTimeout(() => rej(new Error('tempo')), 15000))])
+  try {
+    // il modo più leggero (e che rispetta la rotazione della foto), dove il telefono lo permette
+    if (typeof createImageBitmap === 'function') {
+      const bmp = await withTimeout(createImageBitmap(file, { imageOrientation: 'from-image' } as ImageBitmapOptions))
+      try { return await toJpeg(bmp, bmp.width, bmp.height) } finally { bmp.close?.() }
+    }
+    const url = URL.createObjectURL(file)
+    try {
+      const im = await withTimeout(new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url }))
+      return await toJpeg(im, im.naturalWidth, im.naturalHeight)
+    } finally { URL.revokeObjectURL(url) }
+  } catch (_) {
+    // se il telefono non riesce a rimpicciolirla, si manda la foto così com'è (se non è troppo grande)
+    if (/^image\/(jpeg|png|webp|heic|heif)$/.test(file.type) && file.size <= 4.4 * 1024 * 1024) return { blob: file, url: URL.createObjectURL(file) }
+    throw new Error('foto')
+  }
 }
