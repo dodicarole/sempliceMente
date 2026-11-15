@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { getFamilyId, getParentFamilyId, getChildId } from '@/lib/session'
+import { signPhotos, signPhoto } from '@/lib/photos'
 
 export async function GET() {
   const familyId = await getFamilyId()
@@ -17,7 +18,7 @@ export async function GET() {
     .order('sort_order')
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ items: data })
+  return NextResponse.json({ items: await signPhotos(data ?? []) })
 }
 
 export async function POST(req: NextRequest) {
@@ -36,5 +37,5 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ item: data }, { status: 201 })
+  return NextResponse.json({ item: await signPhoto(data) }, { status: 201 })
 }
