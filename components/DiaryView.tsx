@@ -70,7 +70,8 @@ export default function DiaryView({ onBack, parent = false, demo = false }: { on
   }
   /** carica la foto di una voce; se non riesce lo dice, con il motivo */
   async function uploadPhoto(id: string, photo: { blob: Blob; url: string }, afterSave = false): Promise<boolean> {
-    const f = new FormData(); f.append('file', new File([photo.blob], 'foto.jpg', { type: 'image/jpeg' })); f.append('itemId', id); f.append('table', 'school_diary')
+    const type = photo.blob.type || 'image/jpeg', ext = type.split('/')[1]?.replace('jpeg', 'jpg') || 'jpg'
+    const f = new FormData(); f.append('file', new File([photo.blob], `foto.${ext}`, { type })); f.append('itemId', id); f.append('table', 'school_diary')
     const up = await fetch('/api/upload', { method: 'POST', body: f }).catch(() => null)
     if (!up || !up.ok) { const err = up ? (await up.json().catch(() => ({}))).error : ''; flash(`${afterSave ? T.photoFailed : T.photoFailedOnly}${err ? ` (${err})` : ''}`); reload(); return false }
     if (!afterSave) { flash(T.saved); reload() }
@@ -189,7 +190,7 @@ export default function DiaryView({ onBack, parent = false, demo = false }: { on
             {/* una foto anche dopo: per esempio se la prima volta non si era salvata */}
             {canEdit && !demo && !e.photo_url && (
               <label className={s.btn}>{T.photoAdd}
-                <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; if (!f) return; const ph = await shrinkPhoto(f).catch(() => null); if (ph) { onClose(); await uploadPhoto(e.id, ph) } }} />
+                <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; ev.target.value = ''; if (!f) return; const ph = await shrinkPhoto(f).catch(() => null); onClose(); if (ph) await uploadPhoto(e.id, ph); else flash(T.photoUnreadable) }} />
               </label>
             )}
             <button className={s.btn} onClick={onClose}>{T.close}</button>
@@ -299,6 +300,7 @@ function AddSheet({ day, onClose, tt, subjects, onSave }: { day: string; onClose
   const [sj, setSj] = useState('')
   const [note, setNote] = useState('')
   const [photo, setPhoto] = useState<{ blob: Blob; url: string } | null>(null)
+  const [photoErr, setPhotoErr] = useState(false)
   const [listening, setListening] = useState(false)
   const needSubject = type === 'compiti' || type === 'verifica'
   const todays = [...new Set(tt[d.getDay()] ?? [])], rest = subjects.map(x => x.key).filter(k => !todays.includes(k))
@@ -329,10 +331,12 @@ function AddSheet({ day, onClose, tt, subjects, onSave }: { day: string; onClose
         <div className={s.row}>
           {SR && <button className={s.btn} onClick={dictate}>{listening ? T.listening : T.dictate}</button>}
           <label className={s.btn}>{T.photo}
-            <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; if (f) setPhoto(await shrinkPhoto(f).catch(() => null)) }} />
+            <input type="file" accept="image/*" hidden onChange={async ev => { const f = ev.target.files?.[0]; ev.target.value = ''; if (!f) return; setPhotoErr(false); const ph = await shrinkPhoto(f).catch(() => null); setPhoto(ph); setPhotoErr(!ph) }} />
           </label>
         </div>
         {photo && <img className={s.photo} src={photo.url} alt="" />}
+        {photo && <div className={s.sub} style={{ color: 'var(--done)' }}>✅ {T.photoReady}</div>}
+        {photoErr && <div className={s.sub} style={{ color: '#C92A2A' }}>{T.photoUnreadable}</div>}
         <div className={s.row}>
           <button className={`${s.btn} ${s.main}`} disabled={needSubject && !sj} onClick={() => { onSave({ day, type, subject: type === 'gita' || type === 'vacanza' ? '' : sj, note: note.trim() }, photo); onClose() }}>{T.save}</button>
           <button className={s.btn} onClick={onClose}>{t.common.cancel}</button>
