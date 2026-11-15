@@ -11,6 +11,7 @@ import type { Gag } from '@/lib/fun'
 import s from './EnglishView.module.css'
 import Buddy from './Buddy'
 import EnglishCan from './EnglishCan'
+import EnglishWeather from './EnglishWeather'
 
 interface Props {
   onBack: () => void
@@ -18,7 +19,7 @@ interface Props {
   allowSettings?: boolean
 }
 
-type Tab = 'learn' | 'find' | 'phrase' | 'can'
+type Tab = 'learn' | 'find' | 'phrase' | 'can' | 'weather'
 const ROUNDS = 8
 const wait = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
 function shuffle<T>(arr: T[]): T[] {
@@ -245,7 +246,7 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
       <Buddy spot="english" />
       {allowSettings && showPanel && <EnglishSettingsPanel onChange={next => { setSettings(next); restart() }} />}
 
-      {tab !== 'phrase' && tab !== 'can' && (
+      {tab !== 'phrase' && tab !== 'can' && tab !== 'weather' && (
         <nav className={s.topics}>
           {TOPICS.map(tp => (
             <button key={tp.id} className={s.pill} aria-current={tp.id === topic} onClick={() => { setTopic(tp.id); restart() }}>
@@ -255,14 +256,14 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
         </nav>
       )}
       <nav className={s.tabs}>
-        {(['learn', 'find', 'phrase', 'can'] as Tab[]).map(k => (
+        {(['learn', 'find', 'phrase', 'can', 'weather'] as Tab[]).map(k => (
           <button key={k} className={s.tab} aria-current={tab === k} onClick={() => { setTab(k); restart() }}>
-            {k === 'learn' ? t.english.tabLearn : k === 'find' ? t.english.tabFind : k === 'phrase' ? t.english.tabPhrase : '🇬🇧 Can / can’t'}
+            {k === 'learn' ? t.english.tabLearn : k === 'find' ? t.english.tabFind : k === 'phrase' ? t.english.tabPhrase : k === 'can' ? '🇬🇧 Can / can’t' : '🌦️ Weather'}
           </button>
         ))}
       </nav>
 
-      {tab === 'can' && ready ? <EnglishCan settings={settings} /> : (
+      {tab === 'weather' && ready ? <EnglishWeather settings={settings} /> : tab === 'can' && ready ? <EnglishCan settings={settings} /> : (
       <section className={s.card} aria-live="polite">
         {!ready ? null : celeb ? (
           <>

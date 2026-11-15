@@ -6,8 +6,11 @@
 .topics { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .pill { flex: none; min-height: 46px; padding: 0 14px; border-radius: 999px; border: 2px solid #D6DBF2; background: var(--card); color: var(--text); font-size: 15px; font-weight: 800; white-space: nowrap; font-family: inherit; cursor: pointer; }
 .pill[aria-current="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
-.tabs { display: flex; gap: 8px; }
-.tab { flex: 1; min-height: 54px; border-radius: var(--radius-sm); border: 2px solid #D6DBF2; background: var(--card); color: var(--text); font-size: 15px; font-weight: 800; padding: 0 6px; font-family: inherit; cursor: pointer; }
+/* cinque schede: tre sopra e due sotto, così i nomi restano leggibili */
+.tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.tabs > .tab { grid-column: span 2; }
+.tabs > .tab:nth-child(n+4) { grid-column: span 3; }
+.tab { flex: 1; min-height: 54px; line-height: 1.2; border-radius: var(--radius-sm); border: 2px solid #D6DBF2; background: var(--card); color: var(--text); font-size: 15px; font-weight: 800; padding: 0 6px; font-family: inherit; cursor: pointer; }
 .tab[aria-current="true"] { background: #1C3F94; border-color: #1C3F94; color: #fff; }
 
 .card { --eng: #C92A2A; background: var(--card); border-radius: var(--radius); padding: 18px 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
