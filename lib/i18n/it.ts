@@ -427,7 +427,7 @@ export const it = {
     placeholders: { compiti: 'Per esempio: pagina 24', verifica: 'Per esempio: gli Egizi', portare: 'Per esempio: il flauto', gita: 'Per esempio: gita al museo', vacanza: 'Per esempio: ponte' } as Record<string, string>,
     dictate: '🎤 Detta', listening: '🎤 Ti ascolto…', photo: '📷 Foto', save: 'Salva', saved: 'Segnato!',
     photoFailed: 'Segnato, ma la foto non è stata salvata: tocca la voce e poi “📷 Aggiungi la foto”.',
-    photoFailedOnly: 'La foto non è stata salvata.', photoAdd: '📷 Aggiungi la foto', photoChange: '📷 Cambia la foto',
+    photoFailedOnly: 'La foto non è stata salvata.', photoReady: 'Foto pronta: verrà salvata con “Salva”.', photoUnreadable: 'Non riesco a leggere questa foto: provane un’altra, o scattane una nuova.', photoAdd: '📷 Aggiungi la foto', photoChange: '📷 Cambia la foto',
     doneBtn: '✅ Fatto!', undone: '↩️ Non ancora fatto', remove: '🗑️ Togli', close: 'Chiudi', bravo: 'Bravo! Compiti fatti.',
     myTimetable: 'Il mio orario', edit: '✏️ Modifica', editDone: '✓ Fatto',
     ttHintEdit: 'Tocca ＋ per aggiungere una materia; ↑ ↓ per cambiare l’ordine, ✕ per toglierla.', ttHint: 'Tocca un giorno per sentire le materie.',

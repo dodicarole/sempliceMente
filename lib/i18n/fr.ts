@@ -429,7 +429,7 @@ export const fr: Dict = {
     placeholders: { compiti: 'Par exemple : page 24', verifica: 'Par exemple : les Égyptiens', portare: 'Par exemple : la flûte', gita: 'Par exemple : sortie au musée', vacanza: 'Par exemple : pont' },
     dictate: '🎤 Dicte', listening: '🎤 Je t’écoute…', photo: '📷 Photo', save: 'Enregistrer', saved: `C’est noté${nb}!`,
     photoFailed: 'C’est noté, mais la photo n’a pas été enregistrée : touchez la ligne puis « 📷 Ajouter la photo ».',
-    photoFailedOnly: 'La photo n’a pas été enregistrée.', photoAdd: '📷 Ajouter la photo', photoChange: '📷 Changer la photo',
+    photoFailedOnly: 'La photo n’a pas été enregistrée.', photoReady: 'Photo prête : elle sera enregistrée avec « Enregistrer ».', photoUnreadable: 'Je n’arrive pas à lire cette photo : essayez-en une autre, ou prenez-en une nouvelle.', photoAdd: '📷 Ajouter la photo', photoChange: '📷 Changer la photo',
     doneBtn: `✅ Fait${nb}!`, undone: '↩️ Pas encore fait', remove: '🗑️ Enlever', close: 'Fermer', bravo: `Bravo${nb}! Devoirs faits.`,
     myTimetable: 'Mon emploi du temps', edit: '✏️ Modifier', editDone: '✓ Terminé',
     ttHintEdit: 'Touche ＋ pour ajouter une matière ; ↑ ↓ pour changer l’ordre, ✕ pour l’enlever.', ttHint: 'Touche un jour pour entendre les matières.',
