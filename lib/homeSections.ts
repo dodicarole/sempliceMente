@@ -7,7 +7,7 @@ import type { ChildGender } from '@/lib/praise'
 
 export const SECTION_IDS = [
   'zaino', 'routine', 'agenda', 'diario', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
-  'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'sillabe', 'doppie', 'nomi', 'english', 'giochi', 'poesia',
+  'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'sillabe', 'doppie', 'hoha', 'nomi', 'english', 'giochi', 'poesia',
 ] as const
 export type SectionId = typeof SECTION_IDS[number]
 
@@ -39,6 +39,7 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
       { id: 'capisco', e: '🔎', c: '#0B7285', title: t.readUnd.title, sub: t.readUnd.homeSub },
       { id: 'sillabe', e: '🔤', c: '#E03131', title: 'Le sillabe', sub: 'Unisci le sillabe per leggere', it: true },
       { id: 'doppie', e: '✏️', c: '#F08C00', title: 'Le doppie', sub: 'Una lettera o due?', it: true },
+      { id: 'hoha', e: '✊', c: '#E8590C', title: 'Ho o o? Ha o a?', sub: 'La H che non si sente', it: true },
       { id: 'nomi', e: '📝', c: '#7048E8', title: 'Classifica i nomi', sub: 'Persona, animale o cosa?', it: true },
       { id: 'giochi', e: '🎲', c: '#E8590C', title: t.games.title, sub: t.games.homeSub, it: true },
       { id: 'poesia', e: '🎭', c: '#C2255C', title: 'Imparo la poesia', sub: 'Un verso alla volta, finché la sai a memoria', it: true },
