@@ -442,6 +442,7 @@ export const fr: Dict = {
     parentHint: 'Ici, vous préparez l’emploi du temps et le cahier de l’enfant choisi en haut.',
   },
 
+  serve: { title: 'À quoi ça sert ?', homeSub: 'Les objets et leur usage' },
   games: { title: 'Jeux', homeSub: 'Des petits jeux pour entraîner sa tête', parentHint: 'Les réglages des jeux de cet enfant.' },
 
   readUnd: {
@@ -452,6 +453,7 @@ export const fr: Dict = {
     listen: '🔊 Écouter', next: 'Suivant →', right: `Bravo${nb}!`,
     qt: { chi: `Qui${nb}?`, cosa: `Quoi${nb}?`, quanti: `Combien${nb}?`, dove: `Où${nb}?`, quando: `Quand${nb}?`, perche: `Pourquoi${nb}?` },
     hintText: `🔎 La réponse est écrite dans le texte${nb}: relis la partie jaune${nb}!`, hintWhy: '💭 Réfléchissons ensemble : relis la phrase jaune et demande-toi pourquoi.',
+    findAll: n => `Il y a ${n} bonnes réponses : trouve-les toutes${nb}!`, foundOne: (a, b) => `Bravo${nb}! Tu en as trouvé ${a} sur ${b}. ${b - a > 1 ? `Cherche les autres${nb}!` : `Cherche l’autre${nb}!`}`,
     hintTextV: 'La réponse est dans le texte : relis la partie jaune.', hintWhyV: 'Réfléchissons ensemble : relis cette phrase.',
     orderTitle: `Qu’est-ce qui s’est passé d’abord${nb}?`, orderSub: 'Touche les images dans le bon ordre : 1, 2, 3, 4.', orderDone: `Bravo${nb}! Racontons-la →`,
     retellTitle: `Maintenant, raconte-la${nb}!`, retellSub: 'Regarde les images et raconte l’histoire avec les mots guides. Touche 🔊 pour l’entendre.',
@@ -466,7 +468,9 @@ export const fr: Dict = {
       textLab: 'Le texte', textPh: 'Collez ou écrivez ici le texte. Chaque paragraphe devient un ou plusieurs morceaux.', split: '✂️ Découper en morceaux',
       partsLab: 'Les morceaux', partN: n => `Morceau ${n}`, partPh: 'Le texte de ce morceau',
       addQ: '＋ Ajouter une question', removeQ: 'Enlever la question', qTypeLab: `Quel type de question${nb}?`, qText: 'La question', qTextPh: 'Par exemple : Qui trouve le hérisson ?',
-      right: '✅ La bonne réponse', wrong: '❌ Une mauvaise réponse', wrong2: '❌ Une autre mauvaise réponse (facultative)',
+      right: '✅ La bonne réponse', rightMore: '✅ Une autre bonne réponse', addRight: '＋ Une autre bonne réponse',
+      answersLab: 'Les réponses (touchez ✅ / ❌ pour dire si elle est juste ou fausse)', answerPh: 'Écrivez une réponse', isRight: '✅ Juste', isWrong: '❌ Fausse', addAnswer: '＋ Ajouter une réponse',
+      answersHint: 'Vous pouvez écrire autant de réponses que vous voulez (jusqu’à 10) : il en faut au moins une juste et une fausse. L’enfant les verra toutes.', wrong: '❌ Une mauvaise réponse', wrong2: '❌ Une autre mauvaise réponse (facultative)',
       ansLab: 'Touchez la phrase où se trouve la réponse : après une erreur, elle s’allume.',
       wordsLab: 'Mots nouveaux (facultatifs)', wordPh: 'Mot', defPh: 'Explication simple', addWord: '＋ Mot',
       seqLab: 'Les moments de l’histoire, dans l’ordre (facultatifs : pour remettre en ordre et raconter)', seqPh: n => `Moment ${n}`,
@@ -651,6 +655,7 @@ export const fr: Dict = {
     poesia: `Un vers à la fois, et petit à petit la poésie entre dans la tête${nb}!`,
     hoha: `Le H ne s’entend pas${nb}! Mais il y a une astuce.`,
     femminile: `Regarde la fin du mot${nb}!`,
+    serve: `Chaque objet a son travail${nb}: découvrons à quoi il sert${nb}!`,
     capisco: `On lit un petit morceau à la fois. Si tu ne connais pas une réponse, on la cherche ensemble dans le texte${nb}!`,
     precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },

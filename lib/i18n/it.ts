@@ -440,6 +440,7 @@ export const it = {
     parentHint: 'Qui prepari l’orario e il diario del figlio scelto in alto.',
   },
 
+  serve: { title: 'A cosa serve?', homeSub: 'Gli oggetti e il loro uso' },
   games: { title: 'Giochi', homeSub: 'Piccoli giochi per allenare la testa', parentHint: 'Le impostazioni dei giochi di questo figlio.' },
 
   readUnd: {
@@ -450,6 +451,7 @@ export const it = {
     listen: '🔊 Ascolta', next: 'Avanti →', right: 'Giusto!',
     qt: { chi: 'Chi?', cosa: 'Cosa?', quanti: 'Quanti?', dove: 'Dove?', quando: 'Quando?', perche: 'Perché?' } as Record<string, string>,
     hintText: '🔎 La risposta è scritta nel testo: rileggi la parte gialla!', hintWhy: '💭 Pensiamo insieme: rileggi la frase gialla e chiediti perché.',
+    findAll: (n: number): string => `Ci sono ${n} risposte giuste: trovale tutte!`, foundOne: (a: number, b: number): string => `Giusto! Ne hai ${a === 1 ? 'trovata una' : `trovate ${a}`} su ${b}. ${b - a > 1 ? 'Cerca le altre!' : 'Cerca l’altra!'}`,
     hintTextV: 'La risposta è nel testo: rileggi la parte gialla.', hintWhyV: 'Pensiamo insieme: rileggi questa frase.',
     orderTitle: 'Cosa è successo prima?', orderSub: 'Tocca le immagini nell’ordine giusto: 1, 2, 3, 4.', orderDone: 'Bravo! Raccontiamola →',
     retellTitle: 'Ora raccontala tu!', retellSub: 'Guarda le immagini e racconta la storia con le parole guida. Tocca 🔊 per sentirla.',
@@ -464,7 +466,9 @@ export const it = {
       textLab: 'Il testo', textPh: 'Incolla o scrivi qui il testo. Ogni capoverso diventa uno o più pezzetti.', split: '✂️ Dividi in pezzetti',
       partsLab: 'I pezzetti', partN: (n: number): string => `Pezzetto ${n}`, partPh: 'Il testo di questo pezzetto',
       addQ: '＋ Aggiungi una domanda', removeQ: 'Togli la domanda', qTypeLab: 'Che tipo di domanda?', qText: 'La domanda', qTextPh: 'Per esempio: Chi trova il riccio?',
-      right: '✅ La risposta giusta', wrong: '❌ Una risposta sbagliata', wrong2: '❌ Un’altra risposta sbagliata (facoltativa)',
+      right: '✅ La risposta giusta', rightMore: '✅ Un’altra risposta giusta', addRight: '＋ Un’altra risposta giusta',
+      answersLab: 'Le risposte (tocca ✅ / ❌ per dire se è giusta o sbagliata)', answerPh: 'Scrivi una risposta', isRight: '✅ Giusta', isWrong: '❌ Sbagliata', addAnswer: '＋ Aggiungi una risposta',
+      answersHint: 'Puoi scrivere quante risposte vuoi (fino a 10): ne serve almeno una giusta e una sbagliata. Il bambino le vedrà tutte.', wrong: '❌ Una risposta sbagliata', wrong2: '❌ Un’altra risposta sbagliata (facoltativa)',
       ansLab: 'Tocca la frase dove c’è la risposta: dopo un errore si illumina.',
       wordsLab: 'Parole nuove (facoltative)', wordPh: 'Parola', defPh: 'Spiegazione semplice', addWord: '＋ Parola',
       seqLab: 'I momenti della storia, in ordine (facoltativi: servono per riordinare e raccontare)', seqPh: (n: number): string => `Momento ${n}`,
@@ -648,6 +652,7 @@ export const it = {
     poesia: 'Un verso alla volta, e piano piano la poesia entra nella testa!',
     hoha: 'La H non si sente! Ma c’è un trucco: prova a cambiare la parola.',
     femminile: 'Guarda la fine della parola: ti dice come diventa al femminile!',
+    serve: 'Ogni oggetto ha il suo lavoro: scopriamo a cosa serve!',
     capisco: 'Leggiamo un pezzetto alla volta. Se una risposta non la sai, la cerchiamo insieme nel testo!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },
