@@ -8,7 +8,7 @@ import SectionTitle from './SectionTitle'
 
 /** Le impostazioni dei giochi, per figlio (vedi lib/childStore.ts) */
 export const GAMES_KEY = 'giochi_impostazioni'
-export const GAMES_DEFAULTS = { pads: 6, written: true, faces: 3, eat: 'frutta', speed: 'lento' }
+export const GAMES_DEFAULTS = { pads: 6, written: true, faces: 3, eat: 'frutta', speed: 'lento', pace: 'lento', jumps: 2, objs: 3, dots: 5, diffs: 3 }
 export function loadGamesSettings(): typeof GAMES_DEFAULTS {
   try { const r = localStorage.getItem(GAMES_KEY); if (r) return { ...GAMES_DEFAULTS, ...JSON.parse(r) } } catch (_) {}
   return GAMES_DEFAULTS
