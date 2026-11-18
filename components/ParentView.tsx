@@ -13,6 +13,7 @@ import { GamesSettingsPanel } from './GamesView'
 import { PoemEditorPanel } from './PoemView'
 import PlanEditor from './PlanEditor'
 import { HohaSettingsPanel } from './HohaView'
+import { FemSettingsPanel } from './FemView'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
@@ -31,7 +32,7 @@ import LanguagePicker from './LanguagePicker'
 import { useChildren } from '@/lib/children'
 import { shrinkPhoto } from '@/lib/diary'
 
-type Section = 'figli' | 'piano' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'lettura'
+type Section = 'figli' | 'piano' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'femminile' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -269,13 +270,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       <HelpSuggestions key={kidsInParent.active?.id ?? 'nessuno'} onChange={() => setHelpVersion(v => v + 1)} />
 
       <div className={s.sectionToggle}>
-        {(['figli', 'piano', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'capisco', 'nomi', 'doppie', 'hoha', 'english', 'giochi', 'poesia', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie' && sec !== 'hoha' && sec !== 'giochi' && sec !== 'poesia') || lang === 'it').map(sec => (
+        {(['figli', 'piano', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'capisco', 'nomi', 'doppie', 'hoha', 'femminile', 'english', 'giochi', 'poesia', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie' && sec !== 'hoha' && sec !== 'femminile' && sec !== 'giochi' && sec !== 'poesia') || lang === 'it').map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'capisco' ? '🔎' : sec === 'giochi' ? '🎲' : sec === 'piano' ? '📋' : sec === 'poesia' ? '🎭' : sec === 'hoha' ? '✊' : sec === 'figli' ? '👨‍👧' : '🔤'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'capisco' ? '🔎' : sec === 'giochi' ? '🎲' : sec === 'piano' ? '📋' : sec === 'poesia' ? '🎭' : sec === 'hoha' ? '✊' : sec === 'femminile' ? '👩‍⚕️' : sec === 'figli' ? '👨‍👧' : '🔤'}
           </button>
         ))}
       </div>
@@ -543,6 +544,9 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
           <PrevNextSettingsPanel />
         </>
       )}
+
+      {/* ── IL FEMMINILE: impostazioni e parole della scuola ── */}
+      {section === 'femminile' && <FemSettingsPanel />}
 
       {/* ── HO O O? HA O A? impostazioni e frasi della scuola ── */}
       {section === 'hoha' && <HohaSettingsPanel />}
