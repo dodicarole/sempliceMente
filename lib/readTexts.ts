@@ -4,7 +4,8 @@
  */
 import type { RStory, QType } from './readStories'
 
-export interface ReadQuestion { t: QType; text: string; right: string; wrong: string[]; ans: number }
+/** right: la risposta giusta; more: le altre risposte giuste (facoltative, fino a 2); wrong: le sbagliate */
+export interface ReadQuestion { t: QType; text: string; right: string; more?: string[]; wrong: string[]; ans: number; order?: string[] }
 export interface ReadContent { words: [string, string][]; parts: { text: string[]; q: ReadQuestion | null }[]; seq: string[] }
 export interface ReadTextRow { id: string; title: string; cover: string; content: ReadContent; child_id: string | null }
 export const COVERS = ['📖', '📚', '🐶', '🐱', '🌳', '🚀', '🏰', '🐟', '🌍', '🍎', '⭐', '🦁']
@@ -32,8 +33,10 @@ export function cleanReadContent(raw: unknown): ReadContent {
     const text = (Array.isArray(p?.text) ? p.text : []).map(x => str(x, 400)).filter(Boolean).slice(0, 8)
     const q = p?.q && str(p.q.text, 200) && str(p.q.right, 120) ? {
       t: (QTYPES.includes(p.q.t) ? p.q.t : 'cosa') as QType, text: str(p.q.text, 200), right: str(p.q.right, 120),
-      wrong: (Array.isArray(p.q.wrong) ? p.q.wrong : []).map(x => str(x, 120)).filter(Boolean).slice(0, 2),
+      more: (Array.isArray(p.q.more) ? p.q.more : []).map(x => str(x, 120)).filter(Boolean).slice(0, 9),
+      wrong: (Array.isArray(p.q.wrong) ? p.q.wrong : []).map(x => str(x, 120)).filter(Boolean).slice(0, 9),
       ans: Math.max(0, Math.min(text.length - 1, Number(p.q.ans) || 0)),
+      order: (Array.isArray(p.q.order) ? p.q.order : []).map(x => str(x, 120)).filter(Boolean).slice(0, 20),
     } : null
     return { text, q: q && q.wrong.length ? q : null }
   }).filter(p => p.text.length)
@@ -46,11 +49,11 @@ export function cleanReadContent(raw: unknown): ReadContent {
 export function toStory(r: ReadTextRow): RStory {
   const c = cleanReadContent(r.content)
   return {
-    id: r.id, cover: r.cover || '📖', title: r.title, guess: '',
+    id: r.id, cover: r.cover || '📖', title: r.title, guess: '', school: true,
     words: c.words.map(([w, d]) => ['📌', w, d]),
     parts: c.parts.map(p => ({
       scene: '', text: p.text,
-      q: p.q ? { t: p.q.t, text: p.q.text, ans: p.q.ans, opts: [{ e: '', text: p.q.right, ok: true }, ...p.q.wrong.map(w => ({ e: '', text: w }))] } : null,
+      q: p.q ? { t: p.q.t, text: p.q.text, ans: p.q.ans, opts: [{ e: '', text: p.q.right, ok: true }, ...(p.q.more ?? []).map(w => ({ e: '', text: w, ok: true })), ...p.q.wrong.map(w => ({ e: '', text: w }))] } : null,
     })),
     seq: c.seq.length >= 2 ? c.seq.map((s, i) => [String(i + 1), s] as [string, string]) : [],
   }
