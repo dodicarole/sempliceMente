@@ -9,10 +9,12 @@
 export interface GamesOptions { settings?: Record<string, unknown>; allowSettings?: boolean; onWin?: () => void; onSettings?: (s: Record<string, unknown>) => void }
 export const GAMES_CSS = ".smg{--ground:#EDF0FB;--card:#FFFFFF;--text:#1F2147;--soft:#6870A0;--line:#D6DBF2;--done:#48B97A;--done-bg:#E6F6EE;--blue:#6B7FE3;--radius:22px;--pond:#BFE3F5;--pad:#5CC27A;--pad-d:#3E9C5B;\n  box-sizing:border-box}\n\n.smg *{box-sizing:border-box}\n.smg{margin:0;background:var(--ground);color:var(--text);font-family:ui-rounded,\"SF Pro Rounded\",system-ui,-apple-system,\"Segoe UI\",sans-serif;-webkit-tap-highlight-color:transparent}\n.smg button{font-family:inherit;color:inherit;cursor:pointer;touch-action:manipulation}\n.smg button:focus-visible{outline:4px solid #FFC93C;outline-offset:3px}\n.smg [hidden]{display:none!important}\n.smg .app{max-width:540px;margin:0 auto;padding:14px 16px 40px;display:flex;flex-direction:column;gap:14px}\n.smg .title{background:var(--card);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}\n.smg .title .l{display:flex;align-items:center;gap:12px}\n.smg .title .em{font-size:36px}\n.smg .title h1{margin:0;font-size:22px;font-weight:900}\n.smg .title p{margin:2px 0 0;font-size:14px;font-weight:700;color:var(--soft)}\n.smg .gear{flex:none;width:48px;height:48px;border-radius:14px;border:2px solid var(--line);background:var(--ground);font-size:21px}\n.smg .back{background:none;border:none;font-size:15px;font-weight:800;color:var(--soft);padding:4px 0;align-self:flex-start}\n.smg .game{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:var(--radius);padding:16px;border:none;text-align:left;width:100%;border-left:8px solid var(--c)}\n.smg .game .e{font-size:40px;flex:none}\n.smg .game b{display:block;font-size:19px;font-weight:900}\n.smg .game span{font-size:14px;font-weight:700;color:var(--soft);line-height:1.4}\n.smg .card{background:var(--card);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}\n.smg .ask{margin:0;font-size:21px;font-weight:900;line-height:1.3}\n.smg .sub{margin:0;font-size:15px;font-weight:700;color:var(--soft);line-height:1.45}\n.smg .btn{min-height:54px;padding:0 18px;border-radius:16px;border:2px solid var(--line);background:var(--card);font-size:17px;font-weight:800}\n.smg .btn.main{background:var(--done);border-color:var(--done);color:#fff}\n.smg .btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}\n.smg .dots{display:flex;gap:6px}\n.smg .dots span{width:9px;height:9px;border-radius:50%;background:var(--line)}\n.smg .dots .on{background:var(--blue);width:20px;border-radius:5px}\n.smg .dots .ok{background:var(--done)}\n.smg .level{font-size:14px;font-weight:900;color:var(--soft);background:var(--ground);border-radius:999px;padding:4px 12px}\n.smg .wrong{animation:wiggle .4s}\n.smg .star{font-size:64px;animation:pop .5s ease-out}\n.smg /* 🐸 lo stagno */\n.pond{position:relative;width:100%;max-width:360px;aspect-ratio:1;border-radius:30px;background:var(--pond);display:grid;gap:8px;padding:14px}\n.smg .pad{border:none;border-radius:50%;background:radial-gradient(circle at 40% 35%,#7BD592,var(--pad) 60%,var(--pad-d));position:relative;transition:transform .15s,box-shadow .15s}\n.smg .pad::after{content:'';position:absolute;right:14%;top:42%;width:22%;height:12%;background:var(--pond);transform:rotate(-30deg);border-radius:4px}\n.smg .pad.lit{box-shadow:0 0 0 6px #FFC93C;transform:scale(1.06)}\n.smg .pad.ok{box-shadow:0 0 0 6px var(--done)}\n.smg .pad.no{box-shadow:0 0 0 6px #E03131}\n.smg .frog{position:absolute;width:70px;height:70px;left:0;top:0;transition:transform .32s cubic-bezier(.3,1.4,.5,1);pointer-events:none;z-index:2}\n.smg .say{font-size:18px;font-weight:900;min-height:26px}\n.smg /* 🧩 la parola spezzata */\n.syls{display:flex;gap:10px;justify-content:center;min-height:62px;flex-wrap:wrap}\n.smg .syl{min-width:64px;padding:8px 14px;border-radius:16px;background:var(--blue);color:#fff;font-size:30px;font-weight:900;animation:pop .35s ease-out}\n.smg .pics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}\n.smg .pic{aspect-ratio:1;border-radius:20px;border:3px solid var(--line);background:var(--ground);font-size:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 5px 0 var(--line)}\n.smg .pic small{font-size:15px;font-weight:900;margin-top:4px}\n.smg .pic.right{border-color:var(--done);background:var(--done-bg);box-shadow:0 5px 0 var(--done)}\n.smg /* 😊 come si sente */\n.scene{width:100%;border-radius:20px;background:linear-gradient(180deg,#E3F0FC,#FFF6E6);padding:16px;display:flex;flex-direction:column;gap:10px;align-items:center}\n.smg .scene .e{font-size:56px;line-height:1}\n.smg .scene p{margin:0;font-size:19px;font-weight:800;line-height:1.45;color:#1F2147}\n.smg .faces{display:flex;flex-direction:column;gap:8px;width:100%}\n.smg .face{display:flex;align-items:center;gap:14px;min-height:64px;border-radius:18px;border:3px solid var(--line);background:var(--ground);padding:8px 16px;font-size:19px;font-weight:900;text-align:left;box-shadow:0 4px 0 var(--line)}\n.smg .face .e{font-size:36px}\n.smg .face.right{background:var(--done);border-color:var(--done);color:#fff;box-shadow:0 4px 0 #2F8A5A}\n.smg .tip{width:100%;background:#FFF6D6;color:#5A4300;border-radius:16px;padding:12px 14px;font-size:16px;font-weight:800;line-height:1.45;text-align:left}\n.smg .panel{background:var(--card);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:14px}\n.smg .set{display:flex;flex-direction:column;gap:8px}\n.smg .set>span{font-size:15px;font-weight:700;color:var(--soft)}\n.smg .chips{display:flex;gap:8px;flex-wrap:wrap}\n.smg .chip{min-height:44px;padding:0 12px;border-radius:12px;border:2px solid var(--line);background:var(--ground);font-size:15px;font-weight:800}\n.smg .chip[aria-pressed=\"true\"]{background:var(--done);border-color:var(--done);color:#fff}\n.smg /* 🐸 Tedo mangione: la strada a tre corsie */\n.road{position:relative;width:100%;max-width:360px;height:440px;border-radius:24px;overflow:hidden;background:#8CE99A;display:grid;grid-template-columns:repeat(3,1fr)}\n.smg .lane{border:none;background:linear-gradient(90deg,transparent 0 4%,#ADB5BD 4% 96%,transparent 96%);position:relative;padding:0}\n.smg .lane::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:repeating-linear-gradient(#fff 0 26px,transparent 26px 52px);opacity:.7;animation:dash 1s linear infinite}\n@keyframes dash{to{background-position:0 52px}}\n.smg .food{position:absolute;left:0;top:0;width:60px;height:60px;margin-left:-30px;font-size:46px;line-height:60px;text-align:center;pointer-events:none}\n.smg .food.num{font-size:34px;font-weight:900;background:#fff;border-radius:50%;border:4px solid var(--blue);color:#1F2147;width:58px;height:58px;line-height:50px;margin-left:-29px}\n.smg .tedo{position:absolute;left:0;bottom:22px;width:80px;height:80px;margin-left:-40px;transform-origin:50% 100%;transition:left .18s ease-out;pointer-events:none}\n.smg .bubble2{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:#fff;border-radius:999px;padding:6px 14px;font-size:20px;font-weight:900;color:#1F2147;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}\n.smg .rule{font-size:18px;font-weight:900;background:#FFF6D6;color:#5A4300;border-radius:14px;padding:8px 14px}\n.smg .grow{width:100%;height:16px;border-radius:999px;background:var(--line);overflow:hidden}\n.smg .grow i{display:block;height:100%;background:var(--done);border-radius:999px;transition:width .3s}\n.smg .arrows{display:flex;gap:10px;width:100%}\n.smg .arrows button{flex:1;min-height:70px;border-radius:20px;border:none;background:var(--blue);color:#fff;font-size:34px;font-weight:900;box-shadow:0 5px 0 #4C5FC0}\n.smg /* gruppi nell'elenco */\n.group{font-size:14px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;color:var(--soft);margin:6px 4px -4px}\n.smg /* 🔍 differenze */\n.twin{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}\n.smg .board{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:linear-gradient(180deg,#E3F0FC,#FFF6E6);border-radius:18px;padding:8px;border:3px solid var(--line)}\n.smg .cell{aspect-ratio:1;border:none;background:none;font-size:30px;border-radius:12px;position:relative;padding:0}\n.smg .cell.found{box-shadow:0 0 0 4px var(--done);background:rgba(72,185,122,.15)}\n.smg .cell.miss{animation:wiggle .4s}\n.smg /* 🎒 zaino e 🛒 mercatino */\n.items{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%;min-height:100px}\n.smg .item{width:84px;height:96px;border-radius:18px;background:var(--ground);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:40px;border:3px solid var(--line)}\n.smg .item small{font-size:13px;font-weight:900}\n.smg .curtain{width:100%;min-height:100px;border-radius:18px;background:repeating-linear-gradient(90deg,#7048E8 0 22px,#845EF7 22px 44px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:900}\n.smg .price{font-size:13px;font-weight:900;background:#FFC93C;color:#3D2E00;border-radius:999px;padding:1px 8px}\n.smg .coins{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}\n.smg .coin{width:76px;height:76px;border-radius:50%;border:4px solid #B8860B;background:radial-gradient(circle at 35% 30%,#FFE58A,#F5C542);font-size:22px;font-weight:900;color:#5A4300}\n.smg .coin.note{width:110px;border-radius:14px;border-color:#2F9E44;background:#C3F0CF;color:#1E6B44}\n.smg .paid{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:52px;width:100%;border:3px dashed var(--line);border-radius:16px;padding:6px}\n.smg .paid span{background:#FFE58A;border-radius:999px;padding:6px 12px;font-weight:900;color:#5A4300}\n.smg .total{font-size:26px;font-weight:900}\n.smg /* 🎯 a colpo d'occhio */\n.flash{width:220px;height:220px;border-radius:24px;background:var(--ground);display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:16px;border:3px solid var(--line)}\n.smg .flash.ten{width:300px;height:132px;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr)}\n.smg .flash i{border-radius:50%;background:transparent;aspect-ratio:1;align-self:center;justify-self:center;width:80%}\n.smg .flash i.on{background:var(--blue)}\n.smg .nums{display:flex;gap:10px;justify-content:center}\n.smg .num{width:84px;height:84px;border-radius:20px;border:3px solid var(--line);background:var(--card);font-size:38px;font-weight:900;box-shadow:0 5px 0 var(--line)}\n.smg .num.right{background:var(--done);border-color:var(--done);color:#fff;box-shadow:0 5px 0 #2F8A5A}\n.smg /* 🚦 ferma o vai */\n.light{width:180px;height:180px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:84px;border:8px solid var(--line);background:var(--ground);transition:background .2s,border-color .2s}\n.smg .light.go{background:#48B97A;border-color:#2F8A5A}\n.smg .light.stop{background:#E03131;border-color:#A61E1E}\n.smg .press{width:100%;min-height:96px;border-radius:24px;border:none;background:var(--blue);color:#fff;font-size:26px;font-weight:900;box-shadow:0 6px 0 #4C5FC0}\n.smg .press:active{transform:translateY(4px);box-shadow:0 2px 0 #4C5FC0}\n.smg .score{display:flex;gap:16px;justify-content:center;font-size:17px;font-weight:900}\n@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.1)}100%{transform:scale(1)}}\n@keyframes wiggle{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}\n@media (prefers-reduced-motion:reduce){.smg *{animation:none!important;transition:none!important}}"
 export function mountGames(root: HTMLElement, opts: GamesOptions = {}): () => void {
-  root.innerHTML = "<section class=\"panel\" data-k=\"panel\" hidden>\n    <div class=\"ask\" style=\"text-align:left\">Impostazioni</div>\n    <div class=\"set\"><span>🐸 Dove salta Tedo: quante ninfee</span><div class=\"chips\" data-key=\"pads\"></div></div>\n    <div class=\"set\"><span>🧩 La parola spezzata: sillabe scritte</span><div class=\"chips\" data-key=\"written\"></div></div>\n    <div class=\"set\"><span>😊 Come si sente: quante emozioni</span><div class=\"chips\" data-key=\"faces\"></div></div>\n    <div class=\"set\"><span>🐸 Tedo mangione: cosa può mangiare</span><div class=\"chips\" data-key=\"eat\"></div></div>\n    <div class=\"set\"><span>🐸 Tedo mangione: velocità della strada</span><div class=\"chips\" data-key=\"speed\"></div></div>\n  </section>\n  <section data-k=\"view\" style=\"display:flex;flex-direction:column;gap:14px\"></section>"
+  root.innerHTML = "<section class=\"panel\" data-k=\"panel\" hidden>\n    <div class=\"ask\" style=\"text-align:left\">Impostazioni</div>\n    <div class=\"set\"><span>⏱️ Il ritmo dei giochi di memoria (tutti tranne Tedo mangione)</span><div class=\"chips\" data-key=\"pace\"></div></div>\n    <div class=\"set\"><span>🐸 Dove salta Tedo: da quanti salti si comincia</span><div class=\"chips\" data-key=\"jumps\"></div></div>\n    <div class=\"set\"><span>🎒 Cosa manca nello zaino: da quanti oggetti si comincia</span><div class=\"chips\" data-key=\"objs\"></div></div>\n    <div class=\"set\"><span>🎯 Quanti sono: quanti pallini all'inizio</span><div class=\"chips\" data-key=\"dots\"></div></div>\n    <div class=\"set\"><span>🔍 Trova le differenze: quante differenze</span><div class=\"chips\" data-key=\"diffs\"></div></div>\n    <div class=\"set\"><span>🐸 Dove salta Tedo: quante ninfee</span><div class=\"chips\" data-key=\"pads\"></div></div>\n    <div class=\"set\"><span>🧩 La parola spezzata: sillabe scritte</span><div class=\"chips\" data-key=\"written\"></div></div>\n    <div class=\"set\"><span>😊 Come si sente: quante emozioni</span><div class=\"chips\" data-key=\"faces\"></div></div>\n    <div class=\"set\"><span>🐸 Tedo mangione: cosa può mangiare</span><div class=\"chips\" data-key=\"eat\"></div></div>\n    <div class=\"set\"><span>🐸 Tedo mangione: velocità della strada</span><div class=\"chips\" data-key=\"speed\"></div></div>\n  </section>\n  <section data-k=\"view\" style=\"display:flex;flex-direction:column;gap:14px\"></section>"
 
-let S=Object.assign({pads:6,written:true,faces:3,eat:'frutta',speed:'lento'},opts.settings||{});
-const OPT={pads:[[6,'6'],[9,'9']],written:[[true,'Sì'],[false,'No']],faces:[[2,'2'],[3,'3']],eat:[['frutta','La frutta'],['grandi','I numeri più grandi di 5'],['pari','I numeri pari']],speed:[['lento','Lenta'],['normale','Normale']]};
+let S=Object.assign({pads:6,written:true,faces:3,eat:'frutta',speed:'lento',pace:'lento',jumps:2,objs:3,dots:5,diffs:3},opts.settings||{});
+// il ritmo dei giochi di memoria e attenzione (tutti tranne Tedo mangione): "lento" dà quasi il doppio del tempo
+const K=()=>S.pace==='normale'?1:1.8;
+const OPT={pads:[[6,'6'],[9,'9']],written:[[true,'Sì'],[false,'No']],faces:[[2,'2'],[3,'3']],eat:[['frutta','La frutta'],['grandi','I numeri più grandi di 5'],['pari','I numeri pari']],speed:[['lento','Lenta'],['normale','Normale']],pace:[['lento','Lento'],['normale','Normale']],jumps:[[2,'2 salti'],[3,'3 salti'],[4,'4 salti']],objs:[[3,'3 oggetti'],[4,'4 oggetti'],[5,'5 oggetti']],dots:[[3,'fino a 3'],[5,'fino a 5'],[7,'fino a 7']],diffs:[[2,'2'],[3,'3'],[4,'4']]};
 const ROUNDS=6;
 const $=id=>root.querySelector('[data-k="'+id+'"]');
 const el=(t,c,h)=>{const e=document.createElement(t); if(c) e.className=c; if(h!==undefined) e.innerHTML=h; return e;};
@@ -58,7 +60,7 @@ function frame(title){ const v=$('view'); v.innerHTML=''; const b=el('button','b
 
 /* ── 🐸 Dove salta Tedo? La sequenza cresce di uno quando è giusta, cala dopo due errori ── */
 function memo(){
-  hush(); const my=alive; const card=frame(); let len=2, round=0, misses=0;
+  hush(); const my=alive; const card=frame(); let len=S.jumps, round=0, misses=0;
   const cols=S.pads===9?3:3, rows=S.pads===9?3:2;
   const next=async()=>{
     if(my!==alive) return;
@@ -76,8 +78,8 @@ function memo(){
     // la sequenza: mai due volte di fila la stessa ninfea
     const seq=[]; for(let i=0;i<len;i++){ let k; do{ k=rnd(S.pads); }while(k===seq[seq.length-1]); seq.push(k); }
     await wait(300); frog.style.transition='none'; place(seq[0]); frog.style.opacity='0'; await wait(50); frog.style.transition=''; frog.style.opacity='1';
-    speak('Guarda dove salta Tedo!'); await wait(900);
-    for(const k of seq){ if(my!==alive) return; place(k); pads[k].classList.add('lit'); tone(k); await wait(600); pads[k].classList.remove('lit'); await wait(200); }
+    speak('Guarda dove salta Tedo!'); await wait(900*K());
+    for(const k of seq){ if(my!==alive) return; place(k); pads[k].classList.add('lit'); tone(k); await wait(600*K()); pads[k].classList.remove('lit'); await wait(250*K()); }
     frog.style.opacity='0';
     say.textContent='Tocca a te! Tocca le ninfee nello stesso ordine.'; speak('Tocca a te!');
     let pos=0, locked=false;
@@ -85,7 +87,7 @@ function memo(){
       if(i===seq[pos]){ p.classList.add('ok'); setTimeout(()=>p.classList.remove('ok'),300); pos++;
         if(pos===seq.length){ locked=true; say.textContent='Bravo! 🎉'; speak('Bravo!'); misses=0; round++; len=Math.min(7,len+1); await wait(1100); next(); } }
       else { locked=true; p.classList.add('no'); wiggle(p); pads[seq[pos]].classList.add('lit'); say.textContent='Quasi! La ninfea giusta era quella gialla.'; speak('Quasi! Riproviamo.');
-        misses++; if(misses>=2){ len=Math.max(2,len-1); misses=0; } await wait(1600); next(); } });
+        misses++; if(misses>=2){ len=Math.max(S.jumps,len-1); misses=0; } await wait(1600); next(); } });
   };
   next();
 }
@@ -112,7 +114,7 @@ function sill(){
     const again=el('button','btn blue','🔊 Riascolta i pezzetti');
     const pics=el('div','pics');
     card.append(dots,el('p','ask','Che parola è?'),syls,again,pics);
-    const play=async()=>{ syls.innerHTML=''; for(const s of syl){ if(my!==alive||done) return; if(S.written) syls.appendChild(el('span','syl',s)); await speak(s,{rate:.7,interrupt:false}); await wait(350); } };
+    const play=async()=>{ syls.innerHTML=''; for(const s of syl){ if(my!==alive||done) return; if(S.written) syls.appendChild(el('span','syl',s)); await speak(s,{rate:.7,interrupt:false}); await wait(350*K()); } };
     again.onclick=()=>play();
     shuffle([[e,word,true],...dist.map(([de,dw])=>[de,dw,false])]).forEach(([pe,pw,ok])=>{ const b=el('button','pic',pe+'<small hidden>'+pw+'</small>'); b.setAttribute('aria-label',pw);
       b.onclick=async()=>{ if(done) return;
@@ -172,20 +174,20 @@ function diff(){
   const next=()=>{
     if(my!==alive) return;
     if(qi>=list.length) return end(card,diff,'Hai trovato tutte le differenze!');
-    const a=list[qi], change=shuffle([0,1,2,3,4,5,6,7,8]).slice(0,3), b=a.map((x,i)=>change.includes(i)?SWAP[x]:x);
+    const a=list[qi], change=shuffle([0,1,2,3,4,5,6,7,8]).slice(0,S.diffs), b=a.map((x,i)=>change.includes(i)?SWAP[x]:x);
     card.innerHTML=''; let found=0;
     const dots=el('div','dots'); list.forEach((_,i)=>dots.appendChild(el('span',i<qi?'ok':i===qi?'on':'')));
-    const left=el('div','board'), right=el('div','board'), cnt=el('div','level','Trovate: 0 di 3');
+    const left=el('div','board'), right=el('div','board'), cnt=el('div','level','Trovate: 0 di '+S.diffs);
     const mk=(arr,box)=>arr.forEach((x,i)=>{ const c=el('button','cell',x); c.dataset.i=i; box.appendChild(c); });
     mk(a,left); mk(b,right);
     const twin=el('div','twin'); twin.append(left,right);
-    card.append(dots,el('p','ask','Trova le 3 differenze!'),el('p','sub','Tocca le cose diverse, in un disegno o nell\'altro.'),twin,cnt);
+    card.append(dots,el('p','ask','Trova le '+S.diffs+' differenze!'),el('p','sub','Tocca le cose diverse, in un disegno o nell\'altro.'),twin,cnt);
     twin.querySelectorAll('.cell').forEach(c=>c.onclick=()=>{ const i=+c.dataset.i;
       if(change.includes(i)){ if(c.classList.contains('found')) return;
-        twin.querySelectorAll('.cell[data-i="'+i+'"]').forEach(x=>x.classList.add('found')); found++; cnt.textContent='Trovate: '+found+' di 3'; speak(found<3?'Trovata!':'Bravo, tutte e tre!');
-        if(found===3) setTimeout(()=>{ qi++; next(); },1200); }
+        twin.querySelectorAll('.cell[data-i="'+i+'"]').forEach(x=>x.classList.add('found')); found++; cnt.textContent='Trovate: '+found+' di '+S.diffs; speak(found<S.diffs?'Trovata!':'Bravo, le hai trovate tutte!');
+        if(found===S.diffs) setTimeout(()=>{ qi++; next(); },1200); }
       else { c.classList.remove('miss'); void c.offsetWidth; c.classList.add('miss'); } });
-    speak('Trova le tre differenze!');
+    speak('Trova le '+['','','due','tre','quattro'][S.diffs]+' differenze!');
   };
   next();
 }
@@ -193,7 +195,7 @@ function diff(){
 /* ── 🎒 Cosa manca nello zaino? Si guardano gli oggetti, uno sparisce ── */
 const OBJ=[['📒','quaderno'],['✏️','matita'],['📏','righello'],['🍎','mela'],['🧃','succo'],['🖍️','pastelli'],['✂️','forbici'],['📚','libro'],['🧢','cappello'],['🔑','chiavi'],['🧮','abaco'],['🥪','panino']];
 function zaino(){
-  hush(); const my=alive; const card=frame(); let qi=0, n=3;
+  hush(); const my=alive; const card=frame(); let qi=0, n=S.objs;
   const next=async()=>{
     if(my!==alive) return;
     if(qi>=ROUNDS) return end(card,zaino,'Che memoria! Sei arrivato a ricordare '+n+' oggetti.');
@@ -203,8 +205,8 @@ function zaino(){
     const ask=el('p','ask','Guarda bene cosa c\'è nello zaino…'), box=el('div','items');
     pick.forEach(([e,w])=>box.appendChild(el('div','item',e+'<small>'+w+'</small>')));
     card.append(dots,el('div','level',n+' oggetti'),ask,box);
-    speak('Guarda bene cosa c\'è nello zaino.'); await wait(2500+n*600); if(my!==alive) return;
-    box.replaceWith(el('div','curtain','🎒 Chiudo lo zaino…')); await wait(1300); if(my!==alive) return;
+    speak('Guarda bene cosa c\'è nello zaino.'); await wait((2500+n*600)*K()); if(my!==alive) return;
+    box.replaceWith(el('div','curtain','🎒 Chiudo lo zaino…')); await wait(1300*K()); if(my!==alive) return;
     const cur=card.querySelector('.curtain'); const left=el('div','items');
     shuffle(pick.filter(x=>x!==gone)).forEach(([e,w])=>left.appendChild(el('div','item',e+'<small>'+w+'</small>'))); cur.replaceWith(left);
     ask.textContent='Che cosa manca?'; speak('Che cosa manca?');
@@ -318,7 +320,7 @@ function merc(){
 /* ── 🎯 A colpo d'occhio: i pallini si vedono un attimo, poi si dice quanti erano ── */
 const DICE={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
 function colpo(){
-  hush(); const my=alive; const card=frame(); let qi=0, max=5;
+  hush(); const my=alive; const card=frame(); let qi=0, max=S.dots;
   const next=async()=>{
     if(my!==alive) return;
     if(qi>=ROUNDS) return end(card,colpo,'Che occhio! Riconosci le quantità a colpo d\'occhio.');
@@ -330,8 +332,8 @@ function colpo(){
     for(let i=0;i<cells;i++) f.appendChild(el('i',on.includes(i)?'on':''));
     const ask=el('p','ask','Pronto? Guarda bene…');
     card.append(dots,ask,f);
-    await wait(900); f.style.visibility='hidden'; await wait(100); f.style.visibility='visible';
-    speak('Quanti sono?'); await wait(1400); if(my!==alive) return;
+    await wait(900*K()); f.style.visibility='hidden'; await wait(100); f.style.visibility='visible';
+    speak('Quanti sono?'); await wait(1400*K()); if(my!==alive) return;
     f.querySelectorAll('i').forEach(i=>i.classList.remove('on'));
     ask.textContent='Quanti pallini c\'erano?';
     const nums=el('div','nums'), opts=shuffle([n,...shuffle([1,2,3,4,5,6,7,8,9,10].filter(x=>x!==n&&Math.abs(x-n)<=2)).slice(0,2)]);
@@ -362,10 +364,10 @@ function stop(){
     if(state==='stop'&&!tapped) waited++;
     i++; draw();
     if(i>=seq.length){ return end(card,stop,'Hai toccato '+hits+' volte con il verde e hai aspettato il rosso '+waited+' volte su 4!'); }
-    state='wait'; tapped=true; light.className='light'; light.textContent='🐸'; await wait(700); if(my!==alive) return;
+    state='wait'; tapped=true; light.className='light'; light.textContent='🐸'; await wait(700*K()); if(my!==alive) return;
     state=seq[i]; tapped=false; light.className='light '+state; light.textContent=state==='go'?'🟢':'✋';
     if(state==='stop') speak('Rosso: aspetta!');
-    await wait(1700); step();
+    await wait(1700*K()); step();
   };
   speak('Tocca il bottone solo quando è verde. Con il rosso si aspetta!'); setTimeout(step,1500);
 }
