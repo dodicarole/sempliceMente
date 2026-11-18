@@ -647,6 +647,7 @@ export const it = {
     giochi: 'Scegli un gioco: alleniamo la testa divertendoci!',
     poesia: 'Un verso alla volta, e piano piano la poesia entra nella testa!',
     hoha: 'La H non si sente! Ma c’è un trucco: prova a cambiare la parola.',
+    femminile: 'Guarda la fine della parola: ti dice come diventa al femminile!',
     capisco: 'Leggiamo un pezzetto alla volta. Se una risposta non la sai, la cerchiamo insieme nel testo!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },

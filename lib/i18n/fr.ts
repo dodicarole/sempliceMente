@@ -650,6 +650,7 @@ export const fr: Dict = {
     giochi: `Choisis un jeu${nb}: on s’entraîne en s’amusant${nb}!`,
     poesia: `Un vers à la fois, et petit à petit la poésie entre dans la tête${nb}!`,
     hoha: `Le H ne s’entend pas${nb}! Mais il y a une astuce.`,
+    femminile: `Regarde la fin du mot${nb}!`,
     capisco: `On lit un petit morceau à la fois. Si tu ne connais pas une réponse, on la cherche ensemble dans le texte${nb}!`,
     precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },
