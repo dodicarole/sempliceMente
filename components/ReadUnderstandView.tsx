@@ -113,7 +113,10 @@ function Part({ story, index, st, onNext }: { story: RStory; index: number; st: 
   const [answer, setAnswer] = useState(false)
   const [done, setDone] = useState(false)
   const run = useRef(0)
-  const opts = useMemo(() => { if (!q) return []; const ok = q.opts.find(o => o.ok)!; return shuffle([ok, ...shuffle(q.opts.filter(o => !o.ok)).slice(0, st.choices - 1)]) }, [q, st.choices])
+  // tutte le risposte giuste (possono essere più di una) e le sbagliate, quante ne chiede l'impostazione
+  const opts = useMemo(() => { if (!q) return []; const oks = q.opts.filter(o => o.ok), bad = q.opts.filter(o => !o.ok); return shuffle([...oks, ...(story.school ? bad : shuffle(bad).slice(0, st.choices - 1))]) }, [q, st.choices, story.school])
+  const okCount = opts.filter(o => o.ok).length
+  const [found, setFound] = useState<string[]>([])
   const words = story.words.map(w => w[1].toLowerCase())
 
   // la voce legge le frasi una dopo l'altra, illuminando quella che legge
@@ -137,9 +140,16 @@ function Part({ story, index, st, onNext }: { story: RStory; index: number; st: 
     })
     return out
   }
-  const choose = async (ok: boolean, el: HTMLElement) => {
+  const choose = async (ok: boolean, el: HTMLElement, text = '') => {
     if (done || !q) return
     run.current++; setReading(null)
+    // con più risposte giuste: ognuna diventa verde, e la domanda finisce quando le ha trovate tutte
+    if (ok && okCount > 1) {
+      if (found.includes(text)) return
+      const f = [...found, text]; setFound(f)
+      if (f.length < okCount) { speak(T.foundOne(f.length, okCount)); return }
+      setDone(true); setAnswer(true); await speak(`${T.right} ${part.text[q.ans]}`); return
+    }
     if (ok) { setDone(true); setAnswer(true); await speak(`${T.right} ${part.text[q.ans]}`) }
     else { el.classList.remove(s.wrong); void el.offsetWidth; el.classList.add(s.wrong); setAnswer(true); speak(isWhy ? T.hintWhyV : T.hintTextV) }
   }
@@ -156,9 +166,10 @@ function Part({ story, index, st, onNext }: { story: RStory; index: number; st: 
         <div className={s.q}>
           <span className={s.qtag} style={{ background: QCOLOR[q.t][1] }}>{QCOLOR[q.t][0]} {T.qt[q.t]}</span>
           <div className={s.qtext}>{q.text}</div>
+          {okCount > 1 && <div className={s.sub}>✨ {T.findAll(okCount)}{found.length > 0 && !done ? ` (${found.length}/${okCount})` : ''}</div>}
           <div className={s.opts}>
             {opts.map(o => (
-              <button key={o.text} className={`${s.opt}${done && o.ok ? ` ${s.right}` : ''}`} onClick={e => choose(!!o.ok, e.currentTarget)}>{o.e && <span className={s.optE}>{o.e}</span>}{o.text}</button>
+              <button key={o.text} className={`${s.opt}${(done && o.ok) || found.includes(o.text) ? ` ${s.right}` : ''}`} onClick={e => choose(!!o.ok, e.currentTarget, o.text)}>{o.e && <span className={s.optE}>{o.e}</span>}{o.text}</button>
             ))}
           </div>
           {answer && !done && <div className={s.hint}>{isWhy ? T.hintWhy : T.hintText}</div>}

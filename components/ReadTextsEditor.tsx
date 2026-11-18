@@ -129,6 +129,26 @@ export default function ReadTextsEditor() {
   )
 }
 
+/* le risposte di una domanda come elenco { testo, giusta? }: la prima giusta resta "right", le altre giuste "more", le sbagliate "wrong" */
+type Answer = { text: string; ok: boolean }
+function answersOf(q: ReadQuestion): Answer[] {
+  const def: Answer[] = [{ text: q.right, ok: true }, ...(q.more ?? []).map(t => ({ text: t, ok: true })), ...q.wrong.map(t => ({ text: t, ok: false }))]
+  // se c'è l'ordine scritto, le risposte restano al loro posto anche quando si cambia ✅ / ❌
+  if (!q.order || q.order.length !== def.length) return def
+  const oks = [q.right, ...(q.more ?? [])], wr = [...q.wrong], out: Answer[] = []
+  for (const t of q.order) {
+    const i = oks.indexOf(t); if (i >= 0) { out.push({ text: t, ok: true }); oks.splice(i, 1); continue }
+    const j = wr.indexOf(t); if (j >= 0) { out.push({ text: t, ok: false }); wr.splice(j, 1); continue }
+    return def
+  }
+  return out
+}
+function fromAnswers(q: ReadQuestion, list: Answer[]): ReadQuestion {
+  const oks = list.filter(a => a.ok).map(a => a.text), wr = list.filter(a => !a.ok).map(a => a.text)
+  // l'ordine sullo schermo resta quello scritto: si salva anche la posizione di ogni risposta
+  return { ...q, right: oks[0] ?? '', more: oks.slice(1), wrong: wr, order: list.map(a => a.text) }
+}
+
 /* La domanda di un pezzetto: tipo, testo, risposte e la frase con la risposta */
 function QuestionEditor({ q, sentences, onChange, onRemove }: { q: ReadQuestion; sentences: string[]; onChange: (q: ReadQuestion) => void; onRemove: () => void }) {
   const { t } = useT()
@@ -138,9 +158,19 @@ function QuestionEditor({ q, sentences, onChange, onRemove }: { q: ReadQuestion;
       <span className={s.sub}>{E.qTypeLab}</span>
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{QT.map(x => <button key={x} style={chip(q.t === x, QCOLOR[x])} onClick={() => onChange({ ...q, t: x })}>{t.readUnd.qt[x]}</button>)}</div>
       <input style={input} value={q.text} placeholder={E.qTextPh} aria-label={E.qText} maxLength={200} onChange={e => onChange({ ...q, text: e.target.value })} />
-      <input style={input} value={q.right} placeholder={E.right} maxLength={120} onChange={e => onChange({ ...q, right: e.target.value })} />
-      <input style={input} value={q.wrong[0] ?? ''} placeholder={E.wrong} maxLength={120} onChange={e => onChange({ ...q, wrong: [e.target.value, q.wrong[1] ?? ''] })} />
-      <input style={input} value={q.wrong[1] ?? ''} placeholder={E.wrong2} maxLength={120} onChange={e => onChange({ ...q, wrong: [q.wrong[0] ?? '', e.target.value] })} />
+      <span className={s.sub}>{E.answersLab}</span>
+      {answersOf(q).map((x, i, all) => (
+        <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <input style={{ ...input, flex: 1 }} value={x.text} placeholder={E.answerPh} maxLength={120}
+            onChange={e => onChange(fromAnswers(q, all.map((y, k) => (k === i ? { ...y, text: e.target.value } : y))))} />
+          {/* un tocco cambia: giusta ↔ sbagliata */}
+          <button style={{ ...chip(false), background: x.ok ? 'var(--done)' : '#FFE3E3', color: x.ok ? '#fff' : '#C92A2A', borderColor: x.ok ? 'var(--done)' : '#FFC9C9', whiteSpace: 'nowrap' }}
+            aria-label={x.ok ? E.isRight : E.isWrong} onClick={() => onChange(fromAnswers(q, all.map((y, k) => (k === i ? { ...y, ok: !y.ok } : y))))}>{x.ok ? E.isRight : E.isWrong}</button>
+          {all.length > 2 && <button style={chip(false)} aria-label="✕" onClick={() => onChange(fromAnswers(q, all.filter((_, k) => k !== i)))}>✕</button>}
+        </div>
+      ))}
+      {answersOf(q).length < 10 && <button style={chip(false)} onClick={() => onChange(fromAnswers(q, [...answersOf(q), { text: '', ok: false }]))}>{E.addAnswer}</button>}
+      <span className={s.sub} style={{ fontSize: 13 }}>{E.answersHint}</span>
       <span className={s.sub}>{E.ansLab}</span>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {sentences.map((x, i) => (
