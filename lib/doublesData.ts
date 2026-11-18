@@ -29,6 +29,7 @@ const RAW: [string, string, string, string][] = [
   // T / TT
   ['gatto','gat-to','🐱','t'],['latte','lat-te','🥛','t'],['letto','let-to','🛏️','t'],['sette','set-te','7️⃣','t'],['notte','not-te','🌙','t'],['tetto','tet-to','🏠','t'],
   ['patata','pa-ta-ta','🥔','t'],['moto','mo-to','🏍️','t'],['dito','di-to','☝️','t'],['carota','ca-ro-ta','🥕','t'],['matita','ma-ti-ta','✏️','t'],['vestito','ve-sti-to','👗','t'],
+  ['frittelle','frit-tel-le','🥞','t'],
   // L / LL
   ['palla','pal-la','⚽','l'],['cavallo','ca-val-lo','🐴','l'],['ombrello','om-brel-lo','☂️','l'],['gallina','gal-li-na','🐔','l'],['farfalla','far-fal-la','🦋','l'],['stella','stel-la','⭐','l'],['pollo','pol-lo','🍗','l'],
   ['mela','me-la','🍎','l'],['sole','so-le','☀️','l'],['vela','ve-la','⛵','l'],['scuola','scuo-la','🏫','l'],['gelato','ge-la-to','🍦','l'],
@@ -50,7 +51,7 @@ const RAW: [string, string, string, string][] = [
   ['rosso','ros-so','🔴','s'],['sasso','sas-so','🪨','s'],['osso','os-so','🦴','s'],['cassa','cas-sa','📦','s'],
   ['rosa','ro-sa','🌹','s'],['casa','ca-sa','🏠','s'],['naso','na-so','👃','s'],['vaso','va-so','🏺','s'],['riso','ri-so','🍚','s'],
   // B / BB
-  ['babbo','bab-bo','🎅','b'],['nebbia','neb-bia','🌫️','b'],['sabbia','sab-bia','🏖️','b'],['cubo','cu-bo','🧊','b'],
+  ['babbo','bab-bo','🎅','b'],['nebbia','neb-bia','🌫️','b'],['sabbia','sab-bia','🏖️','b'],['giubbotto','giub-bot-to','🧥','b'],['cubo','cu-bo','🧊','b'],
   // G / GG
   ['pioggia','piog-gia','🌧️','g'],['spiaggia','spiag-gia','🏖️','g'],['fragola','fra-go-la','🍓','g'],['lago','la-go','🏞️','g'],['ago','a-go','🪡','g'],
   // F / FF
