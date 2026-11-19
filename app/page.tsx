@@ -87,6 +87,9 @@ export default function Home() {
   const kids = useChildren()
   const [authState,    setAuthState]    = useState<AuthState>('loading')
   const [showAuth,     setShowAuth]     = useState(false)
+  // il link "reimposta la password" arrivato per email: /?reset=…
+  const [resetToken,   setResetToken]   = useState('')
+  useEffect(() => { try { const r = new URLSearchParams(window.location.search).get('reset'); if (r) setResetToken(r) } catch (_) {} }, [])
   const [view,         setView]         = useState<View>('child')
   const [childSection, setChildSection] = useState<ChildSection>('home')
   const [confirmLogout, setConfirmLogout] = useState(false)
@@ -244,11 +247,11 @@ export default function Home() {
   }
 
   // ── Schermata login ──────────────────────────────────────────────────────
-  if (authState === 'unauthenticated' && showAuth) {
+  if ((authState === 'unauthenticated' && showAuth) || resetToken) {
     return (
       <div className={s.page}>
         <div className={s.app}>
-          <AuthScreen onAuth={handleAuth} onBack={() => setShowAuth(false)} />
+          <AuthScreen key={resetToken || 'login'} resetToken={resetToken || undefined} onAuth={() => { setResetToken(''); handleAuth() }} onBack={() => { setResetToken(''); setShowAuth(false) }} />
         </div>
       </div>
     )
