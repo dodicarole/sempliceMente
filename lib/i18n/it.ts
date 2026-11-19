@@ -91,6 +91,12 @@ export const it = {
     mismatch: 'Le password non coincidono',
     tooShort: 'Password di almeno 6 caratteri',
     error: 'Errore',
+    forgotLink: 'Hai dimenticato la password?',
+    forgotTitle: '🔑 Recupera la password', forgotHint: 'Scrivi l’email con cui ti sei registrato: ti mandiamo un link per scegliere una nuova password.',
+    sendLink: 'Mandami il link', sentTitle: '📬 Controlla la tua email',
+    sent: 'Se questa email è registrata, ti abbiamo mandato un link. Vale 1 ora. Se non lo trovi, guarda anche nella posta indesiderata (spam).',
+    backToLogin: '← Torna all’accesso',
+    resetTitle: '🔑 Scegli una nuova password', newPassword: 'Nuova password', saveNew: 'Salva e entra',
   },
 
   zaino: {

@@ -93,6 +93,12 @@ export const fr: Dict = {
     mismatch: 'Les mots de passe ne correspondent pas',
     tooShort: 'Mot de passe d’au moins 6 caractères',
     error: 'Erreur',
+    forgotLink: 'Mot de passe oublié ?',
+    forgotTitle: '🔑 Récupérer le mot de passe', forgotHint: 'Écrivez l’e-mail de votre inscription : nous vous envoyons un lien pour choisir un nouveau mot de passe.',
+    sendLink: 'Envoyez-moi le lien', sentTitle: '📬 Regardez vos e-mails',
+    sent: 'Si cet e-mail est inscrit, nous vous avons envoyé un lien. Il est valable 1 heure. Si vous ne le trouvez pas, regardez aussi dans les courriers indésirables (spam).',
+    backToLogin: '← Retour à la connexion',
+    resetTitle: '🔑 Choisissez un nouveau mot de passe', newPassword: 'Nouveau mot de passe', saveNew: 'Enregistrer et entrer',
   },
 
   zaino: {
@@ -675,6 +681,9 @@ export const fr: Dict = {
   },
 
   serverErrors: {
+    'Link non valido o scaduto': 'Lien non valide ou expiré',
+    'Troppi tentativi. Riprova più tardi.': 'Trop de tentatives. Réessayez plus tard.',
+    'Password di almeno 6 caratteri': 'Mot de passe d’au moins 6 caractères',
     'Caricamento non riuscito': 'Le chargement a échoué',
     'Dati mancanti': 'Données manquantes',
     'Elemento non trovato': 'Élément introuvable',
