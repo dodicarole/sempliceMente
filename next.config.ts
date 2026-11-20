@@ -4,8 +4,36 @@ import withPWAInit from '@ducanh2912/next-pwa'
 const withPWA = withPWAInit({
   dest: 'public',
   cacheOnFrontEndNav: true,
-  reloadOnOnline: true,
+  aggressiveFrontEndNavCaching: true,
+  // niente ricarica automatica quando torna internet: il bambino potrebbe essere a metà di un gioco
+  reloadOnOnline: false,
   disable: process.env.NODE_ENV === 'development',
+  extendDefaultRuntimeCaching: true,
+  workboxOptions: {
+    runtimeCaching: [
+      {
+        // i dati dell'app (zaino, routine, diario…): dalla rete se c'è, altrimenti l'ultima copia salvata sul telefono
+        urlPattern: ({ sameOrigin, url }: { sameOrigin: boolean; url: URL }) => sameOrigin && url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/auth/forgot') && !url.pathname.startsWith('/api/auth/reset'),
+        handler: 'NetworkFirst',
+        method: 'GET',
+        options: { cacheName: 'apis', networkTimeoutSeconds: 6, expiration: { maxEntries: 300, maxAgeSeconds: 365 * 24 * 3600 } },
+      },
+      {
+        // i caratteri dell'app: restano sul tablet anche senza internet
+        urlPattern: /\/fonts\/.*\.(?:woff2?|ttf|otf)$/i,
+        handler: 'CacheFirst',
+        method: 'GET',
+        options: { cacheName: 'app-fonts', expiration: { maxEntries: 20, maxAgeSeconds: 365 * 24 * 3600 } },
+      },
+      {
+        // le foto (link temporanei di Supabase): restano sul telefono per guardarle anche offline
+        urlPattern: ({ url }: { url: URL }) => url.hostname.endsWith('.supabase.co') && url.pathname.startsWith('/storage/'),
+        handler: 'CacheFirst',
+        method: 'GET',
+        options: { cacheName: 'photos', expiration: { maxEntries: 400, maxAgeSeconds: 365 * 24 * 3600 }, cacheableResponse: { statuses: [0, 200] } },
+      },
+    ],
+  },
 })
 
 const securityHeaders = [
