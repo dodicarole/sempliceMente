@@ -31,11 +31,11 @@ export async function POST(req: NextRequest) {
   if (!email || email.length > 200) return done
 
   // anche per la stessa email, pochi invii: così nessuno può riempire la casella di qualcun altro
-  if (!rateLimit(`forgot-mail:${email}`, 3, 60 * 60 * 1000).ok) return done
+  if (!rateLimit(`forgot-mail:${email}`, 3, 60 * 60 * 1000).ok) { console.warn('Recupero password: troppe richieste per questa email in un’ora'); return done }
 
   const supabase = getSupabase()
   const { data: family } = await supabase.from('families').select('id').eq('email', email).maybeSingle()
-  if (!family) return done
+  if (!family) { console.warn('Recupero password: nessun account con questa email'); return done }
 
   if (!process.env.RESEND_API_KEY) { console.error('Recupero password: RESEND_API_KEY non configurata'); return done }
 
@@ -51,7 +51,8 @@ export async function POST(req: NextRequest) {
   const T = TXT[lang]
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    await resend.emails.send({
+    // Resend non "lancia" gli errori: li restituisce. Senza questo controllo un invio rifiutato passerebbe in silenzio.
+    const { error: sendError } = await resend.emails.send({
       from: process.env.EMAIL_FROM ?? 'SempliceMente Bimbi <news@semplicementebimbi.it>',
       to: email,
       subject: T.subject,
@@ -65,6 +66,8 @@ export async function POST(req: NextRequest) {
       </div>`,
       text: `${T.hello}\n\n${T.body}\n\n${T.btn}: ${link}\n\n${T.valid}\n${T.notYou}`,
     })
+    if (sendError) console.error('Recupero password: Resend ha rifiutato l’invio →', sendError.name, sendError.message)
+    else console.log('Recupero password: email inviata')
   } catch (e) { console.error('Recupero password: invio non riuscito', e) }
   return done
 }
