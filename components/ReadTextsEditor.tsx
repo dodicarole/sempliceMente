@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useT } from '@/lib/i18n'
 import { COVERS, splitParts, splitSentences, type ReadContent, type ReadQuestion, type ReadTextRow } from '@/lib/readTexts'
 import type { QType } from '@/lib/readStories'
@@ -22,7 +22,14 @@ export default function ReadTextsEditor() {
   const { t } = useT()
   const E = t.readUnd.ed
   const [list, setList] = useState<ReadTextRow[]>([])
-  const [draft, setDraft] = useState<Draft | null>(null)
+  const [draft, setDraftState] = useState<Draft | null>(null)
+  const draftRef = useRef<Draft | null>(null)
+  // ogni cambio parte dall'ultima versione (non da quella del momento in cui la pagina è stata disegnata)
+  const setDraft = useCallback((d: Draft | null | ((prev: Draft | null) => Draft | null)) => {
+    const next = typeof d === 'function' ? d(draftRef.current) : d
+    draftRef.current = next; setDraftState(next)
+  }, [])
+  const msgRef = useRef<HTMLDivElement>(null)
   const [msg, setMsg] = useState('')
   const [busy, setBusy] = useState(false)
   const reload = useCallback(async () => {
@@ -31,19 +38,27 @@ export default function ReadTextsEditor() {
   useEffect(() => { reload() }, [reload])
 
   const content = draft?.content
-  const setContent = (c: ReadContent) => draft && setDraft({ ...draft, content: c })
-  const setPart = (i: number, p: ReadContent['parts'][number]) => content && setContent({ ...content, parts: content.parts.map((x, j) => (j === i ? p : x)) })
+  const setContent = (c: ReadContent) => setDraft(d => (d ? { ...d, content: c } : d))
+  const setPart = (i: number, p: ReadContent['parts'][number]) => setDraft(d => (d ? { ...d, content: { ...d.content, parts: d.content.parts.map((x, j) => (j === i ? p : x)) } } : d))
+  const fail = (m: string) => { setMsg(m); setTimeout(() => msgRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50) }
 
   const save = async () => {
-    if (!draft || !content) return
-    if (!draft.title.trim() || !content.parts.length) { setMsg(E.needs); return }
+    // prima si chiude il campo in cui si sta scrivendo, così anche l'ultima modifica entra nel salvataggio
+    ;(document.activeElement as HTMLElement | null)?.blur?.()
+    await new Promise(r => setTimeout(r, 30))
+    const d = draftRef.current
+    if (!d) return
+    const content = d.content
+    if (!d.title.trim() || !content.parts.length) { fail(E.needs); return }
     const bad = content.parts.findIndex(p => p.q && (!p.q.text.trim() || !p.q.right.trim() || !p.q.wrong.some(w => w.trim())))
-    if (bad >= 0) { setMsg(E.incomplete(bad + 1)); return }
+    if (bad >= 0) { const q = content.parts[bad].q!; fail(!q.text.trim() ? E.noQuestion(bad + 1) : !q.right.trim() ? E.noRight(bad + 1) : E.noWrong(bad + 1)); return }
     setBusy(true)
-    const body = JSON.stringify({ title: draft.title, cover: draft.cover, content })
-    const r = await fetch(draft.id ? `/api/read-texts/${draft.id}` : '/api/read-texts', { method: draft.id ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => null)
+    const body = JSON.stringify({ title: d.title, cover: d.cover, content })
+    const r = await fetch(d.id ? `/api/read-texts/${d.id}` : '/api/read-texts', { method: d.id ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => null)
     setBusy(false)
-    if (!r || !r.ok) { setMsg((await r?.json().catch(() => ({})))?.error ?? '!'); return }
+    if (!r) { fail(E.offline); return }
+    if (r.status === 401) { fail(E.sessionOver); return }
+    if (!r.ok) { fail((await r.json().catch(() => ({})))?.error ?? '!'); return }
     setDraft(null); setMsg(E.saved); reload()
   }
   const remove = async (x: ReadTextRow) => {
@@ -81,7 +96,7 @@ export default function ReadTextsEditor() {
       {/* il testo: si incolla e si divide in pezzetti */}
       <label className={s.sub}>{E.textLab}</label>
       <textarea style={{ ...input, minHeight: 130, resize: 'vertical', lineHeight: 1.5 }} value={draft.raw} placeholder={E.textPh} onChange={e => setDraft({ ...draft, raw: e.target.value })} />
-      <button className={`${s.btn} ${s.blue}`} disabled={!draft.raw.trim()} onClick={() => content && setContent({ ...content, parts: splitParts(draft.raw).map(text => ({ text, q: null })) })}>{E.split}</button>
+      <button className={`${s.btn} ${s.blue}`} disabled={!draft.raw.trim()} onClick={() => { if (!content) return; const had = content.parts.some(p => p.q); if (had && !confirm(E.resplitAsk)) return; setContent({ ...content, parts: splitParts(draft.raw).map((text, i) => ({ text, q: content.parts[i]?.q ? { ...content.parts[i].q!, ans: Math.min(content.parts[i].q!.ans, Math.max(0, text.length - 1)) } : null })) }) }}>{E.split}</button>
 
       {/* i pezzetti, ognuno con la sua domanda */}
       {content && content.parts.length > 0 && <div className={s.h2} style={{ fontSize: 18 }}>{E.partsLab}</div>}
@@ -120,7 +135,7 @@ export default function ReadTextsEditor() {
           ))}
         </>
       )}
-      {msg && <div className={s.sub} style={{ color: '#C92A2A' }}>{msg}</div>}
+      {msg && <div ref={msgRef} className={s.sub} style={{ color: '#C92A2A', background: '#FFF0F0', borderRadius: 12, padding: '10px 12px', fontWeight: 800 }}>⚠️ {msg}</div>}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button className={`${s.btn} ${s.main}`} disabled={busy} onClick={save}>{E.save}</button>
         <button className={s.btn} onClick={() => { setDraft(null); setMsg('') }}>{E.cancel}</button>
@@ -145,6 +160,8 @@ function answersOf(q: ReadQuestion): Answer[] {
 }
 function fromAnswers(q: ReadQuestion, list: Answer[]): ReadQuestion {
   const oks = list.filter(a => a.ok).map(a => a.text), wr = list.filter(a => !a.ok).map(a => a.text)
+  // la prima risposta giusta non vuota è quella principale (le righe vuote non contano)
+  oks.sort((a, b) => Number(!a.trim()) - Number(!b.trim()))
   // l'ordine sullo schermo resta quello scritto: si salva anche la posizione di ogni risposta
   return { ...q, right: oks[0] ?? '', more: oks.slice(1), wrong: wr, order: list.map(a => a.text) }
 }
