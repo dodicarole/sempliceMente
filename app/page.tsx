@@ -122,6 +122,12 @@ export default function Home() {
     )
   }
   const [parentState,  setParentState]  = useState<ParentState>('locked')
+  // dopo 2 ore l'area Genitore si richiude da sola (come fa il server): serve di nuovo il PIN
+  useEffect(() => {
+    if (parentState !== 'unlocked') return
+    const h = setTimeout(() => setParentState('locked'), 120 * 60 * 1000)
+    return () => clearTimeout(h)
+  }, [parentState])
   const [schedule,     setSchedule]     = useState<ScheduleItem[][]>(Array(5).fill([]))
   const [routineItems, setRoutineItems] = useState<RoutineItem[]>([])
   const [agendaItems,  setAgendaItems]  = useState<AgendaItem[]>([])
@@ -366,7 +372,8 @@ export default function Home() {
               {i === 0 ? t.app.child : t.app.parent}
             </button>
           ))}
-          <button className={s.logoutBtn} onClick={() => setConfirmLogout(true)} title={t.app.logout} aria-label={t.app.logout}>🚪</button>
+          {/* uscire dall'account: solo dall'area Genitore, dopo il PIN (il bambino non può uscire per sbaglio) */}
+          {view === 'parent' && parentState === 'unlocked' && <button className={s.logoutBtn} onClick={() => setConfirmLogout(true)} title={t.app.logout} aria-label={t.app.logout}>🚪</button>}
         </div>
 
         {confirmLogout && (
@@ -380,10 +387,11 @@ export default function Home() {
             >
               <div className={s.confirmIcon} aria-hidden="true">🚪</div>
               <div id="logout-title" className={s.confirmTitle}>{t.app.logoutTitle}</div>
-              <div className={s.confirmText}>{t.app.logoutText}</div>
+              {/* senza internet non si potrebbe rientrare: allora non si esce */}
+              <div className={s.confirmText}>{typeof navigator !== 'undefined' && navigator.onLine === false ? t.app.logoutOffline : t.app.logoutText}</div>
               <div className={s.confirmActions}>
                 <button className={s.confirmStay} onClick={() => setConfirmLogout(false)} autoFocus>{t.app.stay}</button>
-                <button className={s.confirmLeave} onClick={handleLogout}>{t.app.leave}</button>
+                {!(typeof navigator !== 'undefined' && navigator.onLine === false) && <button className={s.confirmLeave} onClick={handleLogout}>{t.app.leave}</button>}
               </div>
             </div>
           </div>
