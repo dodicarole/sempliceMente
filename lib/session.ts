@@ -5,7 +5,14 @@ import { getSupabase } from './supabase'
 interface SessionData {
   familyId?: string
   isParent?: boolean
+  /** fino a quando vale il PIN del genitore (ms): dopo, per le cose del genitore, serve di nuovo il PIN */
+  parentUntil?: number
 }
+
+/** quanto resta aperta l'area Genitore dopo il PIN */
+export const PARENT_MINUTES = 120
+/** il genitore ha inserito il PIN da poco? */
+export const isParentNow = (s: SessionData) => !!s.isParent && (s.parentUntil ?? 0) > Date.now()
 
 const SESSION_OPTIONS = {
   password: process.env.SESSION_SECRET as string,
@@ -13,7 +20,7 @@ const SESSION_OPTIONS = {
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 60 * 60 * 8,
+    maxAge: 60 * 60 * 24 * 180,          // 6 mesi: i tablet dei bambini restano collegati (anche offline)
     sameSite: 'lax' as const,
   },
 }
@@ -35,7 +42,7 @@ export async function getOwnFamilyId(): Promise<string | Response> {
 }
 export async function getOwnParentFamilyId(): Promise<string | Response> {
   const session = await getSession()
-  return session.familyId && session.isParent ? session.familyId : unauth('Non autorizzato')
+  return session.familyId && isParentNow(session) ? session.familyId : unauth('Non autorizzato')
 }
 
 /**
@@ -75,7 +82,7 @@ export async function getParentFamilyId(): Promise<string | Response> {
 
 export async function requireParent(): Promise<Response | null> {
   const session = await getSession()
-  if (!session.familyId || !session.isParent) {
+  if (!session.familyId || !isParentNow(session)) {
     return new Response(JSON.stringify({ error: 'Non autorizzato' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
