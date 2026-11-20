@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getSession } from '@/lib/session'
+import { getSession, isParentNow } from '@/lib/session'
 
 export async function GET() {
   const session = await getSession()
@@ -9,6 +9,6 @@ export async function GET() {
   return NextResponse.json({
     authenticated: true,
     familyId: session.familyId,
-    isParent: session.isParent ?? false,
+    isParent: isParentNow(session),
   })
 }
