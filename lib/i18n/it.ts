@@ -64,6 +64,7 @@ export const it = {
     logout: "Esci dall'account",
     logoutTitle: "Vuoi uscire dall'account?",
     logoutText: "Per rientrare dovrai fare di nuovo l'accesso.",
+    logoutOffline: 'Ora non c’è internet: se esci, potrai rientrare solo quando torna la connessione. Per questo, senza internet non si può uscire.',
     stay: 'Resta',
     leave: 'Esci',
   },

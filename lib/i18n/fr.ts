@@ -66,6 +66,7 @@ export const fr: Dict = {
     logout: 'Se déconnecter',
     logoutTitle: `Voulez-vous vous déconnecter${nb}?`,
     logoutText: 'Pour revenir, il faudra vous reconnecter.',
+    logoutOffline: 'Il n’y a pas internet en ce moment : si vous sortez, vous ne pourrez revenir qu’au retour de la connexion. C’est pourquoi on ne peut pas sortir sans internet.',
     stay: 'Rester',
     leave: 'Se déconnecter',
   },
