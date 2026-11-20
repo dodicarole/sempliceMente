@@ -2,7 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { loadChildName, loadChildGender, saveChildName, saveChildGender, type ChildGender } from '@/lib/praise'
 import { hiddenOf, type SectionId } from '@/lib/homeSections'
-import { installChildStorage, seedFromServer } from '@/lib/childStore'
+import { installChildStorage, flushPending, seedFromServer } from '@/lib/childStore'
 
 /**
  * Più figli per famiglia.
@@ -77,7 +77,7 @@ export function ChildrenProvider({ children: kids }: { children: ReactNode }) {
       const res = await fetch('/api/children')
       if (res.ok) {
         const raw = (await res.json()).children ?? []
-        seedFromServer(raw)                     // le impostazioni di ogni figlio, dal database a questo telefono
+        seedFromServer(raw); flushPending()                     // le impostazioni di ogni figlio, dal database a questo telefono
         data = raw.map(toChild)
       }
     } catch (_) {}

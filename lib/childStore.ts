@@ -29,22 +29,44 @@ const rawSet = (k: string, v: string | null) => {
 }
 const activeChild = () => rawGet(ACTIVE)
 
-/* invio al database: un attimo dopo l'ultima modifica, una chiave alla volta */
+/* invio al database: un attimo dopo l'ultima modifica, una chiave alla volta.
+   Se non c'è internet, la modifica resta "da mandare" (sync_pending) e parte appena torna la connessione:
+   così niente di quello che il bambino fa offline va perso, e il server non lo sovrascrive. */
+const PENDING = 'sync_pending'
 const timers = new Map<string, ReturnType<typeof setTimeout>>()
+const pending = (): Record<string, true> => { try { return JSON.parse(rawGet(PENDING) ?? '{}') } catch (_) { return {} } }
+const setPending = (p: Record<string, true>) => rawSet(PENDING, Object.keys(p).length ? JSON.stringify(p) : null)
 function upload(childId: string, key: string, value: string | null) {
   const id = `${childId}|${key}`
+  setPending({ ...pending(), [id]: true })
   clearTimeout(timers.get(id))
   timers.set(id, setTimeout(() => {
     timers.delete(id)
-    fetch(`/api/children/${childId}/games`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key, value }),
-    }).catch(() => {})
+    send(childId, key, value)
   }, 600))
+}
+function send(childId: string, key: string, value: string | null) {
+  const id = `${childId}|${key}`
+  fetch(`/api/children/${childId}/games`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key, value }),
+  }).then(r => {
+    // arrivato (o rifiutato per sempre, per esempio un figlio che non c'è più): non è più da mandare
+    if (r.ok || r.status === 404 || r.status === 400) { const p = pending(); delete p[id]; setPending(p) }
+  }).catch(() => {})
+}
+/** Rimanda tutto quello che era rimasto da mandare (all'avvio e quando torna internet) */
+export function flushPending() {
+  if (typeof window === 'undefined' || (typeof navigator !== 'undefined' && navigator.onLine === false)) return
+  for (const id of Object.keys(pending())) {
+    const [childId, key] = id.split('|')
+    if (childId && key && !timers.has(id)) send(childId, key, rawGet(`${key}@${childId}`))
+  }
 }
 
 /** Da chiamare una volta, nel browser: da qui in poi le chiavi dei giochi sono "per figlio" */
 export function installChildStorage() {
   if (typeof window === 'undefined' || orig) return
+  window.addEventListener('online', () => flushPending())
   const P = Storage.prototype
   orig = { get: P.getItem, set: P.setItem, remove: P.removeItem }
   const o = orig
@@ -78,6 +100,7 @@ export function seedFromServer(children: { id: string; sort_order?: number; sett
   for (const c of children) {
     const games = ((c.settings as { games?: Record<string, string | null> } | null)?.games) ?? {}
     for (const k of SYNCED_KEYS) {
+      if (pending()[`${c.id}|${k}`]) continue          // modificata qui senza internet: vince quella del telefono
       if (k in games) { rawSet(`${k}@${c.id}`, games[k] ?? null); continue }
       // non c'è ancora nel database: per il primo figlio si usa (e si salva) quella di prima su questo telefono
       if (c.id === first && rawGet(`${k}@${c.id}`) === null) {
