@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { getSupabase } from '@/lib/supabase'
-import { getSession, getOwnFamilyId } from '@/lib/session'
+import { getSession, getOwnFamilyId, PARENT_MINUTES } from '@/lib/session'
 
 export async function POST(req: NextRequest) {
   const familyId = await getOwnFamilyId()
@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
 
   const session = await getSession()
   session.isParent = true
+  session.parentUntil = Date.now() + PARENT_MINUTES * 60 * 1000
   await session.save()
 
   return NextResponse.json({ ok: true })
