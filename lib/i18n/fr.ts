@@ -482,6 +482,10 @@ export const fr: Dict = {
       seqLab: 'Les moments de l’histoire, dans l’ordre (facultatifs : pour remettre en ordre et raconter)', seqPh: n => `Moment ${n}`,
       save: 'Enregistrer le texte', cancel: 'Annuler', saved: `Texte enregistré${nb}!`, needs: 'Il faut un titre et le texte découpé en morceaux.',
       incomplete: n => `Morceau ${n} : pour la question, il faut le texte, la bonne réponse et au moins une mauvaise.`,
+      noQuestion: n => `Morceau ${n} : il manque le texte de la question.`, noRight: n => `Morceau ${n} : marquez au moins une réponse ✅ juste (et écrivez-la).`,
+      noWrong: n => `Morceau ${n} : il faut au moins une réponse ❌ fausse.`, offline: 'Impossible d’enregistrer : vérifiez la connexion et réessayez.',
+      sessionOver: 'L’espace parent s’est fermé : touchez 🔒 et revenez avec le code, puis enregistrez de nouveau (le texte reste ici).',
+      resplitAsk: 'Redécouper le texte ? Les questions déjà écrites restent sur les morceaux du même numéro.',
     },
   },
 

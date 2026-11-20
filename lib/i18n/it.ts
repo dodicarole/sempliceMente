@@ -480,6 +480,10 @@ export const it = {
       seqLab: 'I momenti della storia, in ordine (facoltativi: servono per riordinare e raccontare)', seqPh: (n: number): string => `Momento ${n}`,
       save: 'Salva il testo', cancel: 'Annulla', saved: 'Testo salvato!', needs: 'Servono un titolo e il testo diviso in pezzetti.',
       incomplete: (n: number): string => `Pezzetto ${n}: per la domanda servono il testo, la risposta giusta e almeno una sbagliata.`,
+      noQuestion: (n: number): string => `Pezzetto ${n}: manca il testo della domanda.`, noRight: (n: number): string => `Pezzetto ${n}: segna almeno una risposta come ✅ giusta (e scrivila).`,
+      noWrong: (n: number): string => `Pezzetto ${n}: serve almeno una risposta ❌ sbagliata.`, offline: 'Non riesco a salvare: controlla la connessione e riprova.',
+      sessionOver: 'L’area Genitore si è chiusa: tocca 🔒 e rientra con il PIN, poi salva di nuovo (il testo resta qui).',
+      resplitAsk: 'Dividere di nuovo il testo? Le domande già scritte restano sui pezzetti con lo stesso numero.',
     },
   },
 
