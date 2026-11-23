@@ -9,7 +9,7 @@
 /* cinque schede: tre sopra e due sotto, così i nomi restano leggibili */
 .tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
 .tabs > .tab { grid-column: span 2; }
-.tabs > .tab:nth-child(n+4) { grid-column: span 3; }
+.tabs > .tab:nth-child(n+4) { grid-column: span 2; }
 .tab { flex: 1; min-height: 54px; line-height: 1.2; border-radius: var(--radius-sm); border: 2px solid #D6DBF2; background: var(--card); color: var(--text); font-size: 15px; font-weight: 800; padding: 0 6px; font-family: inherit; cursor: pointer; }
 .tab[aria-current="true"] { background: #1C3F94; border-color: #1C3F94; color: #fff; }
 

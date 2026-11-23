@@ -6,7 +6,9 @@ import type { RStory, QType } from './readStories'
 
 /** right: la risposta giusta; more: le altre risposte giuste (facoltative, fino a 2); wrong: le sbagliate */
 export interface ReadQuestion { t: QType; text: string; right: string; more?: string[]; wrong: string[]; ans: number; order?: string[] }
-export interface ReadContent { words: [string, string][]; parts: { text: string[]; q: ReadQuestion | null }[]; seq: string[] }
+/** una domanda del quiz di ripasso: la giusta, le altre giuste (facoltative) e le sbagliate */
+export interface QuizQuestion { q: string; right: string; more?: string[]; wrong: string[] }
+export interface ReadContent { words: [string, string][]; parts: { text: string[]; q: ReadQuestion | null }[]; seq: string[]; quiz?: QuizQuestion[] }
 export interface ReadTextRow { id: string; title: string; cover: string; content: ReadContent; child_id: string | null }
 export const COVERS = ['📖', '📚', '🐶', '🐱', '🌳', '🚀', '🏰', '🐟', '🌍', '🍎', '⭐', '🦁']
 const QTYPES: QType[] = ['chi', 'cosa', 'quanti', 'dove', 'quando', 'perche']
@@ -42,7 +44,12 @@ export function cleanReadContent(raw: unknown): ReadContent {
   }).filter(p => p.text.length)
   const words = (Array.isArray(c.words) ? c.words : []).map(w => [str(w?.[0], 40), str(w?.[1], 200)] as [string, string]).filter(w => w[0]).slice(0, 8)
   const seq = (Array.isArray(c.seq) ? c.seq : []).map(x => str(x, 120)).filter(Boolean).slice(0, 4)
-  return { words, parts, seq }
+  const quiz = (Array.isArray(c.quiz) ? c.quiz : []).slice(0, 10).map(x => ({
+    q: str(x?.q, 200), right: str(x?.right, 120),
+    more: (Array.isArray(x?.more) ? x.more : []).map(y => str(y, 120)).filter(Boolean).slice(0, 5),
+    wrong: (Array.isArray(x?.wrong) ? x.wrong : []).map(y => str(y, 120)).filter(Boolean).slice(0, 6),
+  })).filter(x => x.q && x.right && x.wrong.length)
+  return { words, parts, seq, quiz }
 }
 
 /** Un testo del genitore nel formato delle storie già pronte (senza immagini: le scene usano la copertina) */
@@ -56,5 +63,6 @@ export function toStory(r: ReadTextRow): RStory {
       q: p.q ? { t: p.q.t, text: p.q.text, ans: p.q.ans, opts: [{ e: '', text: p.q.right, ok: true }, ...(p.q.more ?? []).map(w => ({ e: '', text: w, ok: true })), ...p.q.wrong.map(w => ({ e: '', text: w }))] } : null,
     })),
     seq: c.seq.length >= 2 ? c.seq.map((s, i) => [String(i + 1), s] as [string, string]) : [],
+    quiz: (c.quiz ?? []).map(x => ({ q: x.q, opts: [{ text: x.right, ok: true }, ...(x.more ?? []).map(t => ({ text: t, ok: true })), ...x.wrong.map(t => ({ text: t, ok: false }))] })),
   }
 }

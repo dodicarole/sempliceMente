@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useT } from '@/lib/i18n'
-import { COVERS, splitParts, splitSentences, type ReadContent, type ReadQuestion, type ReadTextRow } from '@/lib/readTexts'
+import { COVERS, splitParts, splitSentences, cleanReadContent, type ReadContent, type ReadQuestion, type ReadTextRow, type QuizQuestion } from '@/lib/readTexts'
 import type { QType } from '@/lib/readStories'
 import s from './ReadUnderstand.module.css'
 
@@ -31,6 +31,8 @@ export default function ReadTextsEditor() {
   }, [])
   const msgRef = useRef<HTMLDivElement>(null)
   const [msg, setMsg] = useState('')
+  const [pasting, setPasting] = useState(false)
+  const [pasteTxt, setPasteTxt] = useState('')
   const [busy, setBusy] = useState(false)
   const reload = useCallback(async () => {
     try { const r = await fetch('/api/read-texts'); if (r.ok) setList((await r.json()).items ?? []) } catch (_) {}
@@ -51,6 +53,8 @@ export default function ReadTextsEditor() {
     const content = d.content
     if (!d.title.trim() || !content.parts.length) { fail(E.needs); return }
     const bad = content.parts.findIndex(p => p.q && (!p.q.text.trim() || !p.q.right.trim() || !p.q.wrong.some(w => w.trim())))
+    const badQ = (content.quiz ?? []).findIndex(x => (x.q.trim() || x.right.trim() || x.wrong.some(w => w.trim())) && (!x.q.trim() || !x.right.trim() || !x.wrong.some(w => w.trim())))
+    if (badQ >= 0) { fail(E.quizBad(badQ + 1)); return }
     if (bad >= 0) { const q = content.parts[bad].q!; fail(!q.text.trim() ? E.noQuestion(bad + 1) : !q.right.trim() ? E.noRight(bad + 1) : E.noWrong(bad + 1)); return }
     setBusy(true)
     const body = JSON.stringify({ title: d.title, cover: d.cover, content })
@@ -82,6 +86,24 @@ export default function ReadTextsEditor() {
         </div>
       ))}
       <button className={`${s.btn} ${s.main}`} onClick={() => { setMsg(''); setDraft({ ...EMPTY, content: { words: [], parts: [], seq: [] } }) }}>{E.add}</button>
+      {/* 📥 una lezione preparata con "Nuova lezione dalla foto": si incolla, e la bozza si riempie da sola (poi si controlla e si salva) */}
+      <button className={s.btn} onClick={() => setPasting(p => !p)}>{E.pasteBtn}</button>
+      {pasting && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <span className={s.sub}>{E.pasteHint}</span>
+          <textarea style={{ ...input, minHeight: 120, fontSize: 13 }} value={pasteTxt} onChange={e => setPasteTxt(e.target.value)} placeholder={E.pastePh} />
+          <button className={`${s.btn} ${s.main}`} onClick={() => {
+            try {
+              const raw = pasteTxt.slice(pasteTxt.indexOf('{'), pasteTxt.lastIndexOf('}') + 1)
+              const j = JSON.parse(raw)
+              const content = cleanReadContent(j.content)
+              if (!content.parts.length) throw new Error('vuota')
+              setDraft({ ...EMPTY, title: String(j.title ?? '').slice(0, 80), cover: COVERS.includes(j.cover) ? j.cover : '📖', content })
+              setPasting(false); setPasteTxt(''); setMsg(E.pasteOk)
+            } catch (_) { setMsg(E.pasteBad) }
+          }}>{E.pasteGo}</button>
+        </div>
+      )}
     </div>
   )
 
@@ -133,6 +155,14 @@ export default function ReadTextsEditor() {
             <input key={i} style={input} value={content.seq[i] ?? ''} placeholder={E.seqPh(i + 1)} maxLength={120}
               onChange={e => { const seq = [...content.seq]; seq[i] = e.target.value; setContent({ ...content, seq: seq.map(x => x ?? '') }) }} />
           ))}
+          {/* 🧠 il quiz di ripasso: domande sulla lezione, con le risposte ✅ / ❌ */}
+          <label className={s.sub}>{E.quizLab}</label>
+          {(content.quiz ?? []).map((qq, i) => (
+            <QuizEditor key={i} q={qq} n={i + 1}
+              onChange={v => setContent({ ...content, quiz: (content.quiz ?? []).map((x, j) => (j === i ? v : x)) })}
+              onRemove={() => setContent({ ...content, quiz: (content.quiz ?? []).filter((_, j) => j !== i) })} />
+          ))}
+          {(content.quiz ?? []).length < 10 && <button style={chip(false)} onClick={() => setContent({ ...content, quiz: [...(content.quiz ?? []), { q: '', right: '', wrong: ['', ''] }] })}>{E.quizAdd}</button>}
         </>
       )}
       {msg && <div ref={msgRef} className={s.sub} style={{ color: '#C92A2A', background: '#FFF0F0', borderRadius: 12, padding: '10px 12px', fontWeight: 800 }}>⚠️ {msg}</div>}
@@ -196,6 +226,31 @@ function QuestionEditor({ q, sentences, onChange, onRemove }: { q: ReadQuestion;
         ))}
       </div>
       <button style={chip(false)} onClick={onRemove}>{E.removeQ}</button>
+    </div>
+  )
+}
+
+/* Una domanda del quiz di ripasso: il testo e le risposte, ognuna ✅ giusta o ❌ sbagliata (come nelle domande dei pezzetti) */
+function QuizEditor({ q, n, onChange, onRemove }: { q: QuizQuestion; n: number; onChange: (q: QuizQuestion) => void; onRemove: () => void }) {
+  const { t } = useT()
+  const E = t.readUnd.ed
+  const list = [{ text: q.right, ok: true }, ...(q.more ?? []).map(x => ({ text: x, ok: true })), ...q.wrong.map(x => ({ text: x, ok: false }))]
+  const set = (l: { text: string; ok: boolean }[]) => { const oks = l.filter(a => a.ok).map(a => a.text).sort((a, b) => Number(!a.trim()) - Number(!b.trim())); onChange({ q: q.q, right: oks[0] ?? '', more: oks.slice(1), wrong: l.filter(a => !a.ok).map(a => a.text) }) }
+  return (
+    <div style={{ border: '2px solid var(--line, #D6DBF2)', borderRadius: 16, padding: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', gap: 6 }}>
+        <input style={{ ...input, flex: 1 }} value={q.q} placeholder={E.quizQ(n)} maxLength={200} onChange={e => onChange({ ...q, q: e.target.value })} />
+        <button style={chip(false)} aria-label="✕" onClick={onRemove}>✕</button>
+      </div>
+      {list.map((a, i) => (
+        <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <input style={{ ...input, flex: 1 }} value={a.text} placeholder={E.answerPh} maxLength={120} onChange={e => set(list.map((x, k) => (k === i ? { ...x, text: e.target.value } : x)))} />
+          <button style={{ ...chip(false), background: a.ok ? 'var(--done)' : '#FFE3E3', color: a.ok ? '#fff' : '#C92A2A', borderColor: a.ok ? 'var(--done)' : '#FFC9C9', whiteSpace: 'nowrap' }}
+            onClick={() => set(list.map((x, k) => (k === i ? { ...x, ok: !x.ok } : x)))}>{a.ok ? E.isRight : E.isWrong}</button>
+          {list.length > 2 && <button style={chip(false)} aria-label="✕" onClick={() => set(list.filter((_, k) => k !== i))}>✕</button>}
+        </div>
+      ))}
+      {list.length < 8 && <button style={chip(false)} onClick={() => set([...list, { text: '', ok: false }])}>{E.addAnswer}</button>}
     </div>
   )
 }

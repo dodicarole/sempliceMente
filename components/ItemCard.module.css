@@ -66,6 +66,16 @@
 .doneIcon  { font-size: 46px; }
 .doneLabel { font-size: 13px; font-weight: 800; color: var(--done); }
 
+/* zaino: rimasto a scuola — la scheda resta girata davanti, ma arancione e tratteggiata */
+.wrap.school .front { background: #FFF4E6; border: 2.5px dashed #FFA94D; box-shadow: none; }
+.wrap.school .img { filter: grayscale(.6); opacity: .7; }
+.schoolTag { font-size: 12px; font-weight: 900; color: #A85A00; text-align: center; line-height: 1.2; }
+.schoolBtn {
+  position: absolute; top: 6px; right: 6px; width: 36px; height: 36px; border-radius: 12px;
+  border: 2px solid #FFC078; background: #FFF4E6; font-size: 18px; line-height: 1; padding: 0; cursor: pointer;
+}
+.schoolBtn:focus-visible { outline: 3px solid #FFC93C; outline-offset: 2px; }
+
 @media (prefers-reduced-motion: reduce) {
   .inner { transition: none; }
 }

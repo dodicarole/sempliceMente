@@ -9,6 +9,8 @@ import { DAY_COLORS, type ScheduleItem } from '@/types'
 import s from './ChildView.module.css'
 import { useT } from '@/lib/i18n'
 import Buddy from './Buddy'
+import { loadSchool, saveSchool, keyOf, type ZainoSchool } from '@/lib/zainoSchool'
+import { useChildren } from '@/lib/children'
 
 interface Props {
   items: ScheduleItem[]
@@ -28,6 +30,8 @@ const zainoKey = (d: Date) => `zaino_${isoDay(d)}`
 function nextSchoolDay(from: Date) { const d = new Date(from); do { d.setDate(d.getDate() + 1) } while (d.getDay() === 0 || d.getDay() === 6); return d }
 /** dal pomeriggio si prepara lo zaino per il giorno dopo */
 const EVENING_HOUR = 14
+/** le cose da mangiare e da bere non si lasciano a scuola: niente bottone 🏫 */
+const FOOD = /merenda|spuntino|acqua|borraccia|frutta|panino|succo|goûter|gouter|eau|gourde|fruit|collation/i
 
 export default function ChildView({ items: todayItems, dayIndex, dateLabel, onBack, week, demo = false }: Props) {
   const { t } = useT()
@@ -40,7 +44,17 @@ export default function ChildView({ items: todayItems, dayIndex, dateLabel, onBa
   const tIndex = forNext ? next.getDay() - 1 : dayIndex
   const nextName = isoDay(next) === isoDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)) ? t.zaino.tomorrowWord : t.days.names[next.getDay() - 1].toLowerCase()
   const [diaryItems, setDiaryItems] = useState<ScheduleItem[]>([])
-  const items = [...(forNext ? (week?.[tIndex] ?? []) : todayItems), ...diaryItems]
+  const [homework, setHomework] = useState<string[]>([])          // le materie dei compiti per quel giorno (dal diario)
+  const kids = useChildren()
+  const [sch, setSch] = useState<ZainoSchool>({ on: false, who: 'kid', at: {}, always: [] })
+  useEffect(() => { setSch(loadSchool()) }, [kids.active?.id])
+  const allItems = [...(forNext ? (week?.[tIndex] ?? []) : todayItems), ...diaryItems]
+  // le cose che restano sempre in classe non vanno nello zaino
+  const items = sch.on ? allItems.filter(i => !sch.always.includes(keyOf(i.name))) : allItems
+  const inClass = sch.on ? allItems.filter(i => sch.always.includes(keyOf(i.name))) : []
+  const isAt = (i: ScheduleItem) => sch.on && !!sch.at[keyOf(i.name)]
+  // chi può toccare 🏫: il bambino, se il genitore lo permette (nell'area Genitore lo zaino si gestisce dalla scheda 🎒)
+  const canMark = sch.on && sch.who === 'kid'
   const [checked, setChecked]       = useState<Set<string>>(new Set())
   const [showCelebr, setShowCelebr] = useState(false)
   const praise = usePraise(showCelebr)
@@ -55,8 +69,9 @@ export default function ChildView({ items: todayItems, dayIndex, dateLabel, onBa
     const day = isoDay(target)
     const toItems = (list: { id: string; type: string; note: string; subject: string }[]) =>
       list.filter(e => e.type === 'portare').map((e, i) => ({ id: `diario-${e.id}`, name: e.note || e.subject, icon: '🎒', photo_url: null, sort_order: 900 + i, day_of_week: tIndex }))
-    if (demo) { try { setDiaryItems(toItems((JSON.parse(localStorage.getItem('diario_demo_voci') || '[]') as { id: string; day: string; type: string; note: string; subject: string }[]).filter(e => e.day === day))) } catch (_) { setDiaryItems([]) } return }
-    fetch(`/api/diary?from=${day}&to=${day}`).then(r => (r.ok ? r.json() : { items: [] })).then(j => setDiaryItems(toItems(j.items ?? []))).catch(() => setDiaryItems([]))
+    const hw = (list: { type: string; subject: string }[]) => list.filter(e => e.type === 'compiti' && e.subject).map(e => e.subject)
+    if (demo) { try { setHomework(hw((JSON.parse(localStorage.getItem('diario_demo_voci') || '[]') as { day: string; type: string; subject: string }[]).filter(e => e.day === day))); setDiaryItems(toItems((JSON.parse(localStorage.getItem('diario_demo_voci') || '[]') as { id: string; day: string; type: string; note: string; subject: string }[]).filter(e => e.day === day))) } catch (_) { setDiaryItems([]) } return }
+    fetch(`/api/diary?from=${day}&to=${day}`).then(r => (r.ok ? r.json() : { items: [] })).then(j => { setDiaryItems(toItems(j.items ?? [])); setHomework(hw(j.items ?? [])) }).catch(() => setDiaryItems([]))
   }, [forNext]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggle = useCallback((id: string) => {
@@ -68,7 +83,7 @@ export default function ChildView({ items: todayItems, dayIndex, dateLabel, onBa
       } else {
         next.add(id)
         check()
-        if (next.size === items.length && items.length > 0) {
+        if (next.size + items.filter(i => !next.has(i.id) && isAt(i)).length >= items.length && items.length > 0) {
           setTimeout(() => {
             celebration()
             setShowCelebr(true)
@@ -78,7 +93,14 @@ export default function ChildView({ items: todayItems, dayIndex, dateLabel, onBa
       try { localStorage.setItem(zainoKey(target), JSON.stringify(Array.from(next))) } catch (_) {}
       return next
     })
-  }, [items.length, check, uncheck, celebration, forNext]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [items.length, check, uncheck, celebration, forNext, sch]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 🏫 rimasto a scuola (da oggi), e 🏠 tornato a casa
+  const markSchool = (i: ScheduleItem) => { const v = { ...sch, at: { ...sch.at, [keyOf(i.name)]: new Date().toISOString() } }; setSch(v); saveSchool(v); uncheck()
+    const left = items.filter(x => x.id !== i.id && !checked.has(x.id) && !isAt(x)).length
+    if (!left && items.length) setTimeout(() => { celebration(); setShowCelebr(true) }, 550) }
+  const backHome = (i: ScheduleItem) => { const at = { ...sch.at }; delete at[keyOf(i.name)]; const v = { ...sch, at }; setSch(v); saveSchool(v); check() }
+  const sinceLabel = (i: ScheduleItem) => { const d = sch.at[keyOf(i.name)]; return d ? t.zaino.atSchoolSince(t.days.names[(new Date(d).getDay() + 6) % 7]?.toLowerCase() ?? '') : '' }
 
   if (tIndex < 0 || tIndex > 4) {
     return (
@@ -113,13 +135,24 @@ export default function ChildView({ items: todayItems, dayIndex, dateLabel, onBa
       <div className={s.progressRow}>
         <div className={s.dots}>
           {items.map(item => (
-            <div key={item.id} className={`${s.dot}${checked.has(item.id) ? ` ${s.on}` : ''}`} />
+            <div key={item.id} className={`${s.dot}${checked.has(item.id) ? ` ${s.on}` : isAt(item) ? ` ${s.school}` : ''}`} />
           ))}
         </div>
-        <span className={s.progLabel}>{t.common.of(checked.size, items.length)}</span>
+        <span className={s.progLabel}>{t.common.of(checked.size, items.filter(i => !isAt(i) || checked.has(i.id)).length)}</span>
       </div>
 
       <div className={s.instruction}>{forNext ? t.zaino.prepFor(nextName) : t.zaino.instruction}</div>
+      {sch.on && (() => {
+        const at = Object.keys(sch.at)
+        const names = at.map(k => allItems.find(i => keyOf(i.name) === k)?.name ?? k)
+        const subjName = (k: string) => (t.diary.subjects[k]?.[0] ?? k).toLowerCase()
+        const warn = homework.flatMap(sj => names.filter(n => n.toLowerCase().includes(subjName(sj))).map(n => ({ sj: subjName(sj), n })))
+        const friday = now.getDay() === 5
+        return <>
+          {warn.map(w => <div key={w.n} className={s.schoolWarn}>⚠️ {t.zaino.needForHomework(w.sj, w.n)}</div>)}
+          {friday && names.length > 0 && <div className={s.schoolNote}>🏠 {t.zaino.fridayBringHome(names.join(', '))}</div>}
+        </>
+      })()}
 
       <div className={s.grid}>
         {items.map(item => (
@@ -127,11 +160,14 @@ export default function ChildView({ items: todayItems, dayIndex, dateLabel, onBa
             key={item.id}
             item={item}
             checked={checked.has(item.id)}
-            onToggle={() => toggle(item.id)}
+            onToggle={() => (isAt(item) ? (canMark ? backHome(item) : undefined) : toggle(item.id))}
             illustrate
+            atSchool={isAt(item) ? sinceLabel(item) : undefined}
+            onSchool={canMark && !FOOD.test(item.name) ? () => markSchool(item) : undefined}
           />
         ))}
       </div>
+      {inClass.length > 0 && <div className={s.classroom}>🏫 {t.zaino.inClass}: {inClass.map(i => i.name).join(', ')}</div>}
 
       {showCelebr && (
         <div className={s.overlay} onClick={() => setShowCelebr(false)}>

@@ -14,7 +14,7 @@ export interface RoutineItem extends BaseItem {}
 
 export const DAY_NAMES  = ['LUNEDÌ', 'MARTEDÌ', 'MERCOLEDÌ', 'GIOVEDÌ', 'VENERDÌ']
 export const DAY_SHORTS = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven']
-export const DAY_COLORS = ['#6B7FE3', '#E07090', '#3EAB7A', '#D4902A', '#9167D8']
+export const DAY_COLORS = ['#5468D8', '#BE4A74', '#2B8050', '#A3671C', '#7A52CC']
 export interface AgendaItem extends BaseItem {
   day_of_week: number
   time_start: string   // "HH:MM"

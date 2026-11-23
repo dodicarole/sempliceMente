@@ -13,7 +13,7 @@
 .back:hover { color: var(--text); }
 
 .banner {
-  background: linear-gradient(135deg, #9167D8 0%, #B492E8 100%);
+  background: linear-gradient(135deg, #7A52CC 0%, #B492E8 100%);
   border-radius: var(--radius);
   padding: 28px 28px 26px;
   color: #fff;
@@ -100,7 +100,7 @@
 .storyArrow {
   font-size: 28px;
   font-weight: 700;
-  color: #9167D8;
+  color: #7A52CC;
 }
 
 /* Stato vuoto */
@@ -152,7 +152,7 @@
   transition: background 0.2s, transform 0.2s;
 }
 
-.dotOn   { background: #9167D8; transform: scale(1.3); }
+.dotOn   { background: #7A52CC; transform: scale(1.3); }
 .dotDone { background: #B492E8; }
 
 .pageCard {
@@ -216,7 +216,7 @@
   border: none;
   border-radius: 20px;
   background: var(--card);
-  color: #9167D8;
+  color: #7A52CC;
   font-size: 28px;
   font-weight: 800;
   cursor: pointer;
@@ -229,7 +229,7 @@
 .navBtn:disabled { opacity: 0.35; cursor: default; }
 
 .navNext {
-  background: #9167D8;
+  background: #7A52CC;
   color: #fff;
 }
 
@@ -275,7 +275,7 @@
 .celebSub   { font-size: 15px; color: var(--text-soft); line-height: 1.5; margin-bottom: 24px; }
 
 .celebBtn {
-  background: #9167D8;
+  background: #7A52CC;
   color: #fff;
   border: none;
   border-radius: 15px;
@@ -290,7 +290,7 @@
 /* Lettura ad alta voce */
 .speakBtn {
   background: rgba(145, 103, 216, 0.12);
-  color: #9167D8;
+  color: #7A52CC;
   border: none;
   border-radius: 16px;
   padding: 12px 22px;
@@ -302,7 +302,7 @@
 }
 
 .speakBtn:active { transform: scale(0.95); }
-.speakOn { background: #9167D8; color: #fff; }
+.speakOn { background: #7A52CC; color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
   .pageCard, .celebCard { animation: none; }

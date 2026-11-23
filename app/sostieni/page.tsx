@@ -12,7 +12,7 @@ const WHATSAPP_TEXT = encodeURIComponent(
 const FEATURES = [
   {
     emoji: '🎒',
-    color: '#6B7FE3',
+    color: '#5468D8',
     title: 'Zaino Pronto',
     desc: 'Una lista visiva per ogni giorno della settimana. Il bambino sa esattamente cosa mettere nello zaino, senza dimenticare nulla e senza ansia.',
   },

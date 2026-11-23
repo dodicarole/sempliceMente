@@ -39,7 +39,7 @@
 .slotPic { font-size: 72px; line-height: 1; }
 .slotName { font-size: 18px; font-weight: 900; }
 .first { border-color: #F08C00; } .first .slotLab { color: #F08C00; }
-.then { border-color: #6B7FE3; } .then .slotLab { color: #6B7FE3; }
+.then { border-color: #5468D8; } .then .slotLab { color: #5468D8; }
 .slotOk { background: var(--done-bg); border-color: var(--done); }
 .slotOk::after { content: '✓'; position: absolute; top: 6px; right: 10px; font-size: 28px; font-weight: 900; color: var(--done); }
 .glow { animation: glow 1.4s ease-in-out infinite; }

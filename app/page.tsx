@@ -30,6 +30,9 @@ import PoemView from '@/components/PoemView'
 import HohaView from '@/components/HohaView'
 import FemView from '@/components/FemView'
 import ServeView from '@/components/ServeView'
+import PiuView from '@/components/PiuView'
+import GlrView from '@/components/GlrView'
+import DomandeView from '@/components/DomandeView'
 import PlanToday from '@/components/PlanToday'
 import PlanTracker from '@/components/PlanTracker'
 import { builtinStories } from '@/lib/builtinStories'
@@ -47,7 +50,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'femminile' | 'serve'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'femminile' | 'serve' | 'piugrande' | 'glr' | 'domande'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -331,6 +334,12 @@ export default function Home() {
               <FemView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'serve' ? (
               <ServeView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'piugrande' ? (
+              <PiuView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'glr' ? (
+              <GlrView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'domande' ? (
+              <DomandeView allowSettings onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={DEMO_AGENDA} dayIndex={demoDayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}
@@ -360,12 +369,11 @@ export default function Home() {
     <div className={s.page}>
       <div className={s.app}>
 
-        <div className={s.toggle} role="tablist">
+        <div className={s.toggle} role="group">
           {(['child', 'parent'] as View[]).map((v, i) => (
             <button
               key={v}
-              role="tab"
-              aria-selected={view === v}
+              aria-pressed={view === v}
               className={`${s.toggleBtn}${view === v ? ` ${s.active}` : ''}`}
               onClick={() => handleViewChange(v)}
             >
@@ -459,6 +467,12 @@ export default function Home() {
               <FemView onBack={() => setChildSection('home')} />
             ) : childSection === 'serve' ? (
               <ServeView onBack={() => setChildSection('home')} />
+            ) : childSection === 'piugrande' ? (
+              <PiuView onBack={() => setChildSection('home')} />
+            ) : childSection === 'glr' ? (
+              <GlrView onBack={() => setChildSection('home')} />
+            ) : childSection === 'domande' ? (
+              <DomandeView onBack={() => setChildSection('home')} />
             ) : (
               <AgendaView items={agendaItems} dayIndex={dayIndex} dateLabel={dateLabel} onBack={() => setChildSection('home')} />
             )}

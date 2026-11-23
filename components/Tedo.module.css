@@ -37,8 +37,8 @@
 .confetti { position: absolute; inset: -40px 0 0; pointer-events: none; overflow: visible; }
 .confetti i { position: absolute; top: 0; width: 9px; height: 13px; border-radius: 3px; background: #FFD45C; animation: fall 1.5s ease-in forwards; }
 .confetti i:nth-child(5n+1) { background: #F59AA0; }
-.confetti i:nth-child(5n+2) { background: #6B7FE3; }
-.confetti i:nth-child(5n+3) { background: #48B97A; }
+.confetti i:nth-child(5n+2) { background: #5468D8; }
+.confetti i:nth-child(5n+3) { background: #2A7A4F; }
 .confetti i:nth-child(5n+4) { background: #FF9F43; }
 
 .star { font-size: 72px; line-height: 1; animation: pop .5s ease-out; text-align: center; }

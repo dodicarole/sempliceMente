@@ -15,6 +15,11 @@ import PlanEditor from './PlanEditor'
 import { HohaSettingsPanel } from './HohaView'
 import { FemSettingsPanel } from './FemView'
 import { ServeSettingsPanel } from './ServeView'
+import { PiuSettingsPanel } from './PiuView'
+import { GlrSettingsPanel } from './GlrView'
+import { SpellSettingsPanel } from './EnglishSpell'
+import { DomandeSettingsPanel } from './DomandeView'
+import ZainoSchoolPanel from './ZainoSchoolPanel'
 import FunSettingsPanel from './FunSettingsPanel'
 import SplitSettingsPanel from './SplitSettingsPanel'
 import NamesSettingsPanel from './NamesSettingsPanel'
@@ -33,7 +38,7 @@ import LanguagePicker from './LanguagePicker'
 import { useChildren } from '@/lib/children'
 import { shrinkPhoto } from '@/lib/diary'
 
-type Section = 'figli' | 'piano' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'femminile' | 'serve' | 'lettura'
+type Section = 'figli' | 'piano' | 'zaino' | 'routine' | 'agenda' | 'emozioni' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'stelline' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'femminile' | 'serve' | 'piugrande' | 'glr' | 'domande' | 'lettura'
 
 interface Props {
   schedule: ScheduleItem[][]
@@ -271,13 +276,13 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       <HelpSuggestions key={kidsInParent.active?.id ?? 'nessuno'} onChange={() => setHelpVersion(v => v + 1)} />
 
       <div className={s.sectionToggle}>
-        {(['figli', 'piano', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'capisco', 'nomi', 'doppie', 'hoha', 'femminile', 'serve', 'english', 'giochi', 'poesia', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie' && sec !== 'hoha' && sec !== 'femminile' && sec !== 'giochi' && sec !== 'poesia') || lang === 'it').map(sec => (
+        {(['figli', 'piano', 'zaino', 'routine', 'agenda', 'diario', 'emozioni', 'storie', 'primapoi', 'stelline', 'numeri', 'confronta', 'piugrande', 'precsucc', 'tabelline', 'scomponi', 'contrari', 'capisco', 'glr', 'domande', 'nomi', 'doppie', 'hoha', 'femminile', 'serve', 'english', 'giochi', 'poesia', 'lettura'] as Section[]).filter(sec => (sec !== 'nomi' && sec !== 'doppie' && sec !== 'hoha' && sec !== 'femminile' && sec !== 'piugrande' && sec !== 'glr' && sec !== 'domande' && sec !== 'poesia') || lang === 'it').map(sec => (
           <button
             key={sec}
             className={`${s.sectionBtn}${section === sec ? ` ${s.sectionActive}` : ''}`}
             onClick={() => handleSectionChange(sec)}
           >
-            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'capisco' ? '🔎' : sec === 'giochi' ? '🎲' : sec === 'piano' ? '📋' : sec === 'poesia' ? '🎭' : sec === 'hoha' ? '✊' : sec === 'femminile' ? '👩‍⚕️' : sec === 'serve' ? '🔧' : sec === 'figli' ? '👨‍👧' : '🔤'}
+            {sec === 'zaino' ? '🎒' : sec === 'routine' ? '🌅' : sec === 'agenda' ? '📅' : sec === 'emozioni' ? '💗' : sec === 'storie' ? '📖' : sec === 'numeri' ? '🔢' : sec === 'tabelline' ? '✖️' : sec === 'scomponi' ? '🧱' : sec === 'nomi' ? '📝' : sec === 'english' ? '🇬🇧' : sec === 'primapoi' ? '🔄' : sec === 'stelline' ? '⭐' : sec === 'doppie' ? '✏️' : sec === 'confronta' ? '🐸' : sec === 'contrari' ? '↔️' : sec === 'precsucc' ? '🚂' : sec === 'diario' ? '📚' : sec === 'capisco' ? '🔎' : sec === 'giochi' ? '🎲' : sec === 'piano' ? '📋' : sec === 'poesia' ? '🎭' : sec === 'hoha' ? '✊' : sec === 'femminile' ? '👩‍⚕️' : sec === 'serve' ? '🔧' : sec === 'piugrande' ? '🏆' : sec === 'glr' ? '🖼️' : sec === 'domande' ? '❓' : sec === 'figli' ? '👨‍👧' : '🔤'}
           </button>
         ))}
       </div>
@@ -288,6 +293,7 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
       {/* ── ZAINO ── */}
       {section === 'zaino' && (
         <>
+          <ZainoSchoolPanel schedule={schedule} />
           <div className={s.tabs}>
             {t.days.shorts.map((name, i) => (
               <button key={i} className={`${s.tab}${i === day ? ` ${s.active}` : ''}`}
@@ -495,6 +501,9 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
         <>
           <div className={s.emotionsHint}>{t.english.parentHint}</div>
           <EnglishSettingsPanel />
+          {/* ✍️ Spell it!: impostazioni e liste di parole */}
+          <div className={s.emotionsHint}>✍️ Spell it!</div>
+          <SpellSettingsPanel />
         </>
       )}
 
@@ -545,6 +554,15 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
           <PrevNextSettingsPanel />
         </>
       )}
+
+      {/* ── COSA MI CHIEDE LA DOMANDA?: parole-domanda e aiuto in tutta l'app ── */}
+      {section === 'domande' && <DomandeSettingsPanel />}
+
+      {/* ── GUARDA, LEGGI, RISPONDI: impostazioni, risultati e confusioni ── */}
+      {section === 'glr' && <GlrSettingsPanel />}
+
+      {/* ── IL PIÙ GRANDE, IL PIÙ PICCOLO: impostazioni ── */}
+      {section === 'piugrande' && <PiuSettingsPanel />}
 
       {/* ── A COSA SERVE?: impostazioni e oggetti aggiunti ── */}
       {section === 'serve' && <ServeSettingsPanel />}

@@ -8,6 +8,7 @@ import { READ_STORIES, READ_DEFAULTS, loadReadSettings, saveReadSettings, type R
 import { toStory, type ReadTextRow } from '@/lib/readTexts'
 import SectionTitle from './SectionTitle'
 import Tedo from './Tedo'
+import QText from './QText'
 import s from './ReadUnderstand.module.css'
 import p from './NumbersSettingsPanel.module.css'
 
@@ -63,7 +64,7 @@ function Story({ story, st, onEnd }: { story: RStory; st: ReadSettings; onEnd: (
   const { t } = useT()
   const { speak } = useSpeech()
   const T = t.readUnd
-  const steps = useMemo(() => ['prima', ...(st.words && story.words.length ? ['parole'] : []), ...story.parts.map((_, i) => `pz${i}`), ...(story.seq.length >= 2 ? ['ordine'] : []), 'racconto'], [story, st.words])
+  const steps = useMemo(() => ['prima', ...(st.words && story.words.length ? ['parole'] : []), ...story.parts.map((_, i) => `pz${i}`), ...(story.seq.length >= 2 ? ['ordine'] : []), ...(story.quiz?.length ? ['quiz'] : []), 'racconto'], [story, st.words])
   const [si, setSi] = useState(0)
   const step = steps[si]
   const next = () => { hush(); setSi(i => i + 1) }
@@ -81,6 +82,8 @@ function Story({ story, st, onEnd }: { story: RStory; st: ReadSettings; onEnd: (
             <div className={s.h2}>{story.title}</div>
             {story.guess && <div className={s.sub}>{story.guess} {T.guessMore}</div>}
             <button className={`${s.btn} ${s.main}`} onClick={next}>{T.discover}</button>
+            {/* per ripassare un'altra volta: solo il quiz */}
+            {!!story.quiz?.length && <button className={s.btn} onClick={() => { hush(); setSi(steps.indexOf('quiz')) }}>{T.quizOnly}</button>}
           </>
         )}
         {step === 'parole' && (
@@ -95,6 +98,7 @@ function Story({ story, st, onEnd }: { story: RStory; st: ReadSettings; onEnd: (
         )}
         {step.startsWith('pz') && <Part key={step} story={story} index={+step.slice(2)} st={st} onNext={next} />}
         {step === 'ordine' && <Order story={story} onDone={next} />}
+        {step === 'quiz' && <Quiz story={story} onDone={next} />}
         {step === 'racconto' && <Retell story={story} onEnd={onEnd} />}
       </div>
     </>
@@ -165,7 +169,7 @@ function Part({ story, index, st, onNext }: { story: RStory; index: number; st: 
       {ask && q ? (
         <div className={s.q}>
           <span className={s.qtag} style={{ background: QCOLOR[q.t][1] }}>{QCOLOR[q.t][0]} {T.qt[q.t]}</span>
-          <div className={s.qtext}>{q.text}</div>
+          <div className={s.qtext}><QText text={q.text} t={q.t} /></div>
           {okCount > 1 && <div className={s.sub}>✨ {T.findAll(okCount)}{found.length > 0 && !done ? ` (${found.length}/${okCount})` : ''}</div>}
           <div className={s.opts}>
             {opts.map(o => (
@@ -203,6 +207,54 @@ function Order({ story, onDone }: { story: RStory; onDone: () => void }) {
         ))}
       </div>
       {k === story.seq.length && <button className={`${s.btn} ${s.main}`} onClick={onDone}>{T.orderDone}</button>}
+    </>
+  )
+}
+
+/* 🧠 Il quiz di ripasso: una domanda alla volta; quelle sbagliate tornano una volta alla fine */
+function Quiz({ story, onDone }: { story: RStory; onDone: () => void }) {
+  const { t } = useT()
+  const { speak } = useSpeech()
+  const T = t.readUnd
+  const [queue, setQueue] = useState(() => (story.quiz ?? []).map((q, i) => ({ ...q, i })))
+  const [k, setK] = useState(0)
+  const [found, setFound] = useState<string[]>([])
+  const [missed, setMissed] = useState(false)
+  const [score, setScore] = useState(0)
+  const q = queue[k]
+  const opts = useMemo(() => (q ? shuffle(q.opts) : []), [q])
+  const oks = q ? q.opts.filter(o => o.ok).length : 0
+  useEffect(() => { if (q) speak(q.q) }, [k]) // eslint-disable-line react-hooks/exhaustive-deps
+  if (!q) return (
+    <>
+      <div className={s.h2} style={{ textAlign: 'center' }}>🧠 {T.quizEnd(score, story.quiz?.length ?? 0)}</div>
+      <button className={`${s.btn} ${s.main}`} onClick={onDone}>{T.next}</button>
+    </>
+  )
+  const tap = async (o: { text: string; ok: boolean }, el: HTMLElement) => {
+    if (found.length >= oks) return
+    if (o.ok) {
+      if (found.includes(o.text)) return
+      const f = [...found, o.text]; setFound(f)
+      if (f.length < oks) { speak(T.foundOne(f.length, oks)); return }
+      if (!missed && q.i >= 0 && k < (story.quiz?.length ?? 0)) setScore(sc => sc + 1)
+      await speak(T.right)
+      setTimeout(() => { setFound([]); setMissed(false); setK(x => x + 1) }, 700)
+    } else {
+      el.classList.remove(s.wrong); void el.offsetWidth; el.classList.add(s.wrong)
+      if (!missed) { setMissed(true); setQueue(qq => [...qq, { ...q, i: -1 }]) }     // tornerà alla fine, per ripassarla
+      speak(T.quizRetry)
+    }
+  }
+  return (
+    <>
+      <div className={s.h2}>🧠 {T.quizTitle} <span className={s.sub}>{k + 1} / {queue.length}</span></div>
+      {q.i < 0 && <div className={s.sub}>🔁 {T.quizAgain}</div>}
+      <div className={s.qtext}>{q.q}</div>
+      {oks > 1 && <div className={s.sub}>✨ {T.findAll(oks)}</div>}
+      <div className={s.opts}>
+        {opts.map(o => <button key={o.text} className={`${s.opt}${found.includes(o.text) ? ` ${s.right}` : ''}`} onClick={e => tap(o, e.currentTarget)}>{o.text}</button>)}
+      </div>
     </>
   )
 }

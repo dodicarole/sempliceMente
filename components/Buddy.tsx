@@ -27,7 +27,7 @@ export default function Buddy({ spot }: { spot: BuddySpot }) {
     <button className={s.buddy} onClick={speak} aria-label={`${b.name}: ${line}`}>
       <Image src={b.img} alt="" width={56} height={56} className={s.avatar} style={{ borderColor: b.color }} />
       <span className={s.bubble}>
-        <b style={{ color: b.color }}>{b.name}</b>
+        <b style={{ color: `color-mix(in srgb, ${b.color} 52%, #1F2147)` }}>{b.name}</b>
         <span>{line}</span>
       </span>
     </button>

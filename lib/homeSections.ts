@@ -7,7 +7,7 @@ import type { ChildGender } from '@/lib/praise'
 
 export const SECTION_IDS = [
   'zaino', 'routine', 'agenda', 'diario', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
-  'numeri', 'confronta', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'sillabe', 'doppie', 'hoha', 'femminile', 'serve', 'nomi', 'english', 'giochi', 'poesia',
+  'numeri', 'confronta', 'piugrande', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'glr', 'domande', 'sillabe', 'doppie', 'hoha', 'femminile', 'serve', 'nomi', 'english', 'giochi', 'poesia',
 ] as const
 export type SectionId = typeof SECTION_IDS[number]
 
@@ -16,7 +16,7 @@ export interface HomeCard { id: SectionId; e: string; c: string; title: string; 
 export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[]; learn: HomeCard[] } {
   return {
     daily: [
-      { id: 'zaino', e: '🎒', c: '#6B7FE3', title: t.home.zainoTitle, sub: t.home.zainoSub },
+      { id: 'zaino', e: '🎒', c: '#5468D8', title: t.home.zainoTitle, sub: t.home.zainoSub },
       { id: 'routine', e: '🌅', c: '#FF8C42', title: t.home.routineTitle, sub: t.home.routineSub(gender) },
       { id: 'agenda', e: '📅', c: '#3EAB7A', title: t.home.agendaTitle, sub: t.home.agendaSub },
       { id: 'diario', e: '📚', c: '#5F3DC4', title: t.diary.title, sub: t.diary.homeSub },
@@ -30,6 +30,7 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
     learn: [
       { id: 'numeri', e: '🔢', c: '#F59F00', title: t.home.numbersTitle, sub: t.home.numbersSub },
       { id: 'confronta', e: '🐸', c: '#2F9E44', title: t.compare.title, sub: t.compare.homeSub },
+      { id: 'piugrande', e: '🏆', c: '#F08C00', title: 'Il più grande, il più piccolo', sub: 'Tra tanti numeri, chi vince?', it: true },
       { id: 'precsucc', e: '🚂', c: '#0C8599', title: t.prevNext.title, sub: t.prevNext.homeSub },
       { id: 'tabelline', e: '✖️', c: '#7048E8', title: t.home.tablesTitle, sub: t.home.tablesSub },
       { id: 'scomponi', e: '🧱', c: '#2F9E44', title: t.split.title, sub: t.split.homeSub },
@@ -37,13 +38,15 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
       { id: 'soldi', e: '💶', c: '#2F9E44', title: t.daily.moneyTitle, sub: t.daily.moneySub },
       { id: 'contrari', e: '↔️', c: '#C2255C', title: t.opposites.title, sub: t.opposites.homeSub },
       { id: 'capisco', e: '🔎', c: '#0B7285', title: t.readUnd.title, sub: t.readUnd.homeSub },
+      { id: 'glr', e: '🖼️', c: '#1C7ED6', title: 'Guarda, leggi, rispondi', sub: 'Chi? Cosa? Dove? Una domanda alla volta', it: true },
+      { id: 'domande', e: '❓', c: '#7048E8', title: 'Cosa mi chiede la domanda?', sub: 'Chi, cosa, dove, quando…', it: true },
       { id: 'sillabe', e: '🔤', c: '#E03131', title: 'Le sillabe', sub: 'Unisci le sillabe per leggere', it: true },
       { id: 'doppie', e: '✏️', c: '#F08C00', title: 'Le doppie', sub: 'Una lettera o due?', it: true },
       { id: 'hoha', e: '✊', c: '#E8590C', title: 'Ho o o? Ha o a?', sub: 'La H che non si sente', it: true },
       { id: 'femminile', e: '👩‍⚕️', c: '#C2255C', title: 'Il femminile', sub: 'Dottore → dottoressa', it: true },
       { id: 'serve', e: '🔧', c: '#0B7285', title: t.serve.title, sub: t.serve.homeSub },
       { id: 'nomi', e: '📝', c: '#7048E8', title: 'Classifica i nomi', sub: 'Persona, animale o cosa?', it: true },
-      { id: 'giochi', e: '🎲', c: '#E8590C', title: t.games.title, sub: t.games.homeSub, it: true },
+      { id: 'giochi', e: '🎲', c: '#E8590C', title: t.games.title, sub: t.games.homeSub },
       { id: 'poesia', e: '🎭', c: '#C2255C', title: 'Imparo la poesia', sub: 'Un verso alla volta, finché la sai a memoria', it: true },
       { id: 'english', e: '🇬🇧', c: '#1C3F94', title: t.english.title, sub: t.english.homeSub },
     ],

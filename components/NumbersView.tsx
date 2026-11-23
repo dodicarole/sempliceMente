@@ -169,7 +169,7 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
         <h2 className={s.title}>
           Metti in ordine{' '}
           <span className={s.keep}>
-            <span className={s.cresc} aria-label={word}>
+            <span className={s.cresc} role="img" aria-label={word}>
               {word.split('').map((ch, i) => <span key={i} aria-hidden="true">{ch}</span>)}
             </span>
             {desc ? (
@@ -215,7 +215,7 @@ export default function NumbersView({ onBack, allowSettings = false }: Props) {
         <>
           <p className={s.ask}>{askText}</p>
 
-          <div ref={trainRef} className={s.train} aria-label="Numeri in fila">
+          <div ref={trainRef} className={s.train} role="group" aria-label="Numeri in fila">
             {target.map((v, i) => (
               <div
                 key={i}

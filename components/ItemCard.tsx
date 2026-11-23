@@ -12,14 +12,18 @@ interface Props {
   doneLabel?: string
   /** Se non c'è la foto, mostra un'immagine proposta in base al nome (zaino) */
   illustrate?: boolean
+  /** zaino: è rimasto a scuola (il testo dice da quando); toccando la scheda torna a casa */
+  atSchool?: string
+  /** zaino: il piccolo bottone 🏫 nell'angolo, per dire che è rimasto a scuola */
+  onSchool?: () => void
 }
 
-export default function ItemCard({ item, checked, onToggle, doneLabel, illustrate = false }: Props) {
+export default function ItemCard({ item, checked, onToggle, doneLabel, illustrate = false, atSchool, onSchool }: Props) {
   const { t } = useT()
   const label = doneLabel ?? t.zaino.inside
   return (
     <div
-      className={`${s.wrap} ${checked ? s.done : ''}`}
+      className={`${s.wrap} ${checked ? s.done : ''}${atSchool ? ` ${s.school}` : ''}`}
       onClick={onToggle}
       onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onToggle()}
       role="checkbox"
@@ -45,6 +49,11 @@ export default function ItemCard({ item, checked, onToggle, doneLabel, illustrat
             )}
           </div>
           <div className={s.label}>{item.name}</div>
+          {atSchool && <div className={s.schoolTag}>{atSchool}</div>}
+          {onSchool && !checked && !atSchool && (
+            <button className={s.schoolBtn} aria-label={t.zaino.atSchoolBtn} title={t.zaino.atSchoolBtn}
+              onClick={e => { e.stopPropagation(); onSchool() }} onKeyDown={e => e.stopPropagation()}>🏫</button>
+          )}
         </div>
         <div className={`${s.face} ${s.back}`}>
           <div className={s.doneIcon}>✅</div>

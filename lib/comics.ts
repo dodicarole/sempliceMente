@@ -3,7 +3,7 @@
  * con racconto (didascalia) e nuvolette (parla / pensa) in italiano e in francese.
  */
 /* eslint-disable */
-export type CharId = 'zoe' | 'lila' | 'nico' | 'amina' | 'meky' | 'mamma' | 'tedo'
+export type CharId = 'zoe' | 'lila' | 'nico' | 'amina' | 'meky' | 'mamma' | 'tedo' | 'elio' | 'maestra'
 type Txt = { it: string; fr: string }
 export interface Bubble { who: CharId; kind: 'say' | 'think'; text: Txt; x: number; y: number; tail: 'tl' | 'tr'; big?: boolean; small?: boolean }
 export interface Panel { svg: string; cap: Txt; bubbles: Bubble[] }
@@ -13,6 +13,7 @@ export const CHARS: Record<CharId, { name: string; color: string; pitch: number 
   zoe: { name: 'Zoe', color: '#F08C00', pitch: 1.25 }, lila: { name: 'Lila', color: '#C2255C', pitch: 1.35 },
   nico: { name: 'Nico', color: '#0C8599', pitch: 1.1 }, amina: { name: 'Amina', color: '#2F9E44', pitch: 1.2 },
   meky: { name: 'Meky', color: '#5F88CC', pitch: 1.3 }, mamma: { name: 'Mamma', color: '#7048E8', pitch: 0.95 }, tedo: { name: 'Tedo', color: '#2F9E44', pitch: 1.45 },
+  elio: { name: 'Elio', color: '#1C7ED6', pitch: 1.15 }, maestra: { name: 'Maestra', color: '#0B7285', pitch: 1.0 },
 }
 
 const INK='#2B2D52', CHEEK='#F59AA0';
@@ -23,7 +24,9 @@ const CAST: Record<string, any> = {
   nico:{skin:'fair',hair:'#7A4E2D',style:'short',shirt:'#0C8599',pants:'#2F4858',phones:1},
   amina:{skin:'tan',hair:'#2B1B12',style:'bun',shirt:'#2F9E44',pants:'#2B5A3A',glasses:1},
   meky:{skin:'fair',hair:'#6B4226',style:'short',shirt:'#7FA8E8',pants:'#5F88CC'},
-  mamma:{skin:'fair',hair:'#8B5A2B',style:'long',shirt:'#9775FA',pants:'#5F3DC4',skirt:1}
+  mamma:{skin:'fair',hair:'#8B5A2B',style:'long',shirt:'#9775FA',pants:'#5F3DC4',skirt:1},
+  elio:{skin:'medium',hair:'#3B2A1A',style:'short',shirt:'#1C7ED6',pants:'#364FC7'},
+  maestra:{skin:'light',hair:'#6B4226',style:'bun',shirt:'#12B886',pants:'#0B7285',skirt:1,glasses:1}
 };
 const f = (n: number) => (+n).toFixed(1);
 function head(o: any, cx: number, cy: number, r: number, mood: string){
@@ -46,7 +49,7 @@ function head(o: any, cx: number, cy: number, r: number, mood: string){
   else if(mood==='sad') s+='<path d="M'+f(cx-r*.28)+' '+f(cy+r*.5)+' q'+f(r*.28)+' -'+f(r*.22)+' '+f(r*.56)+' 0" stroke="'+INK+'" stroke-width="3" fill="none" stroke-linecap="round"/>';
   else if(mood==='oh') s+='<ellipse cx="'+cx+'" cy="'+f(cy+r*.42)+'" rx="'+f(r*.14)+'" ry="'+f(r*.19)+'" fill="'+INK+'"/>';
   else s+='<path d="M'+f(cx-r*.35)+' '+f(cy+r*.3)+' q'+f(r*.35)+' '+f(r*.45)+' '+f(r*.7)+' 0 z" fill="'+INK+'"/>';
-  if(o.phones) s+='<path d="M'+f(cx-r-4)+' '+cy+' C'+f(cx-r-4)+' '+f(cy-r*1.55)+' '+f(cx+r+4)+' '+f(cy-r*1.55)+' '+f(cx+r+4)+' '+cy+'" stroke="#6B7FE3" stroke-width="6" fill="none"/><rect x="'+f(cx-r-11)+'" y="'+f(cy-r*.35)+'" width="14" height="'+f(r*.75)+'" rx="6" fill="#6B7FE3"/><rect x="'+f(cx+r-3)+'" y="'+f(cy-r*.35)+'" width="14" height="'+f(r*.75)+'" rx="6" fill="#6B7FE3"/>';
+  if(o.phones) s+='<path d="M'+f(cx-r-4)+' '+cy+' C'+f(cx-r-4)+' '+f(cy-r*1.55)+' '+f(cx+r+4)+' '+f(cy-r*1.55)+' '+f(cx+r+4)+' '+cy+'" stroke="#5468D8" stroke-width="6" fill="none"/><rect x="'+f(cx-r-11)+'" y="'+f(cy-r*.35)+'" width="14" height="'+f(r*.75)+'" rx="6" fill="#5468D8"/><rect x="'+f(cx+r-3)+'" y="'+f(cy-r*.35)+'" width="14" height="'+f(r*.75)+'" rx="6" fill="#5468D8"/>';
   return s;
 }
 /* un bambino con i piedi in (x,y); pose: down, run, up, wave, fists, slide */
@@ -101,6 +104,50 @@ const MK = [
   room+sun(340,48)+kid('mamma',120,220,.68,{mood:'happy'})+kid('meky',220,210,.6,{mood:'happy',pose:'up'})+frog(320,210,56,true),
 ]
 
+
+/* ── Per le tre storie nuove: il tavolino con i pennarelli, il gioco dell'oca, la classe, i cuori ── */
+const picnic='<rect x="150" y="196" width="150" height="9" rx="3" fill="#B08968"/><rect x="160" y="203" width="7" height="38" fill="#9C7656"/><rect x="283" y="203" width="7" height="38" fill="#9C7656"/><rect x="190" y="188" width="44" height="9" rx="2" fill="#FFFFFF"/>';
+function markers(x: number, y: number){ return '<rect x="'+x+'" y="'+(y-12)+'" width="40" height="13" rx="3" fill="#5468D8"/>'+['#E03131','#F08C00','#FCC419','#2F9E44','#1C7ED6','#9775FA'].map((c,i)=>'<rect x="'+(x+3+i*6)+'" y="'+(y-24)+'" width="5" height="15" rx="2" fill="'+c+'"/>').join(''); }
+function hearts(x: number, y: number){ return [0,1,2].map(i=>'<path transform="translate('+(x+i*34)+' '+(y-(i%2)*14)+') scale(.55)" d="M0 -10 C-10 -26 -34 -16 -26 4 L0 30 L26 4 C34 -16 10 -26 0 -10 Z" fill="#F06595"/>').join(''); }
+const home='<rect width="400" height="300" fill="#FFF4E6"/><rect y="200" width="400" height="100" fill="#F3D9B1"/><rect x="290" y="30" width="80" height="70" rx="6" fill="#D0EBFF" stroke="#C9B49A" stroke-width="6"/>';
+function goose(x: number, y: number, step: number){ // il tavolino con il gioco dell'oca, il dado e le pedine
+  const cells=['#FFD43B','#74C0FC','#8CE99A','#FFA8A8','#B197FC','#FFD43B','#74C0FC','#8CE99A'];
+  let s='<rect x="'+(x-90)+'" y="'+y+'" width="180" height="9" rx="3" fill="#B08968"/><rect x="'+(x-80)+'" y="'+(y+7)+'" width="7" height="'+(240-y)+'" fill="#9C7656"/><rect x="'+(x+73)+'" y="'+(y+7)+'" width="7" height="'+(240-y)+'" fill="#9C7656"/>';
+  s+='<path d="M'+(x-80)+' '+y+' L'+(x-60)+' '+(y-22)+' H'+(x+60)+' L'+(x+80)+' '+y+' Z" fill="#FFFFFF" stroke="#C9B49A" stroke-width="2"/>';
+  cells.forEach((c,i)=>{ s+='<rect x="'+(x-62+i*15.5)+'" y="'+(y-16)+'" width="13" height="11" rx="2" fill="'+c+'"/>'; });
+  s+='<circle cx="'+(x-56+step*15.5)+'" cy="'+(y-20)+'" r="5" fill="#2F9E44" stroke="#2B2D52" stroke-width="1.5"/><circle cx="'+(x-56+Math.max(0,step-3)*15.5)+'" cy="'+(y-24)+'" r="5" fill="#1C7ED6" stroke="#2B2D52" stroke-width="1.5"/>';
+  return s+'<rect x="'+(x+40)+'" y="'+(y-40)+'" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#2B2D52" stroke-width="2"/><circle cx="'+(x+45)+'" cy="'+(y-35)+'" r="1.8" fill="#2B2D52"/><circle cx="'+(x+51)+'" cy="'+(y-29)+'" r="1.8" fill="#2B2D52"/>';
+}
+const angry='<rect width="400" height="300" fill="#FFE3E3"/>'+([[40,40],[340,50],[50,150],[350,140]] as number[][]).map(([a,b])=>'<path d="M'+a+' '+b+' l14 -14 M'+(a+6)+' '+(b+10)+' l18 -6" stroke="#E03131" stroke-width="5" stroke-linecap="round"/>').join('');
+const classroom='<rect width="400" height="300" fill="#EDF2FF"/><rect y="206" width="400" height="94" fill="#DBE4FF"/><rect x="40" y="30" width="200" height="96" rx="6" fill="#2F6B4F" stroke="#B08968" stroke-width="7"/><path d="M60 58 h70 M60 80 h110 M60 102 h50" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity=".8"/><rect x="296" y="40" width="70" height="56" rx="4" fill="#FFF3BF" stroke="#C9B49A" stroke-width="4"/>';
+const desk=(x: number)=>'<rect x="'+(x-34)+'" y="214" width="68" height="8" rx="3" fill="#B08968"/><rect x="'+(x-28)+'" y="220" width="5" height="22" fill="#9C7656"/><rect x="'+(x+23)+'" y="220" width="5" height="22" fill="#9C7656"/>';
+const book=(x: number, y: number)=>'<path d="M'+(x-22)+' '+y+' L'+x+' '+(y+5)+' L'+(x+22)+' '+y+' L'+(x+22)+' '+(y-26)+' L'+x+' '+(y-21)+' L'+(x-22)+' '+(y-26)+' Z" fill="#FFFFFF" stroke="#E64980" stroke-width="3"/><path d="M'+x+' '+(y+5)+' V'+(y-21)+'" stroke="#E64980" stroke-width="2"/>';
+const blush=(x: number, y: number)=>'<ellipse cx="'+(x-15)+'" cy="'+y+'" rx="8" ry="5" fill="#FA5252" opacity=".55"/><ellipse cx="'+(x+15)+'" cy="'+y+'" rx="8" ry="5" fill="#FA5252" opacity=".55"/>';
+const LI = [
+  sky+tree(50)+picnic+markers(244,196)+kid('lila',120,240,.66),
+  sky+tree(50)+picnic+markers(244,196)+kid('lila',120,240,.66,{mood:'oh'})+kid('elio',330,240,.66,{pose:'run'}),
+  sky+tree(50)+picnic+markers(244,196)+kid('lila',120,240,.66,{mood:'sad'})+kid('elio',330,240,.66,{pose:'wave',mood:'happy'}),
+  sky+picnic+markers(244,196)+kid('lila',110,240,.66,{mood:'oh'})+frog(225,190,58,true)+kid('elio',340,240,.66,{mood:'calm'}),
+  sky+tree(50)+picnic+markers(244,196)+kid('lila',120,240,.66,{pose:'wave',mood:'calm'})+kid('elio',330,240,.66,{mood:'oh'}),
+  sky+tree(50)+picnic+markers(216,196)+kid('lila',140,240,.66,{mood:'happy'})+kid('elio',300,240,.66,{mood:'happy'})+hearts(185,120),
+];
+const EL = [
+  home+goose(200,170,3)+kid('elio',90,232,.62,{pose:'up',mood:'happy'})+kid('amina',310,232,.62,{mood:'calm'}),
+  home+goose(200,170,7)+kid('elio',90,232,.62,{mood:'oh'})+kid('amina',310,232,.62,{pose:'up',mood:'happy'}),
+  angry+kid('elio',200,330,1.5,{pose:'fists',mood:'angry'}),
+  home+goose(200,170,7)+kid('elio',90,232,.62,{mood:'sad'})+frog(200,128,52,true)+kid('amina',310,232,.62,{mood:'calm'}),
+  home+goose(200,170,7)+kid('elio',90,232,.62,{pose:'wave',mood:'calm'})+kid('amina',310,232,.62,{mood:'happy'}),
+  home+goose(200,170,0)+kid('elio',90,232,.62,{mood:'happy'})+kid('amina',310,232,.62,{pose:'wave',mood:'happy'})+hearts(170,90),
+];
+const AM = [
+  classroom+desk(310)+kid('maestra',90,236,.74,{mood:'calm'})+kid('amina',230,236,.66,{pose:'fists',mood:'calm'})+book(230,192)+kid('nico',330,236,.5),
+  classroom+desk(310)+kid('amina',200,236,.7,{pose:'fists',mood:'oh'})+book(200,192)+kid('nico',330,236,.5,{mood:'oh'}),
+  '<rect width="400" height="300" fill="#FFF0F6"/>'+kid('amina',200,330,1.45,{pose:'fists',mood:'sad'})+blush(200,138),
+  classroom+desk(310)+kid('amina',150,236,.66,{pose:'fists',mood:'oh'})+book(150,192)+frog(300,210,62,true),
+  classroom+desk(310)+kid('maestra',90,236,.74,{mood:'happy'})+kid('amina',230,236,.66,{pose:'fists',mood:'calm'})+book(230,192)+'<path d="M222 180 l10 8" stroke="#B97D4E" stroke-width="5" stroke-linecap="round"/>',
+  classroom+desk(310)+kid('maestra',90,236,.74,{mood:'happy'})+kid('amina',220,236,.66,{pose:'up',mood:'happy'})+kid('nico',330,236,.5,{pose:'wave',mood:'happy'}),
+];
+
 export const COMICS: Comic[] = [{
   id: 'zoe-turno', icon: '🛝', title: { it: 'Zoe e il turno allo scivolo', fr: 'Zoe et son tour au toboggan' },
   panels: [
@@ -133,5 +180,54 @@ export const COMICS: Comic[] = [{
     { svg: MK[7], cap: { it: 'La verità è più leggera!', fr: 'La vérité, c’est plus léger\u00a0!' },
       bubbles: [{ who: 'mamma', kind: 'say', text: { it: 'Grazie per avermi detto la verità.', fr: 'Merci de m’avoir dit la vérité.' }, x: 3, y: 2, tail: 'tl', small: true }] },
   ],
+}, {
+  id: 'lila-no', icon: '🖍️', title: { it: 'Lila impara a dire di no', fr: 'Lila apprend à dire non' },
+  panels: [
+    { svg: LI[0], cap: { it: 'Al parco, Lila disegna con i suoi pennarelli nuovi.', fr: 'Au parc, Lila dessine avec ses nouveaux feutres.' }, bubbles: [] },
+    { svg: LI[1], cap: { it: 'Arriva Elio di corsa.', fr: 'Elio arrive en courant.' },
+      bubbles: [{ who: 'elio', kind: 'say', text: { it: 'Dammi i tuoi pennarelli! Li voglio tutti!', fr: 'Donne-moi tes feutres\u00a0! Je les veux tous\u00a0!' }, x: 40, y: 4, tail: 'tr' }] },
+    { svg: LI[2], cap: { it: 'Lila non sa cosa fare.', fr: 'Lila ne sait pas quoi faire.' },
+      bubbles: [{ who: 'lila', kind: 'think', text: { it: 'Non voglio… ma se dico di no, si arrabbia?', fr: 'Je ne veux pas… mais si je dis non, il va se fâcher\u00a0?' }, x: 3, y: 4, tail: 'tl', small: true }] },
+    { svg: LI[3], cap: { it: 'Tedo le dà un consiglio: un bel respiro, voce calma e una proposta.', fr: 'Tedo lui donne un conseil\u00a0: une grande respiration, une voix calme et une proposition.' },
+      bubbles: [{ who: 'tedo', kind: 'say', text: { it: 'Puoi dire di no, con gentilezza!', fr: 'Tu peux dire non, avec gentillesse\u00a0!' }, x: 30, y: 3, tail: 'tl' }] },
+    { svg: LI[4], cap: { it: 'Lila fa un bel respiro e parla con voce calma.', fr: 'Lila respire profondément et parle d’une voix calme.' },
+      bubbles: [{ who: 'lila', kind: 'say', text: { it: 'No, grazie. Li sto usando io. Se vuoi, disegniamo insieme!', fr: 'Non, merci. Je les utilise. Si tu veux, on dessine ensemble\u00a0!' }, x: 3, y: 3, tail: 'tl', small: true }] },
+    { svg: LI[5], cap: { it: 'Dire di no con gentilezza si può!', fr: 'On peut dire non avec gentillesse\u00a0!' },
+      bubbles: [{ who: 'elio', kind: 'say', text: { it: 'Va bene! Io prendo il blu!', fr: 'D’accord\u00a0! Moi, je prends le bleu\u00a0!' }, x: 44, y: 3, tail: 'tr' }] },
+  ],
+}, {
+  id: 'elio-perde', icon: '🎲', title: { it: 'Elio perde al gioco', fr: 'Elio perd au jeu' },
+  panels: [
+    { svg: EL[0], cap: { it: 'Elio e Amina giocano al gioco dell’oca.', fr: 'Elio et Amina jouent au jeu de l’oie.' },
+      bubbles: [{ who: 'elio', kind: 'say', text: { it: 'Vinco io, vinco io!', fr: 'Je vais gagner\u00a0!' }, x: 3, y: 4, tail: 'tl' }] },
+    { svg: EL[1], cap: { it: 'Ma Amina arriva per prima.', fr: 'Mais Amina arrive la première.' },
+      bubbles: [{ who: 'amina', kind: 'say', text: { it: 'Arrivata! Ho vinto!', fr: 'Arrivée\u00a0! J’ai gagné\u00a0!' }, x: 50, y: 4, tail: 'tr' }] },
+    { svg: EL[2], cap: { it: 'Elio si arrabbia tanto. Perdere è difficile!', fr: 'Elio est très en colère. Perdre, c’est difficile\u00a0!' },
+      bubbles: [{ who: 'elio', kind: 'think', text: { it: 'Non è giusto! Volevo vincere io!', fr: 'C’est pas juste\u00a0! Je voulais gagner\u00a0!' }, x: 3, y: 4, tail: 'tl' }] },
+    { svg: EL[3], cap: { it: 'Tedo gli insegna un trucco.', fr: 'Tedo lui apprend une astuce.' },
+      bubbles: [{ who: 'tedo', kind: 'say', text: { it: 'Quando perdi, respira e conta fino a 5.', fr: 'Quand tu perds, respire et compte jusqu’à 5.' }, x: 28, y: 2, tail: 'tl', small: true }] },
+    { svg: EL[4], cap: { it: 'Elio respira, conta… e dice una cosa gentile.', fr: 'Elio respire, compte… et dit une chose gentille.' },
+      bubbles: [{ who: 'elio', kind: 'say', text: { it: 'Brava Amina! Facciamo un’altra partita?', fr: 'Bravo Amina\u00a0! On refait une partie\u00a0?' }, x: 3, y: 4, tail: 'tl', small: true }] },
+    { svg: EL[5], cap: { it: 'Vincere è bello, ma giocare insieme lo è di più!', fr: 'Gagner, c’est bien, mais jouer ensemble, c’est encore mieux\u00a0!' },
+      bubbles: [{ who: 'amina', kind: 'say', text: { it: 'Sì! Si gioca per divertirsi!', fr: 'Oui\u00a0! On joue pour s’amuser\u00a0!' }, x: 46, y: 4, tail: 'tr' }] },
+  ],
+}, {
+  id: 'amina-legge', icon: '📖', title: { it: 'Amina sbaglia leggendo ad alta voce', fr: 'Amina se trompe en lisant à voix haute' },
+  panels: [
+    { svg: AM[0], cap: { it: 'A scuola, la maestra chiede ad Amina di leggere ad alta voce.', fr: 'À l’école, la maîtresse demande à Amina de lire à voix haute.' },
+      bubbles: [{ who: 'maestra', kind: 'say', text: { it: 'Amina, leggi tu?', fr: 'Amina, tu lis\u00a0?' }, x: 3, y: 4, tail: 'tl' }] },
+    { svg: AM[1], cap: { it: 'Amina legge, ma sbaglia una parola.', fr: 'Amina lit, mais elle se trompe de mot.' },
+      bubbles: [{ who: 'amina', kind: 'say', text: { it: 'Il gatto… ehm… il gallo canta…', fr: 'Le chat… euh… le coq chante…' }, x: 3, y: 4, tail: 'tl', small: true }] },
+    { svg: AM[2], cap: { it: 'Amina diventa rossa e vorrebbe smettere.', fr: 'Amina devient toute rouge et voudrait s’arrêter.' },
+      bubbles: [{ who: 'amina', kind: 'think', text: { it: 'Che vergogna… tutti mi guardano!', fr: 'Quelle honte… tout le monde me regarde\u00a0!' }, x: 3, y: 4, tail: 'tl' }] },
+    { svg: AM[3], cap: { it: 'Tedo le ricorda che tutti sbagliano.', fr: 'Tedo lui rappelle que tout le monde se trompe.' },
+      bubbles: [{ who: 'tedo', kind: 'say', text: { it: 'Sbagliare è normale: si impara così!', fr: 'Se tromper, c’est normal\u00a0: c’est comme ça qu’on apprend\u00a0!' }, x: 40, y: 3, tail: 'tr', small: true }] },
+    { svg: AM[4], cap: { it: 'La maestra la incoraggia, e Amina segue le parole con il dito.', fr: 'La maîtresse l’encourage, et Amina suit les mots avec son doigt.' },
+      bubbles: [{ who: 'maestra', kind: 'say', text: { it: 'Riprova con calma, piano piano.', fr: 'Recommence calmement, doucement.' }, x: 3, y: 4, tail: 'tl', small: true }] },
+    { svg: AM[5], cap: { it: 'Amina ci riprova… e ce la fa!', fr: 'Amina réessaie… et elle y arrive\u00a0!' },
+      bubbles: [{ who: 'amina', kind: 'say', text: { it: 'Il gallo canta al mattino!', fr: 'Le coq chante le matin\u00a0!' }, x: 34, y: 3, tail: 'tl' },
+        { who: 'nico', kind: 'say', text: { it: 'Brava Amina!', fr: 'Bravo Amina\u00a0!' }, x: 62, y: 30, tail: 'tr', small: true }] },
+  ],
 }]
+
 

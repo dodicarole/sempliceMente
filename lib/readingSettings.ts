@@ -5,15 +5,17 @@
  */
 
 export interface ReadingSettings {
-  size: 'normal' | 'large' | 'xlarge'
+  size: 'normal' | 'large' | 'xlarge' | 'xxlarge'
   font: 'standard' | 'leggibile'
   uppercase: boolean
   spacing: 'normal' | 'wide'
   autoRead: boolean
+  /** per chi vede poco: testi più scuri e un bordo scuro intorno a bottoni e schede */
+  contrast: 'normal' | 'high'
 }
 
 export const READING_DEFAULTS: ReadingSettings = {
-  size: 'normal', font: 'standard', uppercase: false, spacing: 'normal', autoRead: false,
+  size: 'normal', font: 'standard', uppercase: false, spacing: 'normal', autoRead: false, contrast: 'normal',
 }
 
 type ReadingTexts = import('@/lib/i18n/it').Dict['reading']
@@ -21,7 +23,8 @@ type ReadingTexts = import('@/lib/i18n/it').Dict['reading']
 /** Opzioni con le etichette nella lingua scelta */
 export function readingOptions(r: ReadingTexts): { key: keyof ReadingSettings; label: string; values: [ReadingSettings[keyof ReadingSettings], string][] }[] {
   return [
-    { key: 'size',      label: r.size,     values: [['normal', r.sizeNormal], ['large', r.sizeLarge], ['xlarge', r.sizeXLarge]] },
+    { key: 'size',      label: r.size,     values: [['normal', r.sizeNormal], ['large', r.sizeLarge], ['xlarge', r.sizeXLarge], ['xxlarge', r.sizeXXLarge]] },
+    { key: 'contrast',  label: r.contrast, values: [['normal', r.contrastNormal], ['high', r.contrastHigh]] },
     { key: 'font',      label: r.font,     values: [['standard', r.fontStandard], ['leggibile', r.fontReadable]] },
     { key: 'uppercase', label: r.writing,  values: [[false, r.writingNormal], [true, r.writingUpper]] },
     { key: 'spacing',   label: r.spacing,  values: [['normal', r.spacingNormal], ['wide', r.spacingWide]] },
@@ -47,6 +50,7 @@ export function applyReadingSettings(settings: ReadingSettings) {
   d.letturaFont       = settings.font
   d.letturaMaiuscolo  = String(settings.uppercase)
   d.letturaSpazi      = settings.spacing
+  d.letturaContrasto  = settings.contrast
 }
 
 export function saveReadingSettings(settings: ReadingSettings) {

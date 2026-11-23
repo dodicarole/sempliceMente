@@ -156,3 +156,9 @@
 .whenRow { display: flex; gap: 6px; background: #D6DBF2; border-radius: 16px; padding: 4px; }
 .whenBtn { flex: 1; min-height: 46px; border: none; border-radius: 12px; background: none; color: var(--text-soft); font-size: 16px; font-weight: 800; font-family: inherit; cursor: pointer; }
 .whenBtn[aria-pressed="true"] { background: var(--card); color: var(--text); }
+
+/* zaino: le cose rimaste a scuola */
+.dot.school { background: #FFA94D; }
+.schoolNote { background: #FFF4E6; color: #8A4B00; border: 2.5px solid #FFC078; border-radius: 16px; padding: 10px 14px; font-size: 14px; font-weight: 800; line-height: 1.45; }
+.schoolWarn { background: #FFF0F0; color: #A61E1E; border: 2.5px solid #FFA8A8; border-radius: 16px; padding: 10px 14px; font-size: 14px; font-weight: 800; line-height: 1.45; }
+.classroom { font-size: 13px; font-weight: 800; color: var(--text-soft); text-align: center; }

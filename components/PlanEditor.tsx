@@ -67,7 +67,7 @@ export default function PlanEditor() {
           {!plan?.steps.length && <div className={s.empty}>{T.empty}</div>}
           {plan?.steps.map((x, i) => { const info = byId(x.sec)
             return (
-              <div key={x.id} className={s.step} style={{ ['--c' as string]: info?.c ?? '#6B7FE3' }}>
+              <div key={x.id} className={s.step} style={{ ['--c' as string]: info?.c ?? '#5468D8' }}>
                 <span className={s.stepE}>{info?.e}</span>
                 <span className={s.stepTx}><b>{info?.title ?? x.sec}</b><span>{x.note}</span></span>
                 <span className={s.min}>{x.done ? '✅ ' : ''}{x.spent ? T.minutes(Math.floor(x.spent / 60), x.min) : `${x.min}′`}</span>

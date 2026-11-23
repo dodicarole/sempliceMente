@@ -102,7 +102,7 @@ export default function AuthScreen({ onAuth, onBack, resetToken }: Props) {
         {error && <div className={s.error}>{error}</div>}
         {mode === 'forgot' && <button className={s.submitBtn} onClick={sendLink} disabled={loading}>{loading ? '...' : t.auth.sendLink}</button>}
         {mode === 'reset' && <button className={s.submitBtn} onClick={saveNew} disabled={loading}>{loading ? '...' : t.auth.saveNew}</button>}
-        <button onClick={() => { try { window.history.replaceState(null, '', window.location.pathname) } catch (_) {} switchMode('login') }} style={{ background: 'none', border: 'none', color: 'var(--blue, #6B7FE3)', fontWeight: 800, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit', padding: 6 }}>{t.auth.backToLogin}</button>
+        <button onClick={() => { try { window.history.replaceState(null, '', window.location.pathname) } catch (_) {} switchMode('login') }} style={{ background: 'none', border: 'none', color: 'var(--blue, #5468D8)', fontWeight: 800, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit', padding: 6 }}>{t.auth.backToLogin}</button>
       </div>
       ) : (
       <div className={s.card}>
@@ -152,7 +152,7 @@ export default function AuthScreen({ onAuth, onBack, resetToken }: Props) {
           {loading ? '...' : mode === 'login' ? t.auth.login : t.auth.register}
         </button>
         {mode === 'login' && (
-          <button onClick={() => switchMode('forgot')} style={{ background: 'none', border: 'none', color: 'var(--blue, #6B7FE3)', fontWeight: 800, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit', padding: 6 }}>{t.auth.forgotLink}</button>
+          <button onClick={() => switchMode('forgot')} style={{ background: 'none', border: 'none', color: 'var(--blue, #5468D8)', fontWeight: 800, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit', padding: 6 }}>{t.auth.forgotLink}</button>
         )}
       </div>
       )}

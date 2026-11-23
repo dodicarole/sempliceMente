@@ -4,6 +4,7 @@ import { useT } from '@/lib/i18n'
 import { autoStar } from '@/lib/stars'
 import { hush } from '@/hooks/useSpeech'
 import { mountGames, GAMES_CSS } from '@/lib/games/gamesCore'
+import { mountGamesFr } from '@/lib/games/gamesCoreFr'
 import SectionTitle from './SectionTitle'
 
 /** Le impostazioni dei giochi, per figlio (vedi lib/childStore.ts) */
@@ -28,13 +29,15 @@ export function useScopedCss(id: string, css: string) {
  * Ogni partita finita dà una stellina. Nella demo le impostazioni sono sotto l'elenco.
  */
 export default function GamesView({ onBack, allowSettings = false }: { onBack: () => void; allowSettings?: boolean }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const box = useRef<HTMLDivElement>(null)
   useScopedCss('smg-css', GAMES_CSS)
   useEffect(() => {
     if (!box.current) return
-    return mountGames(box.current, { settings: loadGamesSettings(), allowSettings, onWin: () => autoStar(), onSettings: saveGamesSettings })
-  }, [allowSettings])
+    // i giochi nella lingua dell'app: in francese con parole, rime e storie francesi
+    const mount = lang === 'fr' ? mountGamesFr : mountGames
+    return mount(box.current, { settings: loadGamesSettings(), allowSettings, onWin: () => autoStar(), onSettings: saveGamesSettings })
+  }, [allowSettings, lang])
   return (
     <>
       <SectionTitle emoji="🎲" title={t.games.title} sub={t.games.homeSub} onBack={() => { hush(); onBack() }} spot="giochi" />
@@ -45,15 +48,16 @@ export default function GamesView({ onBack, allowSettings = false }: { onBack: (
 
 /** Area Genitore: le impostazioni dei giochi */
 export function GamesSettingsPanel() {
+  const { lang } = useT()
   const box = useRef<HTMLDivElement>(null)
   useScopedCss('smg-css', GAMES_CSS)
   useEffect(() => {
     if (!box.current) return
     // il pannello del gioco, da solo: si nasconde l'elenco dei giochi
-    const stop = mountGames(box.current, { settings: loadGamesSettings(), allowSettings: true, onSettings: saveGamesSettings })
+    const stop = (lang === 'fr' ? mountGamesFr : mountGames)(box.current, { settings: loadGamesSettings(), allowSettings: true, onSettings: saveGamesSettings })
     const view = box.current.querySelector('[data-k="view"]') as HTMLElement | null
     if (view) view.style.display = 'none'
     return stop
-  }, [])
+  }, [lang])
   return <div ref={box} className="smg" />
 }
