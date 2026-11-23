@@ -4,6 +4,7 @@
 //   ANNOUNCE_SECRET=xxx node scripts/send-announcement.mjs emails/annuncio.html "Oggetto" [--dry-run]
 //
 // Con --dry-run mostra solo quanti destinatari riceverebbero l'email.
+//comento
 import { readFileSync } from 'node:fs'
 
 const APP_URL = process.env.APP_URL ?? 'https://semplicementebimbi.it'
