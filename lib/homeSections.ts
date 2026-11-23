@@ -7,7 +7,7 @@ import type { ChildGender } from '@/lib/praise'
 
 export const SECTION_IDS = [
   'zaino', 'routine', 'agenda', 'diario', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
-  'numeri', 'confronta', 'piugrande', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'glr', 'domande', 'sillabe', 'doppie', 'hoha', 'femminile', 'serve', 'nomi', 'english', 'giochi', 'poesia',
+  'numeri', 'confronta', 'piugrande', 'amici', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'glr', 'domande', 'sillabe', 'doppie', 'hoha', 'femminile', 'serve', 'nomi', 'english', 'giochi', 'poesia',
 ] as const
 export type SectionId = typeof SECTION_IDS[number]
 
@@ -31,6 +31,7 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
       { id: 'numeri', e: '🔢', c: '#F59F00', title: t.home.numbersTitle, sub: t.home.numbersSub },
       { id: 'confronta', e: '🐸', c: '#2F9E44', title: t.compare.title, sub: t.compare.homeSub },
       { id: 'piugrande', e: '🏆', c: '#F08C00', title: 'Il più grande, il più piccolo', sub: 'Tra tanti numeri, chi vince?', it: true },
+      { id: 'amici', e: '🤝', c: '#E8590C', title: 'Gli amici del 10', sub: '…e poi del 100 e del 1000', it: true },
       { id: 'precsucc', e: '🚂', c: '#0C8599', title: t.prevNext.title, sub: t.prevNext.homeSub },
       { id: 'tabelline', e: '✖️', c: '#7048E8', title: t.home.tablesTitle, sub: t.home.tablesSub },
       { id: 'scomponi', e: '🧱', c: '#2F9E44', title: t.split.title, sub: t.split.homeSub },

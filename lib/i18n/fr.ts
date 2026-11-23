@@ -683,6 +683,7 @@ export const fr: Dict = {
     piugrande: `Beaucoup de nombres${nb}? Compare-les deux par deux${nb}!`,
     glr: `Regarde le premier mot de la question${nb}!`,
     domande: `Chaque question cherche quelque chose de différent${nb}!`,
+    amici: `Deux nombres amis font 10 ensemble${nb}!`,
     capisco: `On lit un petit morceau à la fois. Si tu ne connais pas une réponse, on la cherche ensemble dans le texte${nb}!`,
     precsucc: `Le train avance toujours${nb}: le wagon d’avant, c’est le précédent, celui d’après, c’est le suivant${nb}!`,
   },

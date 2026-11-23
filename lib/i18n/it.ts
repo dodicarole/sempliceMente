@@ -680,6 +680,7 @@ export const it = {
     piugrande: 'Tanti numeri? Confrontali due alla volta, come in un torneo!',
     glr: 'Guarda la prima parola della domanda: ti dice cosa cercare!',
     domande: 'Ogni domanda cerca una cosa diversa: chi una persona, dove un posto…',
+    amici: 'Due numeri amici fanno 10 insieme. Con le dita è facilissimo!',
     capisco: 'Leggiamo un pezzetto alla volta. Se una risposta non la sai, la cerchiamo insieme nel testo!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },

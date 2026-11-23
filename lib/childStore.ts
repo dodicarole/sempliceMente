@@ -12,7 +12,7 @@ export const SYNCED_KEYS = [
   'numeri_impostazioni', 'tabelline_impostazioni', 'tabelline_progressi', 'scomposizione_impostazioni',
   'nomi_impostazioni', 'english_impostazioni', 'doppie_impostazioni', 'contrari_impostazioni',
   'confronto_impostazioni', 'precsucc_impostazioni', 'lettura_impostazioni', 'tono_divertente',
-  'voce_velocita', 'stelline', 'prima_poi', 'aiuti_progressi', 'diario_orario', 'diario_impostazioni', 'capisco_impostazioni', 'giochi_impostazioni', 'poesie', 'piani', 'inglese_tempo', 'hoha_mazzo', 'hoha_ripasso', 'hoha_mie', 'hoha_impostazioni', 'fem_mazzo', 'fem_ripasso', 'fem_mie', 'fem_impostazioni', 'serve_mazzo', 'serve_mie', 'serve_impostazioni', 'zaino_scuola', 'piu_impostazioni', 'glr_impostazioni', 'glr_risultati', 'glr_confusioni', 'spell_impostazioni', 'spell_liste', 'spell_mazzo', 'spell_ripasso', 'spell_lista', 'domande_impostazioni',
+  'voce_velocita', 'stelline', 'prima_poi', 'aiuti_progressi', 'diario_orario', 'diario_impostazioni', 'capisco_impostazioni', 'giochi_impostazioni', 'poesie', 'piani', 'inglese_tempo', 'hoha_mazzo', 'hoha_ripasso', 'hoha_mie', 'hoha_impostazioni', 'fem_mazzo', 'fem_ripasso', 'fem_mie', 'fem_impostazioni', 'serve_mazzo', 'serve_mie', 'serve_impostazioni', 'zaino_scuola', 'piu_impostazioni', 'glr_impostazioni', 'glr_risultati', 'glr_confusioni', 'spell_impostazioni', 'spell_liste', 'spell_mazzo', 'spell_ripasso', 'spell_lista', 'domande_impostazioni', 'amici_impostazioni',
 ]
 /** Le spunte del giorno (zaino e routine): per figlio, ma solo su questo telefono */
 const DAILY = /^(zaino|routine)_\d{4}-\d{2}-\d{2}$/
