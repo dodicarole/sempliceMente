@@ -5,8 +5,10 @@
  */
 import type { SectionId } from './homeSections'
 import { getForChild, setForChild } from './childStore'
+import { loadRecita, saveRecita, recitaStepFor } from './recita'
 
-export interface PlanStep { id: string; sec: SectionId; note: string; min: number; done: boolean; spent: number }
+/** auto: 'recita' = tappa aggiunta dall'app (la prova della recita), che il genitore può togliere o cambiare */
+export interface PlanStep { id: string; sec: SectionId; note: string; min: number; done: boolean; spent: number; auto?: 'recita' }
 export interface DayPlan { steps: PlanStep[]; note: string; mood: string; starred?: boolean }
 export interface Plans { settings: { onEnd: 'warn' | 'back' }; days: Record<string, DayPlan> }
 
@@ -32,14 +34,31 @@ const prune = (p: Plans): Plans => {
   return { ...p, days }
 }
 /** il figlio attivo */
-export function loadPlans(): Plans { try { return parse(localStorage.getItem(KEY)) } catch (_) { return parse(null) } }
+export function loadPlans(): Plans { try { return withRecita(parse(localStorage.getItem(KEY))) } catch (_) { return parse(null) } }
+/** la prova della recita: una tappa per ogni giorno da oggi fino alla recita (se il genitore lo vuole), tolte quelle non più valide */
+function withRecita(p: Plans): Plans {
+  const r = loadRecita(), today = todayIso()
+  for (const [k, d] of Object.entries(p.days)) d.steps = d.steps.filter(s => s.auto !== 'recita' || s.done || (k >= today && r?.plan !== false && !!recitaStepFor(r, k)))
+  if (!r || r.plan === false || !r.date || r.date < today) return p
+  if (!r.start || r.start > today) { r.start = today; saveRecita(r) }
+  for (let d = new Date(), i = 0; i < 40; i++, d = addDays(d, 1)) {
+    const k = iso(d); if (k > r.date) break
+    const st = recitaStepFor(r, k); if (!st || (r.skip ?? []).includes(k)) continue
+    const day = p.days[k] ?? (p.days[k] = { steps: [], note: '', mood: '' })
+    const has = day.steps.find(s => s.auto === 'recita')
+    if (has) { if (!has.done) has.note = '🎬 La recita · ' + st.label } else day.steps.push({ id: 'recita-' + k, sec: 'poesia' as SectionId, note: '🎬 La recita · ' + st.label, min: r.min ?? 5, done: false, spent: 0, auto: 'recita' })
+  }
+  return p
+}
+/** il genitore toglie la tappa della recita da un giorno: quel giorno non torna più */
+export function skipRecitaDay(dateIso: string) { const r = loadRecita(); if (!r) return; r.skip = [...new Set([...(r.skip ?? []), dateIso])]; saveRecita(r) }
 export function savePlans(p: Plans) { try { localStorage.setItem(KEY, JSON.stringify(prune(p))) } catch (_) {} }
 /** un altro figlio (per copiare il piano a più bambini) */
 export const loadPlansFor = (childId: string) => parse(getForChild(childId, KEY))
 export const savePlansFor = (childId: string, p: Plans) => setForChild(childId, KEY, JSON.stringify(prune(p)))
 
 /** una copia delle tappe, con le spunte e i minuti azzerati */
-export const freshSteps = (steps: PlanStep[]): PlanStep[] => steps.map(s => ({ ...s, id: newId(), done: false, spent: 0 }))
+export const freshSteps = (steps: PlanStep[]): PlanStep[] => steps.filter(s => !s.auto).map(s => ({ ...s, id: newId(), done: false, spent: 0 }))   // la tappa della recita no: la mette l'app
 
 /**
  * L'app aggiunge il tempo passato in una sezione alla tappa di oggi di quella sezione.

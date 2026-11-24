@@ -10,7 +10,7 @@ import DiaryView from './DiaryView'
 import { ReadUnderstandSettingsPanel } from './ReadUnderstandView'
 import ReadTextsEditor from './ReadTextsEditor'
 import { GamesSettingsPanel } from './GamesView'
-import { PoemEditorPanel } from './PoemView'
+import { PoemEditorPanel, RecitaEditorPanel } from './PoemView'
 import PlanEditor from './PlanEditor'
 import { HohaSettingsPanel } from './HohaView'
 import { FemSettingsPanel } from './FemView'
@@ -582,6 +582,8 @@ export default function ParentView({ schedule, routineItems, agendaItems, emotio
 
       {/* ── IMPARO LA POESIA: le poesie del figlio scelto ── */}
       {section === 'poesia' && <PoemEditorPanel />}
+      {section === 'poesia' && <div className={s.emotionsHint}>🎬 La mia parte nella recita</div>}
+      {section === 'poesia' && <RecitaEditorPanel />}
 
       {/* ── GIOCHI ── */}
       {section === 'giochi' && (
