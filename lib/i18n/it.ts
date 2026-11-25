@@ -681,6 +681,7 @@ export const it = {
     glr: 'Guarda la prima parola della domanda: ti dice cosa cercare!',
     domande: 'Ogni domanda cerca una cosa diversa: chi una persona, dove un posto…',
     amici: 'Due numeri amici fanno 10 insieme. Con le dita è facilissimo!',
+    chi: '«Chi?» cerca sempre una persona o un animale: guarda chi fa l’azione!',
     capisco: 'Leggiamo un pezzetto alla volta. Se una risposta non la sai, la cerchiamo insieme nel testo!',
     precsucc: 'Il treno va sempre avanti: il vagone prima è il precedente, quello dopo è il successivo!',
   },

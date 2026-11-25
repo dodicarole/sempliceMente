@@ -13,6 +13,7 @@ import Buddy from './Buddy'
 import EnglishCan from './EnglishCan'
 import EnglishWeather from './EnglishWeather'
 import EnglishSpell from './EnglishSpell'
+import { takeOpenHint } from '@/lib/deadlines'
 
 interface Props {
   onBack: () => void
@@ -214,7 +215,7 @@ export default function EnglishView({ onBack, allowSettings = false }: Props) {
   const [settings, setSettings]   = useState<EnglishSettings>(ENGLISH_DEFAULTS)
   const [ready, setReady]         = useState(false)
   const [topic, setTopic]         = useState<TopicId>('animals')
-  const [tab, setTab]             = useState<Tab>('learn')
+  const [tab, setTab]             = useState<Tab>(() => { const a = typeof window !== 'undefined' ? takeOpenHint('english') : null; if (a) { try { localStorage.setItem('spell_lista', JSON.stringify(a.item)) } catch (_) {} return 'spell' } return 'learn' })
   const [run, setRun]             = useState(0)
   const [celeb, setCeleb]         = useState<{ gag: Gag | null; phrase: string } | null>(null)
   const [showPanel, setShowPanel] = useState(false)

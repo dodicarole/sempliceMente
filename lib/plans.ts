@@ -6,9 +6,10 @@
 import type { SectionId } from './homeSections'
 import { getForChild, setForChild } from './childStore'
 import { loadRecita, saveRecita, recitaStepFor } from './recita'
+import { loadDeadlines, scheduleDeadlines, type OpenHint } from './deadlines'
 
 /** auto: 'recita' = tappa aggiunta dall'app (la prova della recita), che il genitore può togliere o cambiare */
-export interface PlanStep { id: string; sec: SectionId; note: string; min: number; done: boolean; spent: number; auto?: 'recita' }
+export interface PlanStep { id: string; sec: SectionId; note: string; min: number; done: boolean; spent: number; auto?: 'recita' | 'scadenza'; dl?: string; open?: OpenHint }
 export interface DayPlan { steps: PlanStep[]; note: string; mood: string; starred?: boolean }
 export interface Plans { settings: { onEnd: 'warn' | 'back' }; days: Record<string, DayPlan> }
 
@@ -34,7 +35,7 @@ const prune = (p: Plans): Plans => {
   return { ...p, days }
 }
 /** il figlio attivo */
-export function loadPlans(): Plans { try { return withRecita(parse(localStorage.getItem(KEY))) } catch (_) { return parse(null) } }
+export function loadPlans(): Plans { try { return withDeadlines(withRecita(parse(localStorage.getItem(KEY)))) } catch (_) { return parse(null) } }
 /** la prova della recita: una tappa per ogni giorno da oggi fino alla recita (se il genitore lo vuole), tolte quelle non più valide */
 function withRecita(p: Plans): Plans {
   const r = loadRecita(), today = todayIso()
@@ -47,6 +48,24 @@ function withRecita(p: Plans): Plans {
     const day = p.days[k] ?? (p.days[k] = { steps: [], note: '', mood: '' })
     const has = day.steps.find(s => s.auto === 'recita')
     if (has) { if (!has.done) has.note = '🎬 La recita · ' + st.label } else day.steps.push({ id: 'recita-' + k, sec: 'poesia' as SectionId, note: '🎬 La recita · ' + st.label, min: r.min ?? 5, done: false, spent: 0, auto: 'recita' })
+  }
+  return p
+}
+/** 📅 le scadenze: le tappe calcolate (lib/deadlines.ts) entrano nel piano; quelle non più valide e non fatte si tolgono */
+function withDeadlines(p: Plans): Plans {
+  const st = loadDeadlines(), today = todayIso()
+  const extra: Record<string, number> = {}
+  for (const [k, d] of Object.entries(p.days)) if (k >= today) for (const s of d.steps) if (s.auto === 'recita') extra[k] = (extra[k] ?? 0) + s.min
+  const { plan } = scheduleDeadlines(st, extra)
+  for (const [k, d] of Object.entries(p.days)) if (k >= today) d.steps = d.steps.filter(s => s.auto !== 'scadenza' || s.done || (plan[k] ?? []).some(x => x.d.id === s.dl))
+  for (const [k, list] of Object.entries(plan)) {
+    const day = p.days[k] ?? (p.days[k] = { steps: [], note: '', mood: '' })
+    for (const x of list) {
+      const note = `📅 ${x.d.title} · ${x.lab}`, has = day.steps.find(s => s.auto === 'scadenza' && s.dl === x.d.id)
+      const open: OpenHint = { sec: x.d.sec, item: x.d.item, tab: x.tab }
+      if (has) { if (!has.done) { has.note = note; has.open = open; has.min = x.d.min } }
+      else day.steps.push({ id: `dl-${x.d.id}-${k}`, sec: x.d.sec as SectionId, note, min: x.d.min, done: false, spent: 0, auto: 'scadenza', dl: x.d.id, open })
+    }
   }
   return p
 }

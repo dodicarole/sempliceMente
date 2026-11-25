@@ -9,6 +9,7 @@ import { toStory, type ReadTextRow } from '@/lib/readTexts'
 import SectionTitle from './SectionTitle'
 import Tedo from './Tedo'
 import QText from './QText'
+import { takeOpenHint } from '@/lib/deadlines'
 import s from './ReadUnderstand.module.css'
 import p from './NumbersSettingsPanel.module.css'
 
@@ -32,7 +33,10 @@ export default function ReadUnderstandView({ onBack, allowSettings = false }: { 
   // i testi di scuola inseriti dal genitore (non nella demo)
   useEffect(() => {
     if (allowSettings) return
-    fetch('/api/read-texts').then(r => (r.ok ? r.json() : { items: [] })).then(j => setSchool((j.items as ReadTextRow[] ?? []).map(toStory))).catch(() => {})
+    fetch('/api/read-texts').then(r => (r.ok ? r.json() : { items: [] })).then(j => {
+      const list = (j.items as ReadTextRow[] ?? []).map(toStory); setSchool(list)
+      const a = takeOpenHint('capisco'); const f = a && list.find(x => x.id === a.item); if (f) setStory(f)    // dal piano di lavoro: il testo della scadenza
+    }).catch(() => {})
   }, [allowSettings])
   return (
     <>

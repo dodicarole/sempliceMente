@@ -21,6 +21,8 @@ let S={rate:.85};
 function loadList(){ try{ const r=localStorage.getItem('poesie'); if(r){ const v=JSON.parse(r); if(Array.isArray(v.list)) return v.list; } }catch(e){} return []; }
 let LIST=loadList(); if(!LIST.length&&opts.demo) LIST=[Object.assign({id:'esempio'},JSON.parse(JSON.stringify(SAMPLE)))];
 let P=LIST[0]||null;
+/* dal piano di lavoro (📅 una scadenza): si apre la poesia giusta */
+try{ const a=JSON.parse(sessionStorage.getItem('apri')||'null'); if(a&&a.sec==='poesia'&&opts.mode!=='parent'){ const f=LIST.find(x=>x.id===a.item); if(f) P=f; sessionStorage.removeItem('apri'); } }catch(e){}
 function save(){ if(P){ const i=LIST.findIndex(x=>x.id===P.id); if(i>=0) LIST[i]=P; } try{ localStorage.setItem('poesie',JSON.stringify({list:LIST})); }catch(e){} }
 /* versi e strofe: un a capo = un verso, una riga vuota = una nuova strofa */
 function stanzas(){ return P.text.split(/\n\s*\n/).map(s=>s.split('\n').map(x=>x.trim()).filter(Boolean)).filter(s=>s.length); }

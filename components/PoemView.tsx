@@ -6,6 +6,7 @@ import { mountPoem, POEM_CSS } from '@/lib/games/poemCore'
 import { mountRecita, RECITA_CSS } from '@/lib/games/recitaCore'
 import { loadRecita, recitaStepFor } from '@/lib/recita'
 import { loadPlans, todayIso } from '@/lib/plans'
+import { peekOpenHint } from '@/lib/deadlines'
 import { useScopedCss } from './GamesView'
 import SectionTitle from './SectionTitle'
 
@@ -15,6 +16,7 @@ import SectionTitle from './SectionTitle'
  */
 /** il passo della recita di oggi, se nel piano c'è la sua tappa ancora da fare: la sezione si apre lì */
 function recitaToday(): number | null {
+  if (peekOpenHint('poesia')) return null                 // una tappa di una scadenza: si apre la poesia, non la recita
   const step = loadPlans().days[todayIso()]?.steps.find(x => x.auto === 'recita' && !x.done)
   return step ? recitaStepFor(loadRecita(), todayIso())?.tab ?? null : null
 }

@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import { useT } from '@/lib/i18n'
 import { useChildren } from '@/lib/children'
+import { skipDeadlineDay } from '@/lib/deadlines'
+import DeadlinesPanel from './DeadlinesPanel'
 import { loadPlans, savePlans, loadPlansFor, savePlansFor, freshSteps, iso, fromIso, addDays, monday, newId, skipRecitaDay, type Plans, type PlanStep, type DayPlan } from '@/lib/plans'
 import type { SectionId } from '@/lib/homeSections'
 import { useSectionInfo } from './PlanParts'
@@ -44,6 +46,8 @@ export default function PlanEditor() {
   return (
     <>
       <div className={s.sub}>{T.parentHint}</div>
+      {/* 📅 le scadenze: le loro tappe entrano da sole nel piano qui sotto */}
+      <DeadlinesPanel onChange={() => setP(loadPlans())} />
       {/* la settimana */}
       <div className={s.card}>
         <div className={s.week}>
@@ -69,13 +73,13 @@ export default function PlanEditor() {
             return (
               <div key={x.id} className={s.step} style={{ ['--c' as string]: info?.c ?? '#5468D8' }}>
                 <span className={s.stepE}>{info?.e}</span>
-                <span className={s.stepTx}><b>{info?.title ?? x.sec}</b><span>{x.note}</span>{x.auto === 'recita' && <span style={{ fontSize: 12, fontWeight: 900, color: '#7048E8' }}>🎬 aggiunta dalla recita</span>}</span>
+                <span className={s.stepTx}><b>{info?.title ?? x.sec}</b><span>{x.note}</span>{x.auto === 'recita' && <span style={{ fontSize: 12, fontWeight: 900, color: '#7048E8' }}>🎬 aggiunta dalla recita</span>}{x.auto === 'scadenza' && <span style={{ fontSize: 12, fontWeight: 900, color: '#E8590C' }}>📅 aggiunta dalla scadenza</span>}</span>
                 <span className={s.min}>{x.done ? '✅ ' : ''}{x.spent ? T.minutes(Math.floor(x.spent / 60), x.min) : `${x.min}′`}</span>
                 <div className={s.mini}>
                   <button aria-label="↑" onClick={() => move(i, -1)}>↑</button>
                   <button aria-label="↓" onClick={() => move(i, 1)}>↓</button>
                   <button aria-label="✏️" onClick={() => setEditing(x)}>✏️</button>
-                  <button aria-label="✕" onClick={() => { if (x.auto === 'recita') skipRecitaDay(day); plan.steps.splice(i, 1); commit(P) }}>✕</button>
+                  <button aria-label="✕" onClick={() => { if (x.auto === 'recita') skipRecitaDay(day); if (x.auto === 'scadenza' && x.dl) { skipDeadlineDay(x.dl, day); setP(loadPlans()); return } plan.steps.splice(i, 1); commit(P) }}>✕</button>
                 </div>
               </div>
             ) })}

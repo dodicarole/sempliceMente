@@ -29,7 +29,7 @@ export default function PlanToday({ onOpen }: { onOpen: (sec: SectionId) => void
       <div className={s.prog}><i style={{ width: `${(done / day.steps.length) * 100}%` }} /></div>
       {day.steps.map((x, i) => { const info = byId(x.sec)
         return (
-          <button key={x.id} className={`${s.kstep}${x.done ? ` ${s.isDone}` : i === next ? ` ${s.now}` : ''}`} onClick={() => onOpen(x.sec)}>
+          <button key={x.id} className={`${s.kstep}${x.done ? ` ${s.isDone}` : i === next ? ` ${s.now}` : ''}`} onClick={() => { try { if (x.open) sessionStorage.setItem('apri', JSON.stringify(x.open)) } catch (_) {} onOpen(x.sec) }}>
             <span className={s.kstepE}>{info?.e}</span>
             <span className={s.kstepTx}><b>{i + 1}. {info?.title ?? x.sec}</b><span>{x.note ? `${x.note} · ` : ''}{x.spent && !x.done ? T.minutes(Math.floor(x.spent / 60), x.min) : `${x.min} min`}</span></span>
             {x.done ? <span>✅</span> : i === next ? <span className={s.go}>{T.go}</span> : null}
