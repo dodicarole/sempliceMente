@@ -340,6 +340,12 @@ const SCENES2={
  'lumaca':()=>park()+'<path d="M40 236 Q160 228 230 236" stroke="#CED4DA" stroke-width="6" fill="none" stroke-dasharray="4 8"/>'+T(270,216,'🐌',60)+T(120,200,'🐢',0),
  'amina-saluta':()=>park()+tree(80)+kid('amina',220,246,.84,{pose:'wave'})+'<path d="M272 72 q10 -6 14 6 M280 98 q12 -2 12 10" stroke="#1F2147" stroke-width="3" fill="none" stroke-linecap="round"/>',
  'papa-pane':()=>kitchen()+tableK(90,220)+kid('papa',170,246,.84,{hands:[[-14,-86],[40,-96]]})+bread(230,166)+knife(206,140),
+ // Nuove scene per ampliare gli esercizi «Chi?»
+ 'medico-visita':()=>R(0,0,400,300,'#E3FAFC')+R(0,226,400,74,'#C5F6FA')+R(42,42,112,92,'#fff',8)+L(98,42,98,134,'#74C0FC',4)+L(42,88,154,88,'#74C0FC',4)+T(198,218,'👨‍⚕️',86)+T(300,232,'🧒',64)+T(252,150,'🩺',36),
+ 'bambino-legge':()=>rm()+sofa(110,226,'#748FFC')+T(206,206,'🧒',82)+T(206,156,'📖',46)+C(300,78,24,'#FFD43B'),
+ 'cane-prato-corre':()=>park()+tree(330)+T(184,224,'🐕',76)+'<path d="M92 190 h34 M82 210 h42 M96 230 h28" stroke="#fff" stroke-width="5" stroke-linecap="round"/>',
+ 'maestra-spiega':()=>classroom+T(300,222,'👩‍🏫',82)+R(54,58,176,104,'#2F9E44',8)+T(140,116,'A B C',34)+L(240,130,270,106,'#8B5A2B',5),
+ 'mamma-cena':()=>kitchen(true)+stove(210)+T(142,222,'👩‍🍳',86)+T(252,144,'🍲',54)+L(200,140,224,124,'#8B5A2B',5),
 };
 
 /* ── le parole-domanda: ognuna con il suo colore, il suo simbolo e il tipo di risposta che chiede ── */
@@ -356,6 +362,12 @@ const ORDER=['chi','dove','cosa','quando','quanti','perche','come'];
 
 const EX=[
  {sc:'lucia-pasta',k:'chi',pic:'👧🍝',p:[['Lucia','chi'],['mangia',null],['la pasta','cosa'],['in cucina','dove']],q:'Chi mangia la pasta?',same:['Marco','la nonna']},
+ // Nuove frasi con illustrazioni dedicate
+ {sc:'medico-visita',k:'chi',pic:'👨‍⚕️🩺',p:[['Il medico','chi'],['visita',null],['il bambino','cosa']],q:'Chi visita il bambino?',same:['la mamma','il maestro']},
+ {sc:'bambino-legge',k:'chi',pic:'🧒📖',p:[['Il bambino','chi'],['legge',null],['un libro','cosa']],q:'Chi legge il libro?',same:['il papà','il cane']},
+ {sc:'cane-prato-corre',k:'chi',pic:'🐕🌳',p:[['Il cane','chi'],['corre',null],['nel prato','dove']],q:'Chi corre nel prato?',same:['il gatto','il bambino']},
+ {sc:'maestra-spiega',k:'chi',pic:'👩‍🏫📚',p:[['La maestra','chi'],['spiega',null],['la lezione','cosa']],q:'Chi spiega la lezione?',same:['il medico','la nonna']},
+ {sc:'mamma-cena',k:'chi',pic:'👩‍🍳🍲',p:[['La mamma','chi'],['prepara',null],['la cena','cosa']],q:'Chi prepara la cena?',same:['il papà','la maestra']},
  {sc:'cane-cuccia',k:'chi',pic:'🐶💤',p:[['Il cane','chi'],['dorme',null],['nella cuccia','dove']],q:'Chi dorme nella cuccia?',same:['il gatto','il coniglio']},
  {sc:'maestra-lavagna',k:'chi',pic:'👩‍🏫✍️',p:[['La maestra','chi'],['scrive',null],['alla lavagna','dove']],q:'Chi scrive alla lavagna?',same:['il bambino','il papà']},
  {sc:'papa-macchina',k:'chi',pic:'👨🚗',p:[['Il papà','chi'],['guida',null],['la macchina','cosa']],q:'Chi guida la macchina?',same:['la maestra','il nonno']},
