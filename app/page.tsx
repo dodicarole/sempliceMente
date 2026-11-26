@@ -35,6 +35,7 @@ import GlrView from '@/components/GlrView'
 import DomandeView from '@/components/DomandeView'
 import AmiciView from '@/components/AmiciView'
 import ChiView from '@/components/ChiView'
+import CosaFaView from '@/components/CosaFaView'
 import PlanToday from '@/components/PlanToday'
 import PlanTracker from '@/components/PlanTracker'
 import { builtinStories } from '@/lib/builtinStories'
@@ -52,7 +53,7 @@ import s from './page.module.css'
 
 type AuthState    = 'loading' | 'unauthenticated' | 'authenticated'
 type View         = 'child' | 'parent'
-type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'femminile' | 'serve' | 'piugrande' | 'glr' | 'domande' | 'amici' | 'chi'
+type ChildSection = 'home' | 'zaino' | 'routine' | 'agenda' | 'timer' | 'emotions' | 'storie' | 'numeri' | 'tabelline' | 'scomponi' | 'nomi' | 'english' | 'primapoi' | 'calma' | 'stelline' | 'orologio' | 'soldi' | 'sillabe' | 'doppie' | 'confronta' | 'contrari' | 'precsucc' | 'diario' | 'capisco' | 'giochi' | 'poesia' | 'hoha' | 'femminile' | 'serve' | 'piugrande' | 'glr' | 'domande' | 'amici' | 'chi' | 'cosafa'
 type ParentState  = 'locked' | 'unlocked' | 'changing-pin-1' | 'changing-pin-2'
 
 // ── Demo data (stessi contenuti di default di un nuovo account) ─────────────
@@ -344,6 +345,8 @@ export default function Home() {
               <DomandeView allowSettings onBack={() => setChildSection('home')} />
             ) : childSection === 'amici' ? (
               <AmiciView allowSettings onBack={() => setChildSection('home')} />
+            ) : childSection === 'cosafa' ? (
+              <CosaFaView onBack={() => setChildSection('home')} />
             ) : childSection === 'chi' ? (
               <ChiView allowSettings onBack={() => setChildSection('home')} />
             ) : (
