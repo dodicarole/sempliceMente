@@ -63,7 +63,7 @@ export default function CosaFaView({ onBack }: { onBack: () => void }) {
 
   return (
     <>
-      <SectionTitle emoji="🎬" title="Solo «Cosa fa?»" sub="Osserva la scena e trova l’azione" onBack={() => { hush(); onBack() }} spot="cosa-fa" />
+      <SectionTitle emoji="🎬" title="Solo «Cosa fa?»" sub="Osserva la scena e trova l’azione" onBack={() => { hush(); onBack() }} spot="chi" />
       <div style={{ background: '#EDF0FB', borderRadius: 22, padding: 16, color: '#1F2147', display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 560, margin: '0 auto', width: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <strong style={{ background: '#1C7ED6', color: 'white', borderRadius: 14, padding: '9px 13px' }}>Prova {Math.min(index + 1, 4)} di 4</strong>
