@@ -1,6 +1,5 @@
 'use client'
 import { useMemo, useState } from 'react'
-import Image from 'next/image'
 import { autoStar } from '@/lib/stars'
 import { hush } from '@/hooks/useSpeech'
 import SectionTitle from './SectionTitle'
