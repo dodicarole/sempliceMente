@@ -484,6 +484,8 @@ export default function Home() {
               <DomandeView onBack={() => setChildSection('home')} />
             ) : childSection === 'amici' ? (
               <AmiciView onBack={() => setChildSection('home')} />
+            ) : childSection === 'cosafa' ? (
+              <CosaFaView onBack={() => setChildSection('home')} />
             ) : childSection === 'chi' ? (
               <ChiView onBack={() => setChildSection('home')} />
             ) : (
