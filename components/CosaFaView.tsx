@@ -71,7 +71,7 @@ export default function CosaFaView({ onBack }: { onBack: () => void }) {
           <div style={{ display: 'flex', gap: 5 }}>{[0,1,2,3].map(n => <span key={n} style={{ width: 13, height: 13, borderRadius: 20, background: n < index ? '#2F9E44' : n === index && !finished ? '#1C7ED6' : '#D6DBF2' }} />)}</div>
         </div>
         <div style={{ background: 'white', borderRadius: 18, padding: 10, textAlign: 'center' }}>
-          <div role="img" aria-label={current.sentence} style={{ width: '100%', maxWidth: 390, aspectRatio: '1 / 1', margin: '0 auto', borderRadius: 14, backgroundImage: "url('/images/cosa-fa-sprite.webp')", backgroundRepeat: 'no-repeat', backgroundSize: '400% 300%', backgroundPosition: spritePosition }} />
+          <div role="img" aria-label={current.sentence} style={{ width: '100%', maxWidth: 390, aspectRatio: '1 / 1', margin: '0 auto', borderRadius: 14, backgroundImage: "url('/images/cosa-fa-scenes.svg')", backgroundRepeat: 'no-repeat', backgroundSize: '400% 300%', backgroundPosition: spritePosition }} />
         </div>
         <div style={{ background: 'white', borderRadius: 16, padding: 14, textAlign: 'center' }}>
           <div style={{ fontSize: 13, color: '#545B88', fontWeight: 800, marginBottom: 5 }}>LIVELLO {level}</div>
