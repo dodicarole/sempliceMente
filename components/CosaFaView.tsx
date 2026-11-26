@@ -1,23 +1,24 @@
 'use client'
 import { useMemo, useState } from 'react'
+import Image from 'next/image'
 import { autoStar } from '@/lib/stars'
 import { hush } from '@/hooks/useSpeech'
 import SectionTitle from './SectionTitle'
 
-type Exercise = { scene: string; actor: string; action: string; distractor: string; sentence: string }
+type Exercise = { imageIndex: number; actor: string; action: string; distractor: string; sentence: string }
 const EXERCISES: Exercise[] = [
-  { scene: '🏃‍♂️🌳☀️', actor: 'Il bambino', action: 'corre', distractor: 'dorme', sentence: 'Il bambino corre nel parco.' },
-  { scene: '🐶⚽🌿', actor: 'Il cane', action: 'gioca', distractor: 'nuota', sentence: 'Il cane gioca con la palla.' },
-  { scene: '👧📖🛋️', actor: 'La bambina', action: 'legge', distractor: 'cucina', sentence: 'La bambina legge un libro.' },
-  { scene: '👩‍🍳🍲🥕', actor: 'La mamma', action: 'cucina', distractor: 'disegna', sentence: 'La mamma cucina la cena.' },
-  { scene: '🐱💤🧺', actor: 'Il gatto', action: 'dorme', distractor: 'salta', sentence: 'Il gatto dorme nella cesta.' },
-  { scene: '👨‍🌾🌷💧', actor: 'Il papà', action: 'innaffia', distractor: 'legge', sentence: 'Il papà innaffia i fiori.' },
-  { scene: '👦⚽🥅', actor: 'Il bambino', action: 'calcia', distractor: 'mangia', sentence: 'Il bambino calcia il pallone.' },
-  { scene: '🐦🌳🎵', actor: 'L’uccellino', action: 'canta', distractor: 'corre', sentence: 'L’uccellino canta sull’albero.' },
-  { scene: '👩‍🏫📚✏️', actor: 'La maestra', action: 'scrive', distractor: 'nuota', sentence: 'La maestra scrive alla lavagna.' },
-  { scene: '🐰🥕🌱', actor: 'Il coniglio', action: 'mangia', distractor: 'vola', sentence: 'Il coniglio mangia una carota.' },
-  { scene: '👧🎨🖌️', actor: 'La bambina', action: 'disegna', distractor: 'dorme', sentence: 'La bambina disegna un fiore.' },
-  { scene: '🐟🌊🫧', actor: 'Il pesce', action: 'nuota', distractor: 'cammina', sentence: 'Il pesce nuota nell’acqua.' },
+  { imageIndex: 0, actor: 'Il bambino', action: 'corre', distractor: 'dorme', sentence: 'Il bambino corre nel parco.' },
+  { imageIndex: 1, actor: 'La bambina', action: 'cucina', distractor: 'legge', sentence: 'La bambina cucina una minestra.' },
+  { imageIndex: 2, actor: 'Il gatto', action: 'dorme', distractor: 'salta', sentence: 'Il gatto dorme nella cesta.' },
+  { imageIndex: 3, actor: 'Il bambino', action: 'legge', distractor: 'disegna', sentence: 'Il bambino legge un libro.' },
+  { imageIndex: 4, actor: 'La bambina', action: 'canta', distractor: 'corre', sentence: 'La bambina canta una canzone.' },
+  { imageIndex: 5, actor: 'Il bambino', action: 'calcia', distractor: 'nuota', sentence: 'Il bambino calcia il pallone.' },
+  { imageIndex: 6, actor: 'La bambina', action: 'disegna', distractor: 'cucina', sentence: 'La bambina disegna un sole.' },
+  { imageIndex: 7, actor: 'Il bambino', action: 'mangia', distractor: 'legge', sentence: 'Il bambino mangia una mela.' },
+  { imageIndex: 8, actor: 'La bambina', action: 'abbraccia', distractor: 'scrive', sentence: 'La bambina abbraccia il suo orsetto.' },
+  { imageIndex: 9, actor: 'Il bambino', action: 'pedala', distractor: 'dorme', sentence: 'Il bambino pedala in bicicletta.' },
+  { imageIndex: 10, actor: 'La bambina', action: 'lava', distractor: 'canta', sentence: 'La bambina lava i piatti.' },
+  { imageIndex: 11, actor: 'Il bambino', action: 'dorme', distractor: 'gioca', sentence: 'Il bambino dorme nel suo letto.' },
 ]
 const LEVELS = [
   { title: 'Livello 1 · Scegli l’azione', hint: 'Guarda la scena e scegli che cosa sta facendo il personaggio.' },
@@ -37,6 +38,7 @@ export default function CosaFaView({ onBack }: { onBack: () => void }) {
   const order = useMemo(() => shuffle(EXERCISES), [level, finished])
   const current = order[index % order.length]
   const choices = useMemo(() => shuffle([current.action, current.distractor]), [current])
+  const spritePosition = `${((current.imageIndex % 4) / 3) * 100}% ${(Math.floor(current.imageIndex / 4) / 2) * 100}%`
 
   const speak = (text: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
@@ -69,7 +71,9 @@ export default function CosaFaView({ onBack }: { onBack: () => void }) {
           <strong style={{ background: '#1C7ED6', color: 'white', borderRadius: 14, padding: '9px 13px' }}>Prova {Math.min(index + 1, 4)} di 4</strong>
           <div style={{ display: 'flex', gap: 5 }}>{[0,1,2,3].map(n => <span key={n} style={{ width: 13, height: 13, borderRadius: 20, background: n < index ? '#2F9E44' : n === index && !finished ? '#1C7ED6' : '#D6DBF2' }} />)}</div>
         </div>
-        <div style={{ background: 'white', borderRadius: 18, padding: '24px 12px', textAlign: 'center', fontSize: 76, lineHeight: 1.5 }} role="img" aria-label={current.sentence}>{current.scene}</div>
+        <div style={{ background: 'white', borderRadius: 18, padding: 10, textAlign: 'center' }}>
+          <div role="img" aria-label={current.sentence} style={{ width: '100%', maxWidth: 390, aspectRatio: '1 / 1', margin: '0 auto', borderRadius: 14, backgroundImage: "url('/images/cosa-fa-sprite.webp')", backgroundRepeat: 'no-repeat', backgroundSize: '400% 300%', backgroundPosition: spritePosition }} />
+        </div>
         <div style={{ background: 'white', borderRadius: 16, padding: 14, textAlign: 'center' }}>
           <div style={{ fontSize: 13, color: '#545B88', fontWeight: 800, marginBottom: 5 }}>LIVELLO {level}</div>
           <div style={{ fontSize: 24, fontWeight: 900 }}>❓ Cosa fa?</div>
