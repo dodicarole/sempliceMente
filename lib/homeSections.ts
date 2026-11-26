@@ -7,7 +7,7 @@ import type { ChildGender } from '@/lib/praise'
 
 export const SECTION_IDS = [
   'zaino', 'routine', 'agenda', 'diario', 'primapoi', 'emotions', 'calma', 'timer', 'stelline', 'storie',
-  'numeri', 'confronta', 'piugrande', 'amici', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'glr', 'chi', 'domande', 'sillabe', 'doppie', 'hoha', 'femminile', 'serve', 'nomi', 'english', 'giochi', 'poesia',
+  'numeri', 'confronta', 'piugrande', 'amici', 'precsucc', 'tabelline', 'scomponi', 'orologio', 'soldi', 'contrari', 'capisco', 'glr', 'chi', 'cosafa', 'domande', 'sillabe', 'doppie', 'hoha', 'femminile', 'serve', 'nomi', 'english', 'giochi', 'poesia',
 ] as const
 export type SectionId = typeof SECTION_IDS[number]
 
@@ -41,6 +41,7 @@ export function homeSections(t: Dict, gender: ChildGender): { daily: HomeCard[];
       { id: 'capisco', e: '🔎', c: '#0B7285', title: t.readUnd.title, sub: t.readUnd.homeSub },
       { id: 'glr', e: '🖼️', c: '#1C7ED6', title: 'Guarda, leggi, rispondi', sub: 'Chi? Cosa? Dove? Una domanda alla volta', it: true },
       { id: 'chi', e: '👤', c: '#1C7ED6', title: 'Solo «Chi?»', sub: 'Chi fa l’azione? Una persona o un animale', it: true },
+      { id: 'cosafa', e: '🎬', c: '#7048E8', title: 'Solo «Cosa fa?»', sub: 'Osserva la scena e trova l’azione', it: true },
       { id: 'domande', e: '❓', c: '#7048E8', title: 'Cosa mi chiede la domanda?', sub: 'Chi, cosa, dove, quando…', it: true },
       { id: 'sillabe', e: '🔤', c: '#E03131', title: 'Le sillabe', sub: 'Unisci le sillabe per leggere', it: true },
       { id: 'doppie', e: '✏️', c: '#F08C00', title: 'Le doppie', sub: 'Una lettera o due?', it: true },
